@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Room(models.Model):
     room_key = models.CharField(max_length=30)
     room_name = models.CharField(max_length=30)
-    host = models.ForeignKey(User, on_delete=models.CASCADE)
+    host = models.OneToOneField(User, on_delete=models.CASCADE)
     guests = models.ManyToManyField(User)
     queue = models.OneToOneField('Queue', on_delete=models.CASCADE)
     services = models.ManyToManyField('Service')
