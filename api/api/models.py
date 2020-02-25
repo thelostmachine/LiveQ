@@ -15,7 +15,7 @@ class Room(models.Model):
    
 # Song DB model
 class Song(models.Model):
-    room = models.ForeignKey(Room, on_delet=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
     song_id = models.CharField(max_length=30)
     service = models.ForeignKey('Service', on_delete=models.CASCADE)
