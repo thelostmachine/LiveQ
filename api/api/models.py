@@ -22,6 +22,7 @@ class Song(models.Model):
 
     def save(self):
         super(Song, self).save()
+        #notify of change
 
 # Service DB model
 class Service(models.Model):
