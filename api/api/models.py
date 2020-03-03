@@ -9,7 +9,7 @@ class Guest(models.Model):
 
 # Room DB model
 class Room(models.Model):
-    room_key = models.CharField(max_length=30)
+    room_key = models.CharField(max_length=30, primary_key=True)
     room_name = models.CharField(max_length=30)
     host = models.OneToOneField(User, on_delete=models.CASCADE)
    
