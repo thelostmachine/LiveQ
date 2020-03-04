@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from liveqapi.api.models import Room, Guest, Song, Service
-from liveqapi.api.serializers import RoomSerializer, GuestSerializer, SongSerializer, ServiceSerializer
+from api.models import Room, Guest, Song, Service
+from api.serializers import RoomSerializer, GuestSerializer, SongSerializer, ServiceSerializer
 
 # Create your views here.
 

@@ -1,4 +1,4 @@
-from liveqapi.api.models import Room, Guest, Song, Service
+from api.models import Room, Guest, Song, Service
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
