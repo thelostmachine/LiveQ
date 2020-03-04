@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class Guest(models.Model):
     room = models.ForeignKey('Room', on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 # Room DB model

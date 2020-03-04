@@ -2,13 +2,22 @@ from liveqapi.api.models import Room, Guest, Song, Service
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-class RoomSerializer():
+class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
-        fields = 
+        fields = ['room_name']
 
-class GuestSerializer():
+class GuestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Guest
+        fields = ['name']
 
-class SongSerializer():
+class SongSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = ['song_id']
 
-class ServiceSerializer():
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ['service_type']
