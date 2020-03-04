@@ -19,8 +19,6 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
 
-        // Define the default font family.
-        fontFamily: 'Georgia',
         primarySwatch: Colors.blue,
       ),
       home: HomeScreen(title: 'LiveQ'),
@@ -149,7 +147,9 @@ class HomeScreen extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headline4.merge(
+                    TextStyle(fontWeight: FontWeight.bold),
+                  ),
             ),
             buttonNext(context, 'join a room'),
             buttonNext(context, 'create new room'),
@@ -161,15 +161,24 @@ class HomeScreen extends StatelessWidget {
 }
 
 RaisedButton buttonNext(BuildContext context, String content) {
+  content = content.toUpperCase();
   return RaisedButton(
-    onPressed: null,
+    onPressed: () {},
     textColor: Colors.white,
     color: Color(0xffed6c6c),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(6),
+    ),
     child: Container(
       padding: const EdgeInsets.all(10.0),
       child: Text(
         '$content',
-        style: Theme.of(context).textTheme.button,
+        style: Theme.of(context).textTheme.button.merge(
+              TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
       ),
     ),
   );
