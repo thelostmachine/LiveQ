@@ -16,7 +16,7 @@ class LiveQSevicer(interface_pb2_grpc.LiveQServicer):
         return interface_pb2.CreateReply(room_key=reply_info[0], host_id=reply_info[1])
 
     def JoinRoom(self, request, context):
-        reply_info = self.db.JoinRoom(request.room_key)
+        reply_info = str(self.db.JoinRoom(request.room_key))
         return interface_pb2.JoinReply(guest_id=reply_info)
 
     def UpdateQueue(self, request, context):

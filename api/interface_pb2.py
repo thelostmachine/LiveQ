@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='liveq',
   syntax='proto3',
   serialized_options=b'\n\rio.grpc.LiveQB\nLiveQProtoP\001\242\002\002LQ',
-  serialized_pb=b'\n\x0finterface.proto\x12\x05liveq\"3\n\rCreateRequest\x12\x11\n\troom_name\x18\x01 \x01(\t\x12\x0f\n\x07host_id\x18\x02 \x01(\t\"\x1f\n\x0b\x43reateReply\x12\x10\n\x08room_key\x18\x01 \x01(\t\"1\n\x0bJoinRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\x12\x10\n\x08guest_id\x18\x02 \x01(\t\"\x1b\n\tJoinReply\x12\x0e\n\x06status\x18\x01 \x01(\t\" \n\x0cQueueRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\"1\n\nQueueReply\x12\x0f\n\x07song_id\x18\x01 \x01(\t\x12\x12\n\nservice_id\x18\x02 \x01(\t\"D\n\x0bSongRequest\x12\x0f\n\x07song_id\x18\x01 \x01(\t\x12\x12\n\nservice_id\x18\x02 \x01(\t\x12\x10\n\x08room_key\x18\x03 \x01(\t\"\x1b\n\tSongReply\x12\x0e\n\x06status\x18\x01 \x01(\t2\x99\x02\n\x05LiveQ\x12\x38\n\nCreateRoom\x12\x14.liveq.CreateRequest\x1a\x12.liveq.CreateReply\"\x00\x12\x32\n\x08JoinRoom\x12\x12.liveq.JoinRequest\x1a\x10.liveq.JoinReply\"\x00\x12\x39\n\x0bUpdateQueue\x12\x13.liveq.QueueRequest\x1a\x11.liveq.QueueReply\"\x00\x30\x01\x12\x31\n\x07\x41\x64\x64Song\x12\x12.liveq.SongRequest\x1a\x10.liveq.SongReply\"\x00\x12\x34\n\nDeleteSong\x12\x12.liveq.SongRequest\x1a\x10.liveq.SongReply\"\x00\x42\"\n\rio.grpc.LiveQB\nLiveQProtoP\x01\xa2\x02\x02LQb\x06proto3'
+  serialized_pb=b'\n\x0finterface.proto\x12\x05liveq\"\"\n\rCreateRequest\x12\x11\n\troom_name\x18\x01 \x01(\t\"0\n\x0b\x43reateReply\x12\x10\n\x08room_key\x18\x01 \x01(\t\x12\x0f\n\x07host_id\x18\x02 \x01(\t\"\x1f\n\x0bJoinRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\"\x1d\n\tJoinReply\x12\x10\n\x08guest_id\x18\x01 \x01(\t\" \n\x0cQueueRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\"1\n\nQueueReply\x12\x0f\n\x07song_id\x18\x01 \x01(\t\x12\x12\n\nservice_id\x18\x02 \x01(\t\"D\n\x0bSongRequest\x12\x0f\n\x07song_id\x18\x01 \x01(\t\x12\x12\n\nservice_id\x18\x02 \x01(\t\x12\x10\n\x08room_key\x18\x03 \x01(\t\"\x1b\n\tSongReply\x12\x0e\n\x06status\x18\x01 \x01(\t2\x99\x02\n\x05LiveQ\x12\x38\n\nCreateRoom\x12\x14.liveq.CreateRequest\x1a\x12.liveq.CreateReply\"\x00\x12\x32\n\x08JoinRoom\x12\x12.liveq.JoinRequest\x1a\x10.liveq.JoinReply\"\x00\x12\x39\n\x0bUpdateQueue\x12\x13.liveq.QueueRequest\x1a\x11.liveq.QueueReply\"\x00\x30\x01\x12\x31\n\x07\x41\x64\x64Song\x12\x12.liveq.SongRequest\x1a\x10.liveq.SongReply\"\x00\x12\x34\n\nDeleteSong\x12\x12.liveq.SongRequest\x1a\x10.liveq.SongReply\"\x00\x42\"\n\rio.grpc.LiveQB\nLiveQProtoP\x01\xa2\x02\x02LQb\x06proto3'
 )
 
 
@@ -38,13 +38,6 @@ _CREATEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='host_id', full_name='liveq.CreateRequest.host_id', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -58,7 +51,7 @@ _CREATEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=26,
-  serialized_end=77,
+  serialized_end=60,
 )
 
 
@@ -76,6 +69,13 @@ _CREATEREPLY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='host_id', full_name='liveq.CreateReply.host_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -88,7 +88,7 @@ _CREATEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=79,
+  serialized_start=62,
   serialized_end=110,
 )
 
@@ -107,13 +107,6 @@ _JOINREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='guest_id', full_name='liveq.JoinRequest.guest_id', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -127,7 +120,7 @@ _JOINREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=112,
-  serialized_end=161,
+  serialized_end=143,
 )
 
 
@@ -139,7 +132,7 @@ _JOINREPLY = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='status', full_name='liveq.JoinReply.status', index=0,
+      name='guest_id', full_name='liveq.JoinReply.guest_id', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -157,8 +150,8 @@ _JOINREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=163,
-  serialized_end=190,
+  serialized_start=145,
+  serialized_end=174,
 )
 
 
@@ -188,8 +181,8 @@ _QUEUEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=192,
-  serialized_end=224,
+  serialized_start=176,
+  serialized_end=208,
 )
 
 
@@ -226,8 +219,8 @@ _QUEUEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=226,
-  serialized_end=275,
+  serialized_start=210,
+  serialized_end=259,
 )
 
 
@@ -271,8 +264,8 @@ _SONGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=277,
-  serialized_end=345,
+  serialized_start=261,
+  serialized_end=329,
 )
 
 
@@ -302,8 +295,8 @@ _SONGREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=347,
-  serialized_end=374,
+  serialized_start=331,
+  serialized_end=358,
 )
 
 DESCRIPTOR.message_types_by_name['CreateRequest'] = _CREATEREQUEST
@@ -381,8 +374,8 @@ _LIVEQ = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=377,
-  serialized_end=658,
+  serialized_start=361,
+  serialized_end=642,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateRoom',

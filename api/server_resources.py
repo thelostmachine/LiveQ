@@ -1,6 +1,7 @@
 import uuid
-
-
+import string
+import random
+import queue
 
 
 class RoomDB:
@@ -30,6 +31,7 @@ class Room:
         self.host_id = uuid.uuid1()
         self.guest_ids = []
         self.q = queue.Queue()
+
     def AddGuest(self):
         guest_id = uuid.uuid1()
         self.guest_ids.append(guest_id)
