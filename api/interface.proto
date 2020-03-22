@@ -17,20 +17,19 @@ service LiveQ {
 
 message CreateRequest {
     string room_name = 1;
-    string host_id = 2;
 }
 
 message CreateReply {
     string room_key = 1;
+    string host_id = 2;
 }
 
 message JoinRequest {
     string room_key = 1;
-    string guest_id = 2;
 }
 
 message JoinReply {
-    string status = 1;
+    string guest_id = 1;
 }
 
 message QueueRequest {
@@ -39,7 +38,7 @@ message QueueRequest {
 
 message QueueReply { 
     string song_id = 1;
-    service_id = 2;
+    string service_id = 2;
 }
 
 message SongRequest {
