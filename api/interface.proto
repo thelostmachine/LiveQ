@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.LiveQ";
+option java_outer_classname = "LiveQProto";
+option objc_class_prefix = "LQ";
+
+package liveq;
+
+service LiveQ {
+    rpc CreateRoom(CreateRequest) returns (CreateReply) {}
+    rpc JoinRoom(JoinRequest) returns (JoinReply) {}
+    rpc UpdateQueue(QueueRequest) returns (stream QueueReply) {}
+    rpc AddSong(SongRequest) returns (SongReply) {}
+    rpc DeleteSong(SongRequest) returns (SongReply) {}
+}
+
+message CreateRequest {
+    string room_name = 1;
+    string host_id = 2;
+}
+
+message CreateReply {
+    string room_key = 1;
+}
+
+message JoinRequest {
+    string room_key = 1;
+    string guest_id = 2;
+}
+
+message JoinReply {
+    string status = 1;
+}
+
+message QueueRequest {
+    string room_key = 1;
+}
+
+message QueueReply { 
+    string song_id = 1;
+    service_id = 2;
+}
+
+message SongRequest {
+    string song_id = 1;
+    string service_id = 2;
+    string room_key = 3;
+}
+
+message SongReply {
+    string status = 1;
+}
