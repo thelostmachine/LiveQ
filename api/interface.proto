@@ -11,8 +11,8 @@ service LiveQ {
     rpc CreateRoom(CreateRequest) returns (CreateReply) {}
     rpc JoinRoom(JoinRequest) returns (JoinReply) {}
     rpc UpdateQueue(QueueRequest) returns (stream QueueReply) {}
-    rpc AddSong(SongRequest) returns (SongReply) {}
-    rpc DeleteSong(SongRequest) returns (SongReply) {}
+    rpc AddSong(SongRequest) returns (stream QueueReply) {}
+    rpc DeleteSong(SongRequest) returns (stream QueueReply) {}
 }
 
 message CreateRequest {
@@ -45,8 +45,4 @@ message SongRequest {
     string song_id = 1;
     string service_id = 2;
     string room_key = 3;
-}
-
-message SongReply {
-    string status = 1;
 }
