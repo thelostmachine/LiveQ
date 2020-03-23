@@ -3,6 +3,9 @@ import interface_pb2
 import interface_pb2_grpc
 import server_resources
 import uuid
+import time
+import logging
+from concurrent import futures
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
@@ -20,19 +23,19 @@ class LiveQSevicer(interface_pb2_grpc.LiveQServicer):
         return interface_pb2.JoinReply(guest_id=reply_info)
 
     def UpdateQueue(self, request, context):
-        q = self.db[request.room_key].q
+        q = self.db.rooms[request.room_key].q
         for song in q:
             yield song
 
     def AddSong(self, request, context):
         self.db.AddSong(request.room_key, interface_pb2.QueueReply(song_id=request.song_id, service_id=request.service_id))
-        q = self.db[request.room_key].q
+        q = self.db.rooms[request.room_key].q
         for song in q:
             yield song
 
     def DeleteSong(self, request, context):
         self.db.DeleteSong(request.room_key, interface_pb2.QueueReply(song_id=request.song_id, service_id=request.service_id))
-        q = self.db[request.room_key].q
+        q = self.db.rooms[request.room_key].q
         for song in q:
             yield song
             
