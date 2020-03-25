@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/my_app.dart';
+import 'package:liveq/liveq_app.dart';
 
-void main() => runApp(MyApp());
-
-class MyMaterialApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'LiveQ',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyApp(),
-    );
-  }
-}
+void main() => runApp(LiveQApp());
 
 // class HomeScreen extends StatefulWidget {
 //   HomeScreen({Key key, this.title}) : super(key: key);

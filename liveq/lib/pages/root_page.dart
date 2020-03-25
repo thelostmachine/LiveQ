@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/widgets/lq_next_button.dart';
 
 class RootPage extends StatelessWidget {
-  RootPage({this.title});
+  RootPage({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -18,35 +19,11 @@ class RootPage extends StatelessWidget {
                     TextStyle(fontWeight: FontWeight.bold),
                   ),
             ),
-            buttonNext(context, 'join a room'),
-            buttonNext(context, 'create new room'),
+            NextButton('join a room'),
+            NextButton('create new room'),
           ],
         ),
       ),
     );
   }
-}
-
-RaisedButton buttonNext(BuildContext context, String content) {
-  content = content.toUpperCase();
-  return RaisedButton(
-    onPressed: () {},
-    textColor: Colors.white,
-    color: Color(0xffed6c6c),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(6),
-    ),
-    child: Container(
-      padding: const EdgeInsets.all(10.0),
-      child: Text(
-        '$content',
-        style: Theme.of(context).textTheme.button.merge(
-              TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-      ),
-    ),
-  );
 }
