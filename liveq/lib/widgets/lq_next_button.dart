@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 
 // TODO: Adaptive size for different screen sizes
 class NextButton extends StatelessWidget {
-  String _content;
+  final String _content;
   // final VoidCallback _onTap;
 
   // NextButton(this._content, this._onTap) {
   //   _content = _content.toUpperCase();
   // }
-  NextButton(this._content) {
-    this._content = this._content.toUpperCase();
-  }
+  NextButton(this._content);
 
   @override
   Widget build(BuildContext context) {
