@@ -29,15 +29,15 @@ class LiveQStub(object):
         request_serializer=interface__pb2.QueueRequest.SerializeToString,
         response_deserializer=interface__pb2.QueueReply.FromString,
         )
-    self.AddSong = channel.unary_unary(
+    self.AddSong = channel.unary_stream(
         '/liveq.LiveQ/AddSong',
         request_serializer=interface__pb2.SongRequest.SerializeToString,
-        response_deserializer=interface__pb2.SongReply.FromString,
+        response_deserializer=interface__pb2.QueueReply.FromString,
         )
-    self.DeleteSong = channel.unary_unary(
+    self.DeleteSong = channel.unary_stream(
         '/liveq.LiveQ/DeleteSong',
         request_serializer=interface__pb2.SongRequest.SerializeToString,
-        response_deserializer=interface__pb2.SongReply.FromString,
+        response_deserializer=interface__pb2.QueueReply.FromString,
         )
 
 
@@ -98,15 +98,15 @@ def add_LiveQServicer_to_server(servicer, server):
           request_deserializer=interface__pb2.QueueRequest.FromString,
           response_serializer=interface__pb2.QueueReply.SerializeToString,
       ),
-      'AddSong': grpc.unary_unary_rpc_method_handler(
+      'AddSong': grpc.unary_stream_rpc_method_handler(
           servicer.AddSong,
           request_deserializer=interface__pb2.SongRequest.FromString,
-          response_serializer=interface__pb2.SongReply.SerializeToString,
+          response_serializer=interface__pb2.QueueReply.SerializeToString,
       ),
-      'DeleteSong': grpc.unary_unary_rpc_method_handler(
+      'DeleteSong': grpc.unary_stream_rpc_method_handler(
           servicer.DeleteSong,
           request_deserializer=interface__pb2.SongRequest.FromString,
-          response_serializer=interface__pb2.SongReply.SerializeToString,
+          response_serializer=interface__pb2.QueueReply.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

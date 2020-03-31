@@ -1,9 +1,5 @@
 syntax = "proto3";
 
-option java_multiple_files = true;
-option java_package = "io.grpc.LiveQ";
-option java_outer_classname = "LiveQProto";
-option objc_class_prefix = "LQ";
 
 package liveq;
 
@@ -42,7 +38,6 @@ message QueueReply {
 }
 
 message SongRequest {
-    string song_id = 1;
-    string service_id = 2;
-    string room_key = 3;
+    QueueReply song = 1;
+    string room_key = 2;
 }

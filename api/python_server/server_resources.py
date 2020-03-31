@@ -2,6 +2,7 @@ import uuid
 import string
 import random
 import queue
+import interface_pb2
 
 class RoomDB:
     def __init__(self):
@@ -23,8 +24,9 @@ class RoomDB:
         if key in self.rooms.keys():
             return self.rooms[key].AddGuest()
     
-    def AddSong(self, key, song):
+    def AddSongToRoom(self, key, song):
         if key in self.rooms.keys():
+            print(song.song_id)
             self.rooms[key].AddSongToQ(song)
     
     def DeleteSong(self, key, song):
@@ -45,7 +47,7 @@ class Room:
         return guest_id
 
     def AddSongToQ(self, song):
-        q.append(song)
+        self.q.append(song)
     
     def DelSongQ(self, song):
         for item in self.q:
