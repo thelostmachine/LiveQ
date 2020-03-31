@@ -1,0 +1,16 @@
+PODS:
+  - SpotifyKit (0.0.6)
+
+DEPENDENCIES:
+  - SpotifyKit
+
+SPEC REPOS:
+  trunk:
+    - SpotifyKit
+
+SPEC CHECKSUMS:
+  SpotifyKit: 20abf7e1e170e35683ecbe6d93598e91d4e7b6ab
+
+PODFILE CHECKSUM: cfed66cfab2fe7c84765058ea49fb7dfc2d05674
+
+COCOAPODS: 1.9.1
