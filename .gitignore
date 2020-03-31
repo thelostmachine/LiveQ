@@ -18,3 +18,4 @@ pubspec.lock
 .flutter-plugins
 
 liveq/example
+ios/
