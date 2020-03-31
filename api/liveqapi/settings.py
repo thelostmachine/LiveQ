@@ -25,7 +25,7 @@ SECRET_KEY = 'xi7b_)8d!l%l2#3ta-g6(5!)mr_kdm99(m#bhnmn9cw&fcf55c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['50.24.59.236', 'liveqapi.eba-mi77n5ie.us-east-1.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['50.24.59.236']
 
 
 # Application definition
