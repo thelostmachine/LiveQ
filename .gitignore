@@ -16,3 +16,5 @@ ios/.generated/
 packages
 pubspec.lock
 .flutter-plugins
+
+liveq/example
