@@ -1,14 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:spotify_sdk/spotify_sdk.dart';
-import 'package:spotify_sdk/models/crossfade_state.dart';
-import 'package:spotify_sdk/models/player_state.dart';
-import 'package:spotify_sdk/models/player_context.dart';
-
-import 'widgets/sized_icon_button.dart';
-
-import 'package:logger/logger.dart';
 
 void main() => runApp(MyApp());
 
