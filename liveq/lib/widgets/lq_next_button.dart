@@ -16,6 +16,7 @@ class NextButton extends StatelessWidget {
       width: 300,
       child: RaisedButton(
         onPressed: () {},
+        // onPressed: _onTap,
         textColor: Colors.white,
         color: Color(0xffed6c6c),
         shape: RoundedRectangleBorder(

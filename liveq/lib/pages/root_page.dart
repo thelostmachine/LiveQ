@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:liveq/widgets/lq_next_button.dart';
 
 class RootPage extends StatelessWidget {
-  RootPage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  RootPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +12,16 @@ class RootPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              title,
+              'LiveQ',
               style: Theme.of(context).textTheme.headline4.merge(
                     TextStyle(fontWeight: FontWeight.bold),
                   ),
             ),
             SizedBox(height: 150),
             NextButton('JOIN A ROOM'),
+            // NextButton('JOIN A ROOM', Navigator.pushNamed(context, JoinPageRoute)),
             NextButton('CREATE NEW ROOM'),
+            // NextButton('CREATE NEW ROOM', , Navigator.pushNamed(context, ServicesPageRoute)),
           ],
         ),
       ),

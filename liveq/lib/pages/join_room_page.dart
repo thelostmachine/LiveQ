@@ -13,7 +13,6 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text(widget.title),
         title: Text('LiveQ'),
       ),
       body: Center(
@@ -44,6 +43,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
             ),
             SizedBox(height: 150),
             NextButton('NEXT'),
+            // NextButton('NEXT', Navigator.pushNamed(context, RoomPageRoute, arguments: 'guest');),
           ],
         ),
       ),
