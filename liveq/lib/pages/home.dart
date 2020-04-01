@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liveq/widgets/lq_next_button.dart';
 
-class Login extends StatelessWidget {
-  Login({Key key}) : super(key: key);
+class Home extends StatelessWidget {
+  Home({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
