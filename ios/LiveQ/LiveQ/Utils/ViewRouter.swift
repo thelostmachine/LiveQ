@@ -21,4 +21,7 @@ class ViewRouter: ObservableObject {
             }
         }
     }
+    
+    var roomName: String = ""
+    var roomID: String = ""
 }

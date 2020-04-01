@@ -29,12 +29,9 @@ struct RoomView: View, PlayerStateDelegate {
         }
     }
     
-    
-//    private var myf: Void {
-//        get {
-//            return (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.playerStateDidChange(self.playerState)
-//        }
-//    }
+    init() {
+        UINavigationBar.appearance().largeTitleTextAttributes = [.font : UIFont(name: "Georgia", size: 20)!]
+    }
     
     var body: some View {
         NavigationView {
@@ -66,7 +63,7 @@ struct RoomView: View, PlayerStateDelegate {
                     }
                 }
             }
-            .navigationBarTitle("Welcome")
+            .navigationBarTitle("\(self.viewRouter.roomName) - Room ID: \(self.viewRouter.roomID)")
             .navigationBarItems(
                 leading:
                     Button("Exit") {

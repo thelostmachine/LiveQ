@@ -1,0 +1,4 @@
+enum Service {
+  Spotify,
+  Apple,
+}
