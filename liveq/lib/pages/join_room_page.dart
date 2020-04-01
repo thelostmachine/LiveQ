@@ -42,7 +42,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
               // ),
             ),
             SizedBox(height: 150),
-            NextButton('NEXT'),
+            // NextButton('NEXT'),
             // NextButton('NEXT', Navigator.pushNamed(context, RoomPageRoute, arguments: 'guest');),
           ],
         ),

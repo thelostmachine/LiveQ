@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liveq/widgets/lq_next_button.dart';
+import 'package:liveq/utils/routing_constants.dart';
 
 class RootPage extends StatelessWidget {
   RootPage({Key key}) : super(key: key);
@@ -18,10 +19,12 @@ class RootPage extends StatelessWidget {
                   ),
             ),
             SizedBox(height: 150),
-            NextButton('JOIN A ROOM'),
-            // NextButton('JOIN A ROOM', Navigator.pushNamed(context, JoinPageRoute)),
-            NextButton('CREATE NEW ROOM'),
-            // NextButton('CREATE NEW ROOM', , Navigator.pushNamed(context, ServicesPageRoute)),
+            // NextButton('JOIN A ROOM'),
+            NextButton(
+                'JOIN A ROOM', Navigator.pushNamed(context, JoinRoomPageRoute)),
+            // NextButton('CREATE NEW ROOM'),
+            // NextButton('CREATE NEW ROOM',
+            //     Navigator.pushNamed(context, ServicesPageRoute)),
           ],
         ),
       ),
