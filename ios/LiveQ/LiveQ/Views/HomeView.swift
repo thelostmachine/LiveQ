@@ -16,9 +16,17 @@ struct HomeView: View {
         VStack {
             Spacer()
             
+            Text("LiveQ")
+                .font(.system(size: 60))
+                .foregroundColor(.gray)
+                .fontWeight(.bold)
+            
+            Spacer()
+            
             Button(action: {
                 print("creating room")
-                self.viewRouter.currentPage = .Room
+                self.alert(creating: true)
+//                self.viewRouter.currentPage = .Room
                 // TODO: start new queue with empty list of songs
                 
             }) {
@@ -33,7 +41,8 @@ struct HomeView: View {
             
             Button(action: {
                 print("joining a party")
-                self.viewRouter.currentPage = .Room
+                self.alert(creating: false)
+//                self.viewRouter.currentPage = .Room
                 // TODO: get queue and init Room with list of songs
             }) {
                 Text("Join a Party")
@@ -48,6 +57,91 @@ struct HomeView: View {
             Spacer()
                 .frame(height: 40)
         }
+    }
+    
+    private func generateId(from roomName: String) -> String {
+        let minCode = 2176782336
+        
+        var result: Int = 23;
+        result = 37 * result + roomName.hashValue
+        
+        if result < minCode {
+            result += minCode
+        }
+        
+        return String(result, radix: 36)
+    }
+    
+    private func alert(creating: Bool) {
+        let title: String = creating ? "Creating Room" : "Joining Room"
+        let message: String = creating ? "Enter Room Name" : "Enter Room ID"
+        let placeholder = creating ? "Room Name" : "Room ID"
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        alert.addTextField() { textField in
+            if !creating {
+                textField.text = self.viewRouter.roomID
+            } else {
+                textField.placeholder = placeholder
+            }
+        }
+        
+        alert.addAction(UIAlertAction(title: "Confirm", style: .default) { _ in
+            if creating {
+                self.viewRouter.roomName = alert.textFields?.first?.text ?? "party"
+                self.viewRouter.roomID = self.generateId(from: self.viewRouter.roomName)
+            } else {
+                alert.textFields?.first?.text = self.viewRouter.roomID
+            }
+            
+            self.viewRouter.currentPage = .Room
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in })
+        
+        showAlert(alert: alert)
+    }
+    
+    private func showAlert(alert: UIAlertController) {
+        if let controller = topMostViewController() {
+            controller.present(alert, animated: true)
+        }
+    }
+    
+    private func keyWindow() -> UIWindow? {
+        return UIApplication.shared.connectedScenes
+            .filter { $0.activationState == .foregroundActive }
+            .compactMap { $0 as? UIWindowScene }
+            .first?.windows.filter { $0.isKeyWindow }.first
+    }
+    
+    private func topMostViewController() -> UIViewController? {
+        guard let rootController = keyWindow()?.rootViewController else {
+            return nil
+        }
+        return topMostViewController(for: rootController)
+    }
+    
+    private func topMostViewController(for controller: UIViewController) -> UIViewController {
+        if let presentedController = controller.presentedViewController {
+            return topMostViewController(for: presentedController)
+        }
+        else if let navigationController = controller as? UINavigationController {
+            guard let topController = navigationController.topViewController else {
+                return navigationController
+            }
+            
+            return topMostViewController(for: topController)
+        }
+        else if let tabController = controller as? UITabBarController {
+            guard let topController = tabController.selectedViewController else {
+                return tabController
+            }
+            
+            return topMostViewController(for: topController)
+        }
+        
+        return controller
     }
 }
 
