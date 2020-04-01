@@ -116,8 +116,6 @@ class _MyAppState extends State<MyApp> {
 //     );
 //   }
 // }
-<<<<<<< HEAD
-=======
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({this.title});
@@ -153,6 +151,7 @@ class HomeScreen extends StatelessWidget {
                     TextStyle(fontWeight: FontWeight.bold),
                   ),
             ),
+            SizedBox(height: 150),
             buttonNext(context, 'join a room'),
             buttonNext(context, 'create new room'),
           ],
@@ -185,4 +184,3 @@ RaisedButton buttonNext(BuildContext context, String content) {
     ),
   );
 }
->>>>>>> master

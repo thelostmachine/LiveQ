@@ -19,6 +19,7 @@ class RootPage extends StatelessWidget {
                     TextStyle(fontWeight: FontWeight.bold),
                   ),
             ),
+            SizedBox(height: 150),
             NextButton('JOIN A ROOM'),
             NextButton('CREATE NEW ROOM'),
           ],
