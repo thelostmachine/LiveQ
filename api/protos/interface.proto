@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+
+package liveq;
+
+service LiveQ {
+    rpc CreateRoom(CreateRequest) returns (CreateReply) {}
+    rpc JoinRoom(JoinRequest) returns (JoinReply) {}
+    rpc UpdateQueue(QueueRequest) returns (stream QueueReply) {}
+    rpc AddSong(SongRequest) returns (stream QueueReply) {}
+    rpc DeleteSong(SongRequest) returns (stream QueueReply) {}
+}
+
+message CreateRequest {
+    string room_name = 1;
+}
+
+message CreateReply {
+    string room_key = 1;
+    string host_id = 2;
+}
+
+message JoinRequest {
+    string room_key = 1;
+}
+
+message JoinReply {
+    string guest_id = 1;
+}
+
+message QueueRequest {
+    string room_key = 1;
+}
+
+message QueueReply { 
+    string song_id = 1;
+    string service_id = 2;
+}
+
+message SongRequest {
+    QueueReply song = 1;
+    string room_key = 2;
+}

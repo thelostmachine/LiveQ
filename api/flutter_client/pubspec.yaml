@@ -1,0 +1,10 @@
+name: dart_client
+description: Dart gRPC sample client
+
+environment:
+  sdk: '>=2.2.0 <3.0.0'
+
+dependencies:
+  async: ^2.2.0
+  grpc: ^2.1.0
+  protobuf: ^1.0.1
