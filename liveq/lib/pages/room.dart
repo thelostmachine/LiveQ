@@ -19,7 +19,12 @@ class _RoomState extends State<Room> {
   @override
   void initState() {
     super.initState();
-    args = ModalRoute.of(context).settings.arguments;
+    //TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        args = ModalRoute.of(context).settings.arguments;
+      });
+    });
   }
 
   @override
@@ -41,7 +46,7 @@ class _RoomState extends State<Room> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome'),
+        title: Text(args.roomID),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.music_note),
