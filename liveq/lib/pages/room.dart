@@ -1,29 +1,40 @@
 import 'package:flutter/material.dart';
+
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
 
 class Room extends StatefulWidget {
-
   @override
   _RoomState createState() => _RoomState();
 }
 
 class _RoomState extends State<Room> {
-
   List<Song> queue = [
     Song('1', 'hello', 'divinity', 'porter', Service.Spotify),
     Song('2', 'howdy', 'sound of walking away', 'illenium', Service.Spotify),
   ];
 
+  RoomArguments args;
+
+  @override
+  void initState() {
+    super.initState();
+    args = ModalRoute.of(context).settings.arguments;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Widget _queueListView(BuildContext context) {
     return ListView.builder(
-      itemCount: queue.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(queue[index].trackName),
-        );
-      }
-    );
+        itemCount: queue.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(queue[index].trackName),
+          );
+        });
   }
 
   @override
@@ -34,11 +45,11 @@ class _RoomState extends State<Room> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.music_note),
-            onPressed: () => Navigator.pushNamed(context, "/services"),
+            onPressed: () => Navigator.pushNamed(context, '/services'),
           ),
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: () => Navigator.pushNamed(context, "/search"),
+            onPressed: () => Navigator.pushNamed(context, '/search'),
           )
         ],
       ),
