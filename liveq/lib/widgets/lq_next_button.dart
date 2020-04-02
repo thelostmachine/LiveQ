@@ -5,8 +5,8 @@ class NextButton extends StatelessWidget {
   final String _content;
   final VoidCallback _onTap;
 
-  NextButton(this._content);
-  // NextButton(this._content, this._onTap);
+  // NextButton(this._content);
+  NextButton(this._content, this._onTap);
 
   @override
   Widget build(BuildContext context) {
