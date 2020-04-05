@@ -22,6 +22,10 @@ class _ConnectServicesState extends State<ConnectServices> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Connect ConnectServices'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: _flowWidget(context),
     );
