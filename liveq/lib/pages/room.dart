@@ -33,9 +33,11 @@ class _RoomState extends State<Room> {
 
   @override
   Widget build(BuildContext context) {
+    final double _radius = 25.0;
     // final RoomArguments args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
         appBar: AppBar(
+          // title: Text(args.roomName),
           title: Text('Room Name'),
           actions: <Widget>[
             IconButton(
@@ -48,12 +50,37 @@ class _RoomState extends State<Room> {
             )
           ],
         ),
-        body: Column(
+        body: Stack(
           children: <Widget>[
             Expanded(
               child: _queueListView(context),
             ),
-            _musicPlayer(context),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(_radius),
+                    topRight: Radius.circular(_radius),
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [
+                      0.0,
+                      0.7,
+                    ],
+                    colors: [
+                      Color(0xFF47ACE1),
+                      Color(0xFFDF5F9D),
+                    ],
+                  ),
+                ),
+                child: _musicPlayer(context), //MusicPlayer(),
+              ),
+            ),
           ],
         ));
   }

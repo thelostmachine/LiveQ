@@ -6,7 +6,7 @@ import 'pages/search.dart';
 import 'pages/connect_services.dart';
 
 void main() =>
-    runApp(MaterialApp(title: 'LiveQ', initialRoute: '/home', routes: {
+    runApp(MaterialApp(title: 'LiveQ', initialRoute: '/room', routes: {
       '/home': (context) => Home(),
       '/room': (context) => Room(),
       '/search': (context) => Search(),
