@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:liveq/widgets/next_button.dart';
-import 'package:liveq/widgets/join_room_dialog.dart';
+import 'package:liveq/widgets/room_dialog.dart';
 import 'package:liveq/utils/utils.dart';
 
 class Home extends StatelessWidget {

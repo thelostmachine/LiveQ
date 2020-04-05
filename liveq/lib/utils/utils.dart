@@ -3,9 +3,16 @@ enum Service {
   Apple,
 }
 
+enum PlayerState {
+  playing,
+  paused,
+  stopped,
+}
+
 class RoomArguments {
   final String roomID;
-  final roomName;
+  final String roomName;
+  final bool host;
 
-  RoomArguments(this.roomID, this.roomName);
+  RoomArguments(this.roomID, this.roomName, this.host);
 }
