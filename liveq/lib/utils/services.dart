@@ -56,7 +56,7 @@ class Spotify extends Service {
     return spotifyWebApi != null;
   }
 
-  /// Pause a [Song]]
+  /// Pause a [Song]
   @override
   Future<void> pause() async {
     await SpotifySdk.pause();
