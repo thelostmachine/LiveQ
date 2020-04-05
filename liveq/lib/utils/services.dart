@@ -1,11 +1,9 @@
-import 'dart:io';
-
-// import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:spotify_sdk/spotify_sdk.dart';
+import 'package:spotify/spotify.dart';
 
 import 'song.dart';
 
@@ -33,7 +31,7 @@ class Spotify extends Service {
   final String redirectUri = 'spotify-ios-quick-start://spotify-login-callback';
   String authenticationToken;
 
-  // SpotifyApi spotifyWebApi;
+  SpotifyApi spotifyWebApi;
 
   static final Service _spotify = Spotify._internal();
 
@@ -49,11 +47,10 @@ class Spotify extends Service {
 
     // Connect to Spotify only if on mobile
     if (kIsWeb) {
-      // print(dart)
-      // var credentials = SpotifyApiCredentials(clientId, clientSecret);
-      // spotifyWebApi = SpotifyApi(credentials);
-      return true;
-      // return spotifyWebApi != null;
+      var credentials = SpotifyApiCredentials(clientId, clientSecret);
+      spotifyWebApi = SpotifyApi(credentials);
+
+      return spotifyWebApi != null;
     } else {
       
       var result = await SpotifySdk.connectToSpotifyRemote(
@@ -116,22 +113,6 @@ class Spotify extends Service {
     } else {
       return searchSDK(query);
     }
-    // List<Song> searchResults = List();
-
-    // String search = 'https://api.spotify.com/v1/search/?type=track&market=US&q=';
-    // search += formatQuery(query);
-
-    // var response = await http.get(search, headers: {
-    //   'Authorization': 'Bearer ${this.authenticationToken}'
-    // });
-
-    // if (response.statusCode == 200) {
-    //   var jsonResponse = convert.jsonDecode(response.body);
-
-    //   searchResults = getSongs(jsonResponse);
-    // }
-
-    // return searchResults;
   }
 
   Future<List<Song>> searchSDK(String query) async {
@@ -156,27 +137,27 @@ class Spotify extends Service {
   Future<List<Song>> searchWeb(String query) async {
     List<Song> searchResults = List();
 
-    // var search = await spotifyWebApi.search
-    //   .get(query)
-    //   .first(2)
-    //   .catchError((err) => print((err as SpotifyException).message));
+    var search = await spotifyWebApi.search
+      .get(query)
+      .first(2)
+      .catchError((err) => print((err as SpotifyException).message));
 
-    // if (search != null) {
+    if (search != null) {
 
-    //   search.forEach((pages) {
-    //     pages.items.forEach((item) {
-    //       if (item is TrackSimple) {
-    //         String id = item.id;
-    //         String uri = item.uri;
-    //         String trackName = item.name;
-    //         String artist = item.artists[0].name;
-    //         Service service = this;
+      search.forEach((pages) {
+        pages.items.forEach((item) {
+          if (item is TrackSimple) {
+            String id = item.id;
+            String uri = item.uri;
+            String trackName = item.name;
+            String artist = item.artists[0].name;
+            Service service = this;
 
-    //         searchResults.add(Song(id, uri, trackName, artist, service));
-    //       }
-    //      });
-    //    });
-    // }
+            searchResults.add(Song(id, uri, trackName, artist, service));
+          }
+         });
+       });
+    }
 
     return searchResults;
   }
