@@ -27,7 +27,6 @@ class Spotify extends Service {
   final String clientId = '03237b2409b24752a3f0c33262ad2d02';
   final String clientSecret = '52560cee72394fc5a049731f2d8f001e';
   final String redirectUri = 'spotify-ios-quick-start://spotify-login-callback';
-  String authenticationToken;
 
   SpotifyApi spotifyWebApi;
 
@@ -47,17 +46,14 @@ class Spotify extends Service {
     var credentials = SpotifyApiCredentials(clientId, clientSecret);
     spotifyWebApi = SpotifyApi(credentials);
 
-    var c = await spotifyWebApi.getCredentials();
-    authenticationToken = c.accessToken;
-
-    // Use the spotify_sdk package if on mobile AND HOST
+    // Use the spotify_sdk package if on mobile to allow playing
     if (!kIsWeb) {
       await SpotifySdk.connectToSpotifyRemote(
         clientId: this.clientId,
         redirectUrl: this.redirectUri);
     }
 
-    return authenticationToken != null;
+    return spotifyWebApi != null;
   }
 
   /// Pause a [Song]]
