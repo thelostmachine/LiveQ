@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/widgets/lq_next_button.dart';
 
-class Login extends StatelessWidget {
-  Login({Key key}) : super(key: key);
+import 'package:liveq/widgets/next_button.dart';
+import 'package:liveq/widgets/room_dialog.dart';
+
+class Home extends StatelessWidget {
+  final myController = TextEditingController();
+
+  Home({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +22,9 @@ class Login extends StatelessWidget {
                   ),
             ),
             SizedBox(height: 150),
-            NextButton('JOIN A ROOM'),
-            // NextButton(
-            //     'JOIN A ROOM', Navigator.pushNamed(context, JoinRoomPageRoute)),
-            NextButton('CREATE NEW ROOM'),
-            // NextButton('CREATE NEW ROOM',
-            //     Navigator.pushNamed(context, ServicesPageRoute)),
+            NextButton(
+                'JOIN A ROOM', () => joinRoomDialog(context, myController)),
+            NextButton('CREATE NEW ROOM', () => {}),
           ],
         ),
       ),

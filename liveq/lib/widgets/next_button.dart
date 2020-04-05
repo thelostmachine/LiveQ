@@ -3,20 +3,18 @@ import 'package:flutter/material.dart';
 // TODO: Adaptive size for different screen sizes
 class NextButton extends StatelessWidget {
   final String _content;
-  // Future<Object> _onTap;
+  final VoidCallback _onTap;
 
-  // NextButton(this._content, this._onTap) {
-  //   _content = _content.toUpperCase();
-  // }
-  NextButton(this._content);
+  // NextButton(this._content);
+  NextButton(this._content, this._onTap);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300,
       child: RaisedButton(
-        onPressed: () {},
-        // onPressed: () => _onTap,
+        // onPressed: () {},
+        onPressed: _onTap,
         textColor: Colors.white,
         color: Color(0xffed6c6c),
         shape: RoundedRectangleBorder(
