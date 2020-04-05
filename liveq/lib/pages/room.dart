@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
+import 'package:liveq/pages/search.dart';
 import 'package:liveq/utils/utils.dart';
 
 class Room extends StatefulWidget {
@@ -9,11 +10,6 @@ class Room extends StatefulWidget {
 }
 
 class _RoomState extends State<Room> {
-  List<Song> queue = [
-    Song('1', 'hello', 'divinity', 'porter', Service.Spotify),
-    Song('2', 'howdy', 'sound of walking away', 'illenium', Service.Spotify),
-  ];
-
   RoomArguments args;
 
   @override
@@ -32,36 +28,78 @@ class _RoomState extends State<Room> {
     super.dispose();
   }
 
+  Song currentlyPlaying;
+  List<Song> queue = List();
+
+  @override
+  Widget build(BuildContext context) {
+    // final RoomArguments args = ModalRoute.of(context).settings.arguments;
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Room Name'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.music_note),
+              onPressed: () => Navigator.pushNamed(context, '/services'),
+            ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => _searchSong(context),
+            )
+          ],
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: _queueListView(context),
+            ),
+            _musicPlayer(context),
+          ],
+        ));
+  }
+
+  void _searchSong(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Search()));
+
+    if (result != null) {
+      setState(() {
+        queue.add(result);
+      });
+    }
+  }
+
   Widget _queueListView(BuildContext context) {
     return ListView.builder(
         itemCount: queue.length,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(queue[index].trackName),
+            subtitle: Text(queue[index].artist),
+            trailing: Text(queue[index].service.name),
           );
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // final RoomArguments args = ModalRoute.of(context).settings.arguments;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(args.roomID),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.music_note),
-            onPressed: () => Navigator.pushNamed(context, '/services'),
-          ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () => Navigator.pushNamed(context, '/search'),
-          )
-        ],
-      ),
-      body: Container(
-        child: _queueListView(context),
-      ),
-    );
+  /// The Music Player
+  Widget _musicPlayer(BuildContext context) {
+    return Container(
+        height: 50,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(onPressed: () => Player.resume(), child: Text('Play')),
+            RaisedButton(onPressed: () => Player.pause(), child: Text('Pause')),
+            RaisedButton(
+                onPressed: () {
+                  setState(() {
+                    if (queue.length > 0) {
+                      Player.play(queue.removeAt(0));
+                    }
+                  });
+                },
+                child: Text('Next')),
+          ],
+        ));
   }
 }
