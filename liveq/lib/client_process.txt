@@ -1,33 +1,34 @@
-Guest will send song data to host - will update the server queue/host pulls from updated queue
-Host/guest will search/add songs - interface directly with music services
+Guest sends song data to host - will update the server queue/host pulls from updated queue
+Host/guest search/add songs - interface directly with music services
 
 Guest:
 Enter room code - code is sent to server (JoinRoomPage sends joinRequest)
-server replies with OK list of services/guest_id for room
+server replies with OK - client_id/list of services for room
 background connect to music services if necessary
-Room layout will call update queue
-Room layout with list of songs in queue - occasionally updates(can manually update)
+Room layout calls update queue
+Room layout with list of songs in queue - occasionally updates, receiving list of songs from subscribed stream (server can probably push buffered updates)
 room layout has no music player widget
-search/add songs functionality at top
+search/add songs functionality at top of screen
 
-when client searches songs, dropdown select which service to search: API call to music service
+when client searches songs, dropdown select for which service to search: API call to music service
 display results from API
 clicking on a song will send an update queue message with song data to the server and close results
 
 
 Host:
-Host selects music services - host connects to services and successful services are sent to server (ServicesPage sends createRequest)
-server replies with OK and list of services for room
-Room layout will call update queue
-Room layout with list of songs in queue - occasionally updates(can manually update)
-Room layout contains music player widget (only on bottom - no popup - no seek) only play/pause and skip
-search/add songs functionality at top
+Host selects music services - host connects to services and successfully connected services are sent to server (ServicesPage sends createRequest)
+server replies with OK - client_id/list of services for room
+Room layout calls update queue
+Room layout with list of songs in queue - updates when server-side queue is updated, receiving list of songs from subscribed stream
+Room layout contains music player widget - only play/pause and skip
+search/add songs functionality at top of screen
 
 when host skips song - send delete_song_request to server - should probably buffer requests (if host repeatedly hits skip) to prevent too many sent messages
 
 
-when client searches songs, dropdown select which service to search: API call to music service
+when client searches songs, dropdown select for which service to search: API call to music service
 display results from API
 clicking on a song will send an update queue message with songs data to the server and close results
 
 
+since room name is in the title, where will the room code be located?

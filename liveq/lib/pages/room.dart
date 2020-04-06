@@ -26,7 +26,7 @@ class _RoomState extends State<Room> {
     });
 
     // if host send createRequest; else send joinRequest
-    // initialize and suscribe to server stream of songs in queue
+    // initialize and subscribe to server stream of songs in queue
 
     Service.canConnectToPreviousService().then((availableServices) {
       if (availableServices != null) {
