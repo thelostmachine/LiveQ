@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
@@ -16,6 +17,11 @@ class SongTile extends StatelessWidget {
   Widget build(BuildContext context) {
     String _duration = Song.parseDuration(_song);
     return ListTile(
+      leading: FadeInImage.memoryNetwork(
+        placeholder: kTransparentImage,
+        image: _song.imageUri,
+        fit: BoxFit.contain,
+      ),
       title: Text(
         _song.trackName,
         style: TextStyle(

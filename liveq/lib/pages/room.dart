@@ -5,6 +5,7 @@ import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/utils/services.dart';
+import 'package:liveq/widgets/songtile.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 
 class Room extends StatefulWidget {
@@ -161,23 +162,25 @@ class _RoomState extends State<Room> {
       builder: (context, model, properties) {
         var queue = model.queue;
         return ListView.builder(
+            physics: BouncingScrollPhysics(),
             itemCount: queue.length,
             itemBuilder: (context, index) {
-              Song track = queue[index];
+              // Song track = queue[index];
 
-              return ListTile(
-                title: Text(track.trackName),
-                subtitle: Text(track.artists),
-                leading: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: 44,
-                      minHeight: 44,
-                      maxWidth: 64,
-                      maxHeight: 64,
-                    ),
-                    child: track.cachedImage),
-                trailing: Text(Song.parseDuration(track)),
-              );
+              // return ListTile(
+              //   title: Text(track.trackName),
+              //   subtitle: Text(track.artists),
+              //   leading: ConstrainedBox(
+              //       constraints: BoxConstraints(
+              //         minWidth: 44,
+              //         minHeight: 44,
+              //         maxWidth: 64,
+              //         maxHeight: 64,
+              //       ),
+              //       child: track.cachedImage),
+              //   trailing: Text(Song.parseDuration(track)),
+              // );
+              return SongTile(song: queue[index], onTap: () => {});
             });
       },
     );
