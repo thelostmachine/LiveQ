@@ -11,7 +11,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   List<Song> items = List();
-  TextEditingController editingController = TextEditingController();
+  TextEditingController _editingController = TextEditingController();
   bool _isConnected;
   Player _player = Player();
 
@@ -65,7 +65,7 @@ class _SearchState extends State<Search> {
             ),
           ),
           body: Container(
-            child: (Player.isConnected)
+            child: (_isConnected)
                 ? searchWidget(context)
                 : Center(
                     child: Text(

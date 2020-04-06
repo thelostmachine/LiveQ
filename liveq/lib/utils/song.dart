@@ -32,9 +32,9 @@ class Song {
     return duration;
   }
 
-  static String getDurationString(Song song) {
-    return '${song.duration.inMinutes.remainder(60)}:${song.duration.inSeconds.remainder(60)}';
-  }
+  // static String getDurationString(Song song) {
+  //   return '${song.duration.inMinutes.remainder(60)}:${song.duration.inSeconds.remainder(60)}';
+  // }
 
   @override
   String toString() {

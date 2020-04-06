@@ -69,7 +69,7 @@ class _RoomState extends State<Room> {
                   .then((didConnect) {
                 if (didConnect) {
                   setState(() {
-                    Player.isConnected = true;
+                    player.isConnected = true;
                   });
                 }
               }),
@@ -113,7 +113,7 @@ class _RoomState extends State<Room> {
                       ],
                     ),
                   ),
-                  child: (Player.isConnected)
+                  child: (player.isConnected)
                       ? _musicPlayer(context)
                       : _connectionStatus(context), //MusicPlayer(),
                 ),
@@ -167,7 +167,7 @@ class _RoomState extends State<Room> {
 
               return ListTile(
                 title: Text(track.trackName),
-                subtitle: Text(track.artist),
+                subtitle: Text(track.artists),
                 leading: ConstrainedBox(
                     constraints: BoxConstraints(
                       minWidth: 44,
@@ -176,7 +176,7 @@ class _RoomState extends State<Room> {
                       maxHeight: 64,
                     ),
                     child: track.cachedImage),
-                trailing: Text(Song.getDurationString(track)),
+                trailing: Text(Song.parseDuration(track)),
               );
             });
       },

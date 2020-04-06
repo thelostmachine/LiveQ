@@ -77,12 +77,12 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     state = PlayerState.paused;
   }
 
-  static void stop() {
+  void stop() {
     // currentlyPlaying.service.stop();
     state = PlayerState.stopped;
   }
 
-  static void skip() {
+  void skip() {
     // currentlyPlaying.service.stop();
     state = PlayerState.stopped;
 
