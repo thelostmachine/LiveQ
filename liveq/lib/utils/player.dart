@@ -1,40 +1,85 @@
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
+import 'package:property_change_notifier/property_change_notifier.dart';
 
 import 'song.dart';
 
-class Player {
+enum ModelProperties {
+  queue,
+}
 
-  static Song currentlyPlaying;
-  static Service currentService;
-  static bool isConnected = false;
-  static PlayerState state = PlayerState.stopped;
+class Player extends PropertyChangeNotifier<ModelProperties> {
 
-  static void play(Song song) async {
+  Song _currentSong;
+  Service _currentService;
+
+  List<Song> queue = List();
+
+  bool isConnected = false;
+  PlayerState state = PlayerState.stopped;
+
+  static final Player _player = Player._internal();
+
+  Player._internal();
+
+  factory Player() {
+    return _player;
+  }
+
+  void addSong(Song song) {
+    queue.add(song);
+    notifyListeners(ModelProperties.queue);
+  }
+
+  Song getNextSong() {
+    Song next = queue.removeAt(0);
+    notifyListeners(ModelProperties.queue);
+    return next;
+  }
+
+  void play(Song song) async {
     if (song != null) {
-      currentlyPlaying = song;
-      currentlyPlaying.service.playTrack(currentlyPlaying.uri);
+      _currentSong = song;
+      _currentSong.service.play(_currentSong.uri);
       state = PlayerState.playing;
     } else {
       resume();
     }
   }
   
-  static void resume() {
-    currentService.resume();
+  void resume() {
+    _currentService.resume();
     state = PlayerState.playing;
   }
 
-  static void pause() {
-    currentService.pause();
+  void pause() {
+    _currentService.pause();
     state = PlayerState.paused;
   }
 
-  static PlayerState getPlayerState() {
+  PlayerState getPlayerState() {
     return state;
   }
 
-  static void setService(Service service) {
-    currentService = service;
+  void setService(Service service) {
+    _currentService = service;
+  }
+
+  void next() async {
+    if (queue != null && queue.length > 0) {
+      Song nextSong = getNextSong();
+
+      // Stop playing the current song on the current service if we're switching Services
+      if (_currentService != nextSong.service) {
+        _currentService.pause();
+      }
+
+      _currentSong = nextSong;
+      _currentService = _currentSong.service;
+      state = PlayerState.playing;
+      _currentService.play(_currentSong.uri);
+    } else {
+      resume();
+    }
   }
 }

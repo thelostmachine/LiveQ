@@ -5,6 +5,7 @@ import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/services.dart';
 
 class Search extends StatefulWidget {
+
   @override
   _SearchState createState() => new _SearchState();
 }
@@ -13,6 +14,13 @@ class _SearchState extends State<Search> {
 
   List<Song> items = List();
   TextEditingController editingController = TextEditingController();
+  bool _isConnected;
+
+  @override
+  void initState() {
+    super.initState();
+    _isConnected = Player().isConnected;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +34,7 @@ class _SearchState extends State<Search> {
           title: Text('Search'),
         ),
         body: Container(
-          child: (Player.isConnected)
+          child: (_isConnected)
             ? searchWidget(context)
             : Center(child: Text('Please Connect to a Streaming Service first')), // This might not be necessary because guests shouldn't have to connect.
         ),

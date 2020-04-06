@@ -54,7 +54,7 @@ class _ConnectServicesState extends State<ConnectServices> {
                     });
 
                     _didConnect = await Spotify().connect();
-                    Player.setService(Spotify());
+                    Player().setService(Spotify());
 
                     setState(() {
                       _loading = false;

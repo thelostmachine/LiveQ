@@ -10,4 +10,9 @@ class Song {
   Service service;
 
   Song(this.id, this.uri, this.trackName, this.artist, this.service);
+
+  @override
+  String toString() {
+    return '$trackName - $artist';
+  }
 }

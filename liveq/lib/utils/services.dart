@@ -17,7 +17,7 @@ abstract class Service {
 
   Future<bool> connect();
 
-  Future<void> playTrack(String uri);
+  Future<void> play(String uri);
   Future<void> resume();
   Future<void> pause();
 
@@ -114,7 +114,7 @@ class Spotify extends Service {
 
   /// Play a [Song] given a [uri]
   @override
-  Future<void> playTrack(String uri) async {
+  Future<void> play(String uri) async {
     await SpotifySdk.play(spotifyUri: uri);
   }
 
