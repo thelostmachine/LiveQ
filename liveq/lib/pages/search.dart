@@ -24,7 +24,37 @@ class _SearchState extends State<Search> {
         child: Scaffold(
           resizeToAvoidBottomPadding: false,
           appBar: AppBar(
-            title: Text('Search'),
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Color(0xFF274D85),
+                size: 25,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: TextField(
+              onChanged: (query) {
+                search(query);
+              },
+              autofocus: true,
+              controller: _editingController,
+              cursorColor: Color(0xFF274D85),
+              decoration: InputDecoration(
+                disabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFFD9EAF1).withOpacity(0.7),
+                  ),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFFD9EAF1).withOpacity(0.7),
+                  ),
+                ),
+                hintText: 'Search for Songs',
+              ),
+            ),
           ),
           body: Container(
             child: (Player.isConnected)
@@ -39,40 +69,20 @@ class _SearchState extends State<Search> {
   }
 
   Widget searchWidget(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (query) {
-                search(query);
-              },
-              controller: _editingController,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 0,
-                ),
-                hintText: 'Search for Songs',
-                prefixIcon: Icon(Icons.search),
-              ),
-            )),
-        Expanded(
-            child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            // return ListTile(
-            //   title: Text(items[index].trackName),
-            //   subtitle: Text(items[index].artists),
-            //   trailing: Text(items[index].service.name),
-            //   onTap: () => Navigator.of(context).pop(items[index]),
-            // );
-            return SongTile(
-                song: items[index],
-                onTap: () => Navigator.of(context).pop(items[index]));
-          },
-        ))
-      ],
+    return ListView.builder(
+      physics: BouncingScrollPhysics(),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        // return ListTile(
+        //   title: Text(items[index].trackName),
+        //   subtitle: Text(items[index].artists),
+        //   trailing: Text(items[index].service.name),
+        //   onTap: () => Navigator.of(context).pop(items[index]),
+        // );
+        return SongTile(
+            song: items[index],
+            onTap: () => Navigator.of(context).pop(items[index]));
+      },
     );
   }
 

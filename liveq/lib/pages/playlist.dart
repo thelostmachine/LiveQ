@@ -26,7 +26,7 @@ class Playlist extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 150.0),
             physics: BouncingScrollPhysics(),
             itemCount: _queue.length,
-            itemExtent: 110,
+            // itemExtent: 110,
             itemBuilder: (BuildContext context, int index) {
               return SongTile(
                 song: _queue[index],
