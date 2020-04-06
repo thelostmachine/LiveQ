@@ -133,7 +133,7 @@ class _RoomState extends State<Room> {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(queue[index].trackName),
-            subtitle: Text(queue[index].artist),
+            subtitle: Text(queue[index].artists),
             trailing: Text(queue[index].service.name),
           );
         });

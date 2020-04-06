@@ -10,9 +10,8 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-
   List<Song> items = List();
-  TextEditingController editingController = TextEditingController();
+  TextEditingController _editingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +20,21 @@ class _SearchState extends State<Search> {
         Navigator.of(context).pop();
         return true;
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Search'),
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomPadding: false,
+          appBar: AppBar(
+            title: Text('Search'),
+          ),
+          body: Container(
+            child: (Player.isConnected)
+                ? searchWidget(context)
+                : Center(
+                    child: Text(
+                        'Please connect to a streaming service first')), // This might not be necessary because guests shouldn't have to connect.
+          ),
         ),
-        body: Container(
-          child: (Player.isConnected)
-            ? searchWidget(context)
-            : Center(child: Text('Please Connect to a Streaming Service first')), // This might not be necessary because guests shouldn't have to connect.
-        ),
-      )
+      ),
     );
   }
 
@@ -38,35 +42,33 @@ class _SearchState extends State<Search> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            onChanged: (query) {
-              search(query);
-            },
-            controller: editingController,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 0,
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (query) {
+                search(query);
+              },
+              controller: _editingController,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                ),
+                hintText: 'Search for Songs',
+                prefixIcon: Icon(Icons.search),
               ),
-              hintText: 'Search for Songs',
-              prefixIcon: Icon(Icons.search),
-            ),
-          )
-        ),
+            )),
         Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(items[index].trackName),
-                subtitle: Text(items[index].artist),
-                trailing: Text(items[index].service.name),
-                onTap: () => Navigator.of(context).pop(items[index]),
-              );
-            },
-          )
-        )
+            child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(items[index].trackName),
+              subtitle: Text(items[index].artists),
+              trailing: Text(items[index].service.name),
+              onTap: () => Navigator.of(context).pop(items[index]),
+            );
+          },
+        ))
       ],
     );
   }
@@ -75,14 +77,13 @@ class _SearchState extends State<Search> {
   void search(String query) async {
     List<Song> dummySongs = List();
     dummySongs.addAll(await Spotify().search(query));
-    
+
     if (query.isNotEmpty) {
       List<Song> searchResults = List();
 
       dummySongs.forEach((s) {
-          searchResults.add(s);
-        }
-      );
+        searchResults.add(s);
+      });
 
       setState(() {
         items.clear();

@@ -141,13 +141,17 @@ class Spotify extends Service {
       search.forEach((pages) {
         pages.items.forEach((item) {
           if (item is TrackSimple) {
-            String id = item.id;
-            String uri = item.uri;
-            String trackName = item.name;
-            String artist = item.artists[0].name;
+            String _id = item.id;
+            String _uri = item.uri;
+            String _trackName = item.name;
+            String _artist = item.artists[0].name;
+            List<String> _artist_names =
+                item.artists.map((val) => val.name).toList();
+            String _artists = _artist_names.join(", ");
+            // int _duration = item.duration;
             Service service = this;
 
-            searchResults.add(Song(id, uri, trackName, artist, service));
+            searchResults.add(Song(_id, _uri, _trackName, _artists, service));
           }
         });
       });
