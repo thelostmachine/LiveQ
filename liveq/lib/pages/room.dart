@@ -118,15 +118,16 @@ class _RoomState extends State<Room> {
   /// The Music Player
   Widget _musicPlayer(BuildContext context) {
     return Container(
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(onPressed: () => player.resume(), child: Text('Play')),
-            RaisedButton(onPressed: () => player.pause(), child: Text('Pause')),
-            RaisedButton(onPressed: () => player.next(), child: Text('Next')),
-          ],
-        ));
+      height: 50,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          RaisedButton(onPressed: () => player.resume(), child: Text('Play')),
+          RaisedButton(onPressed: () => player.pause(), child: Text('Pause')),
+          RaisedButton(onPressed: () => player.next(), child: Text('Next')),
+        ],
+      )
+    );
   }
 
   Widget _connectionStatus(BuildContext context) {
