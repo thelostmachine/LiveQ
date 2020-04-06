@@ -11,12 +11,14 @@ abstract class Service {
   static const String APPLE = 'Apple';
 
   String name;
+  // bool connected;
+  // Future<bool> get isConnected;
 
   static List<Service> services = List();
 
   Future<bool> connect();
 
-  Future<void> playTrack(String uri);
+  Future<void> play(String uri);
   Future<void> resume();
   Future<void> pause();
   Future<void> stop();
@@ -58,13 +60,18 @@ abstract class Service {
     return (services.length > 0) ? services[0] : null;
   }
 
-  static Service fromString(String service) {
-    switch (service) {
+  static Service fromString(String s) {
+    Service service;
+
+    switch (s) {
       case SPOTIFY:
-        return Spotify();
+        service = Spotify();
+        break;
       case APPLE:
-        return null;
+        break;
     }
+
+    return service;
   }
 }
 
@@ -77,6 +84,20 @@ class Spotify extends Service {
   final String redirectUri = 'spotify-ios-quick-start://spotify-login-callback';
 
   SpotifyApi spotifyWebApi;
+
+  // Future<bool> get isConnected async {
+  //   var credentials = await spotifyWebApi.getCredentials();
+  //   bool expired = credentials.isExpired;
+  //   connected = !credentials.isExpired;
+  //   print('EXPIRED? : $expired');
+  //   print('CONNECTED? : $connected');
+  //   // return credentials.isExpired;
+  //   return connected;
+  //   // _credentials.then((value) {
+  //   //   print('EXPIRED? : ${value.isExpired}');
+  //   //   return value.isExpired;
+  //   // });
+  // }
 
   static final Service _spotify = Spotify._internal();
 
@@ -111,7 +132,7 @@ class Spotify extends Service {
 
   /// Play a [Song] given a [uri]
   @override
-  Future<void> playTrack(String uri) async {
+  Future<void> play(String uri) async {
     await SpotifySdk.play(spotifyUri: uri);
   }
 
@@ -139,20 +160,20 @@ class Spotify extends Service {
 
     if (search != null) {
       search.forEach((pages) {
-        pages.items.forEach((item) {
-          if (item is TrackSimple) {
-            String _id = item.id;
-            String _uri = item.uri;
-            String _trackName = item.name;
-            String _artist = item.artists[0].name;
+        pages.items.forEach((track) async {
+          if (track is Track) {
+            String id = track.id;
+            String uri = track.uri;
+            String trackName = track.name;
             List<String> _artistNames =
-                item.artists.map((val) => val.name).toList();
-            String _artists = _artistNames.join(", ");
-            int _duration = item.durationMs;
+                track.artists.map((val) => val.name).toList();
+            String artists = _artistNames.join(", ");
+            String imageUri = track.album.images[1].url;
+            int duration = track.durationMs;
             Service service = this;
 
-            searchResults
-                .add(Song(_id, _uri, _trackName, _artists, _duration, service));
+            searchResults.add(
+                Song(id, uri, trackName, artists, imageUri, duration, service));
           }
         });
       });

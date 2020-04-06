@@ -11,7 +11,15 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   List<Song> items = List();
-  TextEditingController _editingController = TextEditingController();
+  TextEditingController editingController = TextEditingController();
+  bool _isConnected;
+  Player _player = Player();
+
+  @override
+  void initState() {
+    super.initState();
+    _isConnected = _player.isConnected;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,19 +77,45 @@ class _SearchState extends State<Search> {
   }
 
   Widget searchWidget(BuildContext context) {
+    // return ListView.builder(
+    //   physics: BouncingScrollPhysics(),
+    //   itemCount: items.length,
+    //   itemBuilder: (context, index) {
+    //     // return ListTile(
+    //     //   title: Text(items[index].trackName),
+    //     //   subtitle: Text(items[index].artists),
+    //     //   trailing: Text(items[index].service.name),
+    //     //   onTap: () => Navigator.of(context).pop(items[index]),
+    //     // );
+    //     return SongTile(
+    //         song: items[index],
+    //         onTap: () => Navigator.of(context).pop(items[index]));
+    //   },
     return ListView.builder(
-      physics: BouncingScrollPhysics(),
+      // shrinkWrap: true,
       itemCount: items.length,
       itemBuilder: (context, index) {
-        // return ListTile(
-        //   title: Text(items[index].trackName),
-        //   subtitle: Text(items[index].artists),
-        //   trailing: Text(items[index].service.name),
-        //   onTap: () => Navigator.of(context).pop(items[index]),
-        // );
-        return SongTile(
-            song: items[index],
-            onTap: () => Navigator.of(context).pop(items[index]));
+        Song track = items[index];
+        Image image = Image.network(track.imageUri);
+
+        return ListTile(
+          title: Text(track.trackName),
+          subtitle: Text(track.artists),
+          leading: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: 44,
+                minHeight: 44,
+                maxWidth: 64,
+                maxHeight: 64,
+              ),
+              child: image),
+          trailing: Text(track.service.name),
+          onTap: () {
+            // Cache the image if it's being added to the queue so we don't have to make another network call
+            track.cacheImage(image);
+            Navigator.of(context).pop(track);
+          },
+        );
       },
     );
   }
@@ -89,7 +123,7 @@ class _SearchState extends State<Search> {
   /// Searches a [query] using the [Service] specified
   void search(String query) async {
     List<Song> dummySongs = List();
-    dummySongs.addAll(await Spotify().search(query));
+    dummySongs.addAll(await _player.search(query));
 
     if (query.isNotEmpty) {
       List<Song> searchResults = List();

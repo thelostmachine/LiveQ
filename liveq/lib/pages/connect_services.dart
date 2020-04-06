@@ -37,11 +37,6 @@ class _ConnectServicesState extends State<ConnectServices> {
     return StreamBuilder<ConnectionStatus>(
         stream: SpotifySdk.subscribeConnectionStatus(),
         builder: (context, snapshot) {
-          bool _connected = false;
-          if (snapshot.data != null) {
-            _connected = snapshot.data.connected;
-          }
-
           return Stack(
             children: <Widget>[
               Row(
@@ -54,7 +49,7 @@ class _ConnectServicesState extends State<ConnectServices> {
                         });
 
                         _didConnect = await Spotify().connect();
-                        Player.setService(Spotify());
+                        Player().setService(Spotify());
 
                         setState(() {
                           _loading = false;

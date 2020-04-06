@@ -5,6 +5,7 @@ import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/utils/services.dart';
+import 'package:property_change_notifier/property_change_notifier.dart';
 
 class Room extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class Room extends StatefulWidget {
 class _RoomState extends State<Room> {
   RoomArguments args;
   List<String> _availableServices;
+  Player player = Player();
 
   @override
   void initState() {
@@ -35,10 +37,10 @@ class _RoomState extends State<Room> {
         });
 
         Service.loadServices().then((service) {
-          Player.setService(service);
+          player.setService(service);
 
           setState(() {
-            Player.isConnected = true;
+            player.isConnected = true;
           });
         });
       }
@@ -50,9 +52,6 @@ class _RoomState extends State<Room> {
     super.dispose();
   }
 
-  Song currentlyPlaying;
-  List<Song> queue = List();
-
   @override
   Widget build(BuildContext context) {
     // final RoomArguments args = ModalRoute.of(context).settings.arguments;
@@ -60,32 +59,33 @@ class _RoomState extends State<Room> {
     return WillPopScope(
       onWillPop: () => _onWillPop(),
       child: Scaffold(
-          appBar: AppBar(
-            // title: Text(args.roomName),
-            title: Text('Room Name'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.music_note),
-                onPressed: () =>
-                    Navigator.pushNamed(context, '/connect_services')
-                        .then((didConnect) {
-                  if (didConnect) {
-                    setState(() {
-                      Player.isConnected = true;
-                    });
-                  }
-                }),
+        appBar: AppBar(
+          // title: Text(args.roomName),
+          title: Text('Room Name'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.music_note),
+              onPressed: () => Navigator.pushNamed(context, '/connect_services')
+                  .then((didConnect) {
+                if (didConnect) {
+                  setState(() {
+                    Player.isConnected = true;
+                  });
+                }
+              }),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () => _searchSong(context),
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () => _searchSong(context),
-                ),
-              ),
-            ],
-          ),
-          body: Column(
+            ),
+          ],
+        ),
+        body: PropertyChangeProvider(
+          value: player,
+          child: Column(
             children: <Widget>[
               Expanded(
                 child: _queueListView(context),
@@ -119,7 +119,9 @@ class _RoomState extends State<Room> {
                 ),
               ),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 
@@ -149,22 +151,36 @@ class _RoomState extends State<Room> {
         context, MaterialPageRoute(builder: (context) => Search()));
 
     if (result != null) {
-      setState(() {
-        queue.add(result);
-      });
+      player.addSong(result);
     }
   }
 
   Widget _queueListView(BuildContext context) {
-    return ListView.builder(
-        itemCount: queue.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(queue[index].trackName),
-            subtitle: Text(queue[index].artists),
-            trailing: Text(queue[index].service.name),
-          );
-        });
+    return PropertyChangeConsumer<Player>(
+      properties: [ModelProperties.queue],
+      builder: (context, model, properties) {
+        var queue = model.queue;
+        return ListView.builder(
+            itemCount: queue.length,
+            itemBuilder: (context, index) {
+              Song track = queue[index];
+
+              return ListTile(
+                title: Text(track.trackName),
+                subtitle: Text(track.artist),
+                leading: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: 44,
+                      minHeight: 44,
+                      maxWidth: 64,
+                      maxHeight: 64,
+                    ),
+                    child: track.cachedImage),
+                trailing: Text(Song.getDurationString(track)),
+              );
+            });
+      },
+    );
   }
 
   /// The Music Player
@@ -174,17 +190,9 @@ class _RoomState extends State<Room> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(onPressed: () => Player.resume(), child: Text('Play')),
-            RaisedButton(onPressed: () => Player.pause(), child: Text('Pause')),
-            RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    if (queue.length > 0) {
-                      Player.play(queue.removeAt(0));
-                    }
-                  });
-                },
-                child: Text('Next')),
+            RaisedButton(onPressed: () => player.resume(), child: Text('Play')),
+            RaisedButton(onPressed: () => player.pause(), child: Text('Pause')),
+            RaisedButton(onPressed: () => player.next(), child: Text('Next')),
           ],
         ));
   }
