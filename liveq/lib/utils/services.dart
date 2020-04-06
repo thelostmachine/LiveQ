@@ -145,13 +145,14 @@ class Spotify extends Service {
             String _uri = item.uri;
             String _trackName = item.name;
             String _artist = item.artists[0].name;
-            List<String> _artist_names =
+            List<String> _artistNames =
                 item.artists.map((val) => val.name).toList();
-            String _artists = _artist_names.join(", ");
-            // int _duration = item.duration;
+            String _artists = _artistNames.join(", ");
+            int _duration = item.durationMs;
             Service service = this;
 
-            searchResults.add(Song(_id, _uri, _trackName, _artists, service));
+            searchResults
+                .add(Song(_id, _uri, _trackName, _artists, _duration, service));
           }
         });
       });

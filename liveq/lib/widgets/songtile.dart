@@ -6,9 +6,11 @@ import 'package:liveq/utils/utils.dart';
 class SongTile extends StatelessWidget {
   final Song _song;
   String _duration;
+  final VoidCallback _onTap;
 
-  SongTile({Key key, @required Song song})
+  SongTile({Key key, @required Song song, onTap})
       : _song = song,
+        _onTap = onTap,
         super(key: key);
 
   @override
@@ -18,7 +20,6 @@ class SongTile extends StatelessWidget {
       title: Text(
         _song.trackName,
         style: TextStyle(
-          fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
         maxLines: 1,
@@ -27,9 +28,8 @@ class SongTile extends StatelessWidget {
       subtitle: Text(
         _song.artists,
         style: TextStyle(
-          fontSize: 16,
           color: Color(0xFFADB9CD),
-          letterSpacing: 1,
+          // letterSpacing: 1,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -37,24 +37,24 @@ class SongTile extends StatelessWidget {
       trailing: Text(
         _duration,
         style: TextStyle(
-          fontSize: 16,
           fontWeight: FontWeight.bold,
           color: Color(0xFF94A6C5),
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
+      onTap: _onTap,
     );
   }
 
   void parseDuration() {
-    // final double _temp = _song.duration / 1000;
-    // final int _minutes = (_temp / 60).floor();
-    // final int _seconds = (((_temp / 60) - _minutes) * 60).round();
-    // if (_seconds.toString().length > 1) {
-    //   _duration = _minutes.toString() + ":" + _seconds.toString();
-    // } else {
-    //   _duration = _minutes.toString() + ":0" + _seconds.toString();
-    // }
+    final double _temp = _song.duration / 1000;
+    final int _minutes = (_temp / 60).floor();
+    final int _seconds = (((_temp / 60) - _minutes) * 60).round();
+    if (_seconds.toString().length > 1) {
+      _duration = _minutes.toString() + ":" + _seconds.toString();
+    } else {
+      _duration = _minutes.toString() + ":0" + _seconds.toString();
+    }
   }
 }

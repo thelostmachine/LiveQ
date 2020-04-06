@@ -9,5 +9,6 @@ class Song {
 
   Service service;
 
-  Song(this.id, this.uri, this.trackName, this.artists, this.service);
+  Song(this.id, this.uri, this.trackName, this.artists, this.duration,
+      this.service);
 }

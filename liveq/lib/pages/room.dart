@@ -163,10 +163,11 @@ class _RoomState extends State<Room> {
 
   Widget _connectionStatus(BuildContext context) {
     return Container(
-        height: 50,
-        child: Text((_availableServices != null)
-            ? 'Connecting to ${listServices()}'
-            : 'Connect a Streaming Service to enable the Music Player'));
+      height: 50,
+      child: Text((_availableServices != null)
+          ? 'Connecting to ${listServices()}'
+          : 'Connect a Streaming Service to enable the Music Player'),
+    );
   }
 
   String listServices() {
@@ -175,6 +176,7 @@ class _RoomState extends State<Room> {
       services += _availableServices[i] +
           ((i < _availableServices.length - 1) ? ', ' : '');
     }
+    //return _availableServices.join(", ");
     return services;
   }
 }

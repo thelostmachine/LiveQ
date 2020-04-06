@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
-
 import 'package:liveq/utils/services.dart';
+import 'package:liveq/widgets/songtile.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -61,12 +61,15 @@ class _SearchState extends State<Search> {
           shrinkWrap: true,
           itemCount: items.length,
           itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(items[index].trackName),
-              subtitle: Text(items[index].artists),
-              trailing: Text(items[index].service.name),
-              onTap: () => Navigator.of(context).pop(items[index]),
-            );
+            // return ListTile(
+            //   title: Text(items[index].trackName),
+            //   subtitle: Text(items[index].artists),
+            //   trailing: Text(items[index].service.name),
+            //   onTap: () => Navigator.of(context).pop(items[index]),
+            // );
+            return SongTile(
+                song: items[index],
+                onTap: () => Navigator.of(context).pop(items[index]));
           },
         ))
       ],

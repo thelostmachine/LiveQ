@@ -26,101 +26,61 @@ class PlayerPanel extends StatelessWidget {
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      flex: 2,
-                      child: GestureDetector(
-                        onTap: () {
-                          if (_currentSong.uri == null) {
-                            return;
-                          }
-                          if (PlayerState.paused == _state) {
-                            // stream.playMusic(_currentSong);
-                          } else {
-                            // stream.pauseMusic(_currentSong);
-                          }
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          alignment: Alignment.centerLeft,
-                          child: _state == PlayerState.playing
-                              ? PauseIcon(
-                                  color: Colors.white,
-                                )
-                              : PlayIcon(
-                                  color: Colors.white,
-                                ),
+            child: ListTile(
+              leading: GestureDetector(
+                onTap: () {
+                  if (_currentSong.uri == null) {
+                    return;
+                  }
+                  if (PlayerState.paused == _state) {
+                    // stream.playMusic(_currentSong);
+                  } else {
+                    // stream.pauseMusic(_currentSong);
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment.centerLeft,
+                  child: _state == PlayerState.playing
+                      ? PauseIcon(
+                          color: Colors.white,
+                        )
+                      : PlayIcon(
+                          color: Colors.white,
                         ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 8,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Container(
-                          width: double.infinity,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                _currentSong.trackName,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Divider(
-                                height: 10,
-                                color: Colors.transparent,
-                              ),
-                              Text(
-                                _currentSong.artist,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  letterSpacing: 1,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () {
-                            if (_currentSong.uri == null) {
-                              return;
-                            }
-                            // stream.skipMusic(_currentSong);
-                          },
-                          child: Container(
-                              width: double.infinity,
-                              alignment: Alignment.centerLeft,
-                              child: SkipIcon(
-                                color: Colors.white,
-                              )),
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
-              ],
+              ),
+              title: Text(
+                _currentSong.trackName,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                _currentSong.artists,
+                style: TextStyle(
+                  color: Color(0xFFADB9CD),
+                  // letterSpacing: 1,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: GestureDetector(
+                onTap: () {
+                  if (_currentSong.uri == null) {
+                    return;
+                  }
+                  // stream.skipMusic(_currentSong);
+                },
+                child: Container(
+                    width: double.infinity,
+                    alignment: Alignment.centerLeft,
+                    child: SkipIcon(
+                      color: Colors.white,
+                    )),
+              ),
             ),
           );
         },
