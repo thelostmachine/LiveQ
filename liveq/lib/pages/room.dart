@@ -25,6 +25,9 @@ class _RoomState extends State<Room> {
       });
     });
 
+    // if host send createRequest; else send joinRequest
+    // initialize and suscribe to server stream of songs in queue
+
     Service.canConnectToPreviousService().then((availableServices) {
       if (availableServices != null) {
         setState(() {
@@ -52,8 +55,8 @@ class _RoomState extends State<Room> {
 
   @override
   Widget build(BuildContext context) {
-    final double _radius = 25.0;
     // final RoomArguments args = ModalRoute.of(context).settings.arguments;
+    final double _radius = 25.0;
     return WillPopScope(
       onWillPop: () => _onWillPop(),
       child: Scaffold(
