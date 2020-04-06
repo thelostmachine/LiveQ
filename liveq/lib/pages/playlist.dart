@@ -22,7 +22,7 @@ class Playlist extends StatelessWidget {
           final List<Song> _queue = snapshot.data;
 
           return ListView.builder(
-            key: PageStorageKey<String>("All Songs"),
+            key: PageStorageKey<String>("Playlist"),
             padding: const EdgeInsets.only(bottom: 150.0),
             physics: BouncingScrollPhysics(),
             itemCount: _queue.length,
