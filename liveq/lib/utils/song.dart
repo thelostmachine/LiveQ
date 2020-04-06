@@ -15,8 +15,8 @@ class Song {
 
   Song(this.id, this.uri, this.trackName, this.artist, this.imageUri, this.duration, this.service);
 
-  void cacheImage() {
-    cachedImage = Image.network(imageUri);
+  void cacheImage(Image image) {
+    cachedImage = image;
   }
 
   static String getDurationString(Song song) {

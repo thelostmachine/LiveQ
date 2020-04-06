@@ -12,6 +12,8 @@ abstract class Service {
   static const String APPLE = 'Apple';
 
   String name;
+  // bool connected;
+  // Future<bool> get isConnected;
 
   static List<Service> services = List();
 
@@ -84,6 +86,20 @@ class Spotify extends Service {
 
   SpotifyApi spotifyWebApi;
 
+  // Future<bool> get isConnected async {
+  //   var credentials = await spotifyWebApi.getCredentials();
+  //   bool expired = credentials.isExpired;
+  //   connected = !credentials.isExpired;
+  //   print('EXPIRED? : $expired');
+  //   print('CONNECTED? : $connected');
+  //   // return credentials.isExpired;
+  //   return connected;
+  //   // _credentials.then((value) {
+  //   //   print('EXPIRED? : ${value.isExpired}');
+  //   //   return value.isExpired;
+  //   // });
+  // }
+  
   static final Service _spotify = Spotify._internal();
 
   Spotify._internal();

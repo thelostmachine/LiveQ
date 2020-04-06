@@ -12,6 +12,21 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   Song _currentSong;
   Service _currentService;
+  
+  // Service get _currentService {
+  //   __currentService.isConnected.then((connected) {
+  //     if (!connected) {
+  //       __currentService.connect();
+  //     }
+
+  //   });
+
+  //   return __currentService;
+  // }
+
+  // set _currentService(Service service) {
+  //   __currentService = service;
+  // }
 
   List<Song> queue = List();
 
@@ -81,5 +96,9 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     } else {
       resume();
     }
+  }
+
+  Future<List<Song>> search(String query) async {
+    return _currentService.search(query);
   }
 }
