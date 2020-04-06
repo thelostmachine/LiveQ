@@ -23,13 +23,13 @@ class Song {
     final double _temp = song.duration / 1000;
     final int _minutes = (_temp / 60).floor();
     final int _seconds = (((_temp / 60) - _minutes) * 60).round();
-    String duration;
+    String _duration;
     if (_seconds.toString().length > 1) {
-      duration = _minutes.toString() + ":" + _seconds.toString();
+      _duration = _minutes.toString() + ":" + _seconds.toString();
     } else {
-      duration = _minutes.toString() + ":0" + _seconds.toString();
+      _duration = _minutes.toString() + ":0" + _seconds.toString();
     }
-    return duration;
+    return _duration;
   }
 
   // static String getDurationString(Song song) {

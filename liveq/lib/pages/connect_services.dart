@@ -23,7 +23,7 @@ class _ConnectServicesState extends State<ConnectServices> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Connect ConnectServices'),
+        title: Text('Music Services'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(_didConnect),

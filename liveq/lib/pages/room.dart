@@ -135,11 +135,11 @@ class _RoomState extends State<Room> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('No'),
+                child: const Text('NO'),
               ),
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Yes'),
+                child: const Text('YES'),
               ),
             ],
           ),
@@ -180,7 +180,7 @@ class _RoomState extends State<Room> {
               //       child: track.cachedImage),
               //   trailing: Text(Song.parseDuration(track)),
               // );
-              return SongTile(song: queue[index], onTap: () => {});
+              return SongTile(song: queue[index]);
             });
       },
     );
