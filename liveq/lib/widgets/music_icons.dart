@@ -61,3 +61,34 @@ class PauseIcon extends StatelessWidget {
     );
   }
 }
+
+class SkipIcon extends StatelessWidget {
+  final Color _color;
+
+  SkipIcon({@required Color color}) : _color = color;
+
+  @override
+  Widget build(BuildContext context) {
+    final double _radius = 32;
+    return Container(
+      width: _radius,
+      height: _radius,
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        border: Border.all(
+          color: _color,
+        ),
+        borderRadius: BorderRadius.circular(
+          _radius,
+        ),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.skip_next,
+          color: _color,
+          size: 22.0,
+        ),
+      ),
+    );
+  }
+}
