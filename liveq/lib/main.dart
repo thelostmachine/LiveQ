@@ -10,5 +10,5 @@ void main() =>
       '/home': (context) => Home(),
       '/room': (context) => Room(),
       '/search': (context) => Search(),
-      '/services': (context) => ConnectServices(),
+      '/connect_services': (context) => ConnectServices(),
     }));

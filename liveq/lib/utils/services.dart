@@ -6,7 +6,6 @@ import 'package:spotify/spotify.dart';
 import 'song.dart';
 
 abstract class Service {
-
   String name;
 
   Future<bool> connect();
@@ -14,13 +13,12 @@ abstract class Service {
   Future<void> playTrack(String uri);
   Future<void> resume();
   Future<void> pause();
+  Future<void> stop();
 
   Future<List<Song>> search(String query);
-
 }
 
 class Spotify extends Service {
-
   final String name = "Spotify";
 
   // Developer tokens. DO NOT CHANGE
@@ -41,7 +39,6 @@ class Spotify extends Service {
   /// Connect to the SpotifySDK and get an [authenticationToken]
   @override
   Future<bool> connect() async {
-
     // Use the spotify package to create credentials. This is only needed for Search
     var credentials = SpotifyApiCredentials(clientId, clientSecret);
     spotifyWebApi = SpotifyApi(credentials);
@@ -49,8 +46,7 @@ class Spotify extends Service {
     // Use the spotify_sdk package if on mobile to allow playing
     if (!kIsWeb) {
       await SpotifySdk.connectToSpotifyRemote(
-        clientId: this.clientId,
-        redirectUrl: this.redirectUri);
+          clientId: this.clientId, redirectUrl: this.redirectUri);
     }
 
     return spotifyWebApi != null;
@@ -74,18 +70,23 @@ class Spotify extends Service {
     await SpotifySdk.resume();
   }
 
+  /// Stop a [Song]
+  @override
+  Future<void> stop() async {
+    // await SpotifySdk.stop();
+  }
+
   /// Use the [authenticationToken] to search a query using the Spotify Web API
   @override
   Future<List<Song>> search(String query) async {
     List<Song> searchResults = List();
 
     var search = await spotifyWebApi.search
-      .get(query)
-      .first()
-      .catchError((err) => print((err as SpotifyException).message));
+        .get(query)
+        .first()
+        .catchError((err) => print((err as SpotifyException).message));
 
     if (search != null) {
-
       search.forEach((pages) {
         pages.items.forEach((item) {
           if (item is TrackSimple) {
@@ -97,8 +98,8 @@ class Spotify extends Service {
 
             searchResults.add(Song(id, uri, trackName, artist, service));
           }
-         });
-       });
+        });
+      });
     }
 
     return searchResults;

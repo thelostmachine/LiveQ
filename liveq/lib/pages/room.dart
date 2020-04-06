@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/pages/search.dart';
@@ -42,21 +43,25 @@ class _RoomState extends State<Room> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.music_note),
-              onPressed: () => Navigator.pushNamed(context, '/services'),
+              onPressed: () =>
+                  Navigator.pushNamed(context, '/connect_services'),
             ),
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () => _searchSong(context),
-            )
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () => _searchSong(context),
+              ),
+            ),
           ],
         ),
-        body: Stack(
+        body: Column(
           children: <Widget>[
             Expanded(
               child: _queueListView(context),
             ),
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.center,
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: 50,
