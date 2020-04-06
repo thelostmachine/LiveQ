@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
@@ -14,6 +15,7 @@ class ConnectServices extends StatefulWidget {
 class _ConnectServicesState extends State<ConnectServices> {
 
   bool _loading = false;
+  bool _didConnect = false;
 
   CrossfadeState crossfadeState;
 
@@ -24,7 +26,7 @@ class _ConnectServicesState extends State<ConnectServices> {
         title: Text('Connect ConnectServices'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).pop(_didConnect),
         ),
       ),
       body: _flowWidget(context),
@@ -51,7 +53,8 @@ class _ConnectServicesState extends State<ConnectServices> {
                       _loading = true;
                     });
 
-                    await Spotify().connect();
+                    _didConnect = await Spotify().connect();
+                    Player.setService(Spotify());
 
                     setState(() {
                       _loading = false;

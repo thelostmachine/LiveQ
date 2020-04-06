@@ -1,13 +1,19 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify/spotify.dart';
 
-import 'song.dart';
+import 'package:liveq/utils/song.dart';
 
 abstract class Service {
 
+  static const String SPOTIFY = 'Spotify';
+  static const String APPLE = 'Apple';
+
   String name;
+
+  static List<Service> services = List();
 
   Future<bool> connect();
 
@@ -17,11 +23,54 @@ abstract class Service {
 
   Future<List<Song>> search(String query);
 
+  Future<void> saveService() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (!services.contains(this)) {
+      services.add(this);
+
+      List<String> serviceStrings = List();
+      services.forEach((s) {
+        serviceStrings.add(s.name);
+        });
+
+      prefs.setStringList('serviceList', serviceStrings);
+    }
+  }
+
+  static Future<List<String>> canConnectToPreviousService() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
+    return serviceStrings;
+  }
+
+  static Future<Service> loadServices() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
+
+    if (serviceStrings != null) {
+      for (String s in serviceStrings) {
+        Service service = fromString(s);
+        await service.connect();
+      }
+    }
+
+    return (services.length > 0) ? services[0] : null;
+  }
+
+  static Service fromString(String service) {
+    switch (service) {
+      case SPOTIFY:
+        return Spotify();
+      case APPLE:
+        return null;
+    }
+  }
 }
 
 class Spotify extends Service {
 
-  final String name = "Spotify";
+  final String name = Service.SPOTIFY;
 
   // Developer tokens. DO NOT CHANGE
   final String clientId = '03237b2409b24752a3f0c33262ad2d02';
@@ -53,6 +102,7 @@ class Spotify extends Service {
         redirectUrl: this.redirectUri);
     }
 
+    await saveService();
     return spotifyWebApi != null;
   }
 
