@@ -66,11 +66,26 @@ class _SearchState extends State<Search> {
             shrinkWrap: true,
             itemCount: items.length,
             itemBuilder: (context, index) {
+              Song track = items[index];
+
               return ListTile(
-                title: Text(items[index].trackName),
-                subtitle: Text(items[index].artist),
-                trailing: Text(items[index].service.name),
-                onTap: () => Navigator.of(context).pop(items[index]),
+                title: Text(track.trackName),
+                subtitle: Text(track.artist),
+                leading: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 44,
+                    minHeight: 44,
+                    maxWidth: 64,
+                    maxHeight: 64,
+                  ),
+                  child: Image.network(track.imageUri)
+                ),
+                trailing: Text(track.service.name),
+                onTap: () {
+                  // Cache the image if it's being added to the queue so we don't have to make another network call
+                  track.cacheImage();
+                  Navigator.of(context).pop(track);
+                },
               );
             },
           )

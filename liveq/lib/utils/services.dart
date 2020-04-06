@@ -58,13 +58,18 @@ abstract class Service {
     return (services.length > 0) ? services[0] : null;
   }
 
-  static Service fromString(String service) {
-    switch (service) {
+  static Service fromString(String s) {
+    Service service;
+
+    switch (s) {
       case SPOTIFY:
-        return Spotify();
+        service = Spotify();
+        break;
       case APPLE:
-        return null;
+        break;
     }
+
+    return service;
   }
 }
 
@@ -137,15 +142,17 @@ class Spotify extends Service {
     if (search != null) {
 
       search.forEach((pages) {
-        pages.items.forEach((item) {
-          if (item is TrackSimple) {
-            String id = item.id;
-            String uri = item.uri;
-            String trackName = item.name;
-            String artist = item.artists[0].name;
+        pages.items.forEach((track) async {
+          if (track is Track) {
+            String id = track.id;
+            String uri = track.uri;
+            String trackName = track.name;
+            String artist = track.artists[0].name;
+            String imageUri = track.album.images[1].url;
+            Duration durationMilli = track.duration;
             Service service = this;
 
-            searchResults.add(Song(id, uri, trackName, artist, service));
+            searchResults.add(Song(id, uri, trackName, artist, imageUri, durationMilli, service));
           }
          });
        });

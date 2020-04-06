@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/pages/search.dart';
+import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
@@ -104,10 +105,21 @@ class _RoomState extends State<Room> {
         return ListView.builder(
           itemCount: queue.length,
           itemBuilder: (context, index) {
+            Song track = queue[index];
+            
             return ListTile(
-              title: Text(queue[index].trackName),
-              subtitle: Text(queue[index].artist),
-              trailing: Text(queue[index].service.name),
+              title: Text(track.trackName),
+              subtitle: Text(track.artist),
+              leading: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: 44,
+                  minHeight: 44,
+                  maxWidth: 64,
+                  maxHeight: 64,
+                ),
+                child: track.cachedImage
+              ),
+              trailing: Text(Song.getDurationString(track)),
             );
           }
         );

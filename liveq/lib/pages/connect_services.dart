@@ -37,11 +37,6 @@ class _ConnectServicesState extends State<ConnectServices> {
     return StreamBuilder<ConnectionStatus>(
       stream: SpotifySdk.subscribeConnectionStatus(),
       builder: (context, snapshot) {
-        bool _connected = false;
-        if (snapshot.data != null) {
-          _connected = snapshot.data.connected;
-        }
-
         return Stack(
           children: <Widget>[
             Row(
@@ -61,7 +56,8 @@ class _ConnectServicesState extends State<ConnectServices> {
                     });
                   },
                   icon: Icon(MdiIcons.spotify),
-                  label: Text('Spotify')),
+                  label: Text('Spotify')
+                ),
                 RaisedButton.icon(
                   onPressed: () {},
                   icon: Icon(MdiIcons.music),
