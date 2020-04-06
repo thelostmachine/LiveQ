@@ -4,6 +4,7 @@ import 'package:liveq/pages/search.dart';
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
+import 'package:liveq/utils/services.dart';
 
 class Room extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class Room extends StatefulWidget {
 
 class _RoomState extends State<Room> {
   RoomArguments args;
+  List<String> _availableServices;
 
   @override
   void initState() {
@@ -21,6 +23,22 @@ class _RoomState extends State<Room> {
       setState(() {
         args = ModalRoute.of(context).settings.arguments;
       });
+    });
+
+    Service.canConnectToPreviousService().then((availableServices) {
+      if (availableServices != null) {
+        setState(() {
+          _availableServices = availableServices;
+        });
+
+        Service.loadServices().then((service) {
+          Player.setService(service);
+
+          setState(() {
+            Player.isConnected = true;
+          });
+        });
+      }
     });
   }
 
@@ -43,8 +61,14 @@ class _RoomState extends State<Room> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.music_note),
-              onPressed: () =>
-                  Navigator.pushNamed(context, '/connect_services'),
+              onPressed: () => Navigator.pushNamed(context, '/connect_services')
+                  .then((didConnect) {
+                if (didConnect) {
+                  setState(() {
+                    Player.isConnected = true;
+                  });
+                }
+              }),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -83,7 +107,9 @@ class _RoomState extends State<Room> {
                     ],
                   ),
                 ),
-                child: _musicPlayer(context), //MusicPlayer(),
+                child: (Player.isConnected)
+                    ? _musicPlayer(context)
+                    : _connectionStatus(context), //MusicPlayer(),
               ),
             ),
           ],
@@ -133,5 +159,22 @@ class _RoomState extends State<Room> {
                 child: Text('Next')),
           ],
         ));
+  }
+
+  Widget _connectionStatus(BuildContext context) {
+    return Container(
+        height: 50,
+        child: Text((_availableServices != null)
+            ? 'Connecting to ${listServices()}'
+            : 'Connect a Streaming Service to enable the Music Player'));
+  }
+
+  String listServices() {
+    String services = '';
+    for (int i = 0; i < _availableServices.length; i++) {
+      services += _availableServices[i] +
+          ((i < _availableServices.length - 1) ? ', ' : '');
+    }
+    return services;
   }
 }

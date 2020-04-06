@@ -1,9 +1,12 @@
+import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 
 import 'song.dart';
 
 class Player {
   static Song currentlyPlaying;
+  static Service currentService;
+  static bool isConnected = false;
   static PlayerState state = PlayerState.stopped;
 
   static void play(Song song) async {
@@ -11,17 +14,18 @@ class Player {
       currentlyPlaying = song;
       currentlyPlaying.service.playTrack(currentlyPlaying.uri);
       state = PlayerState.playing;
+    } else {
+      resume();
     }
   }
 
-  // TODO: don't depend on currentlyPlaying to get the service
   static void resume() {
-    currentlyPlaying.service.resume();
+    currentService.resume();
     state = PlayerState.playing;
   }
 
   static void pause() {
-    currentlyPlaying.service.pause();
+    currentService.pause();
     state = PlayerState.paused;
   }
 
@@ -44,5 +48,9 @@ class Player {
 
   static PlayerState getPlayerState() {
     return state;
+  }
+
+  static void setService(Service service) {
+    currentService = service;
   }
 }

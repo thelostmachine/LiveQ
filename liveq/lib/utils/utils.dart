@@ -1,8 +1,3 @@
-enum Service {
-  Spotify,
-  Apple,
-}
-
 enum PlayerState {
   playing,
   paused,

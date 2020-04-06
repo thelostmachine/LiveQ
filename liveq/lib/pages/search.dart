@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
 
 import 'package:liveq/utils/services.dart';
@@ -25,42 +26,48 @@ class _SearchState extends State<Search> {
           title: Text('Search'),
         ),
         body: Container(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  onChanged: (query) {
-                    search(query);
-                  },
-                  controller: editingController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 0,
-                    ),
-                    hintText: 'Search for Songs',
-                    prefixIcon: Icon(Icons.search),
-                  ),
-                )
-              ),
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(items[index].trackName),
-                      subtitle: Text(items[index].artist),
-                      trailing: Text(items[index].service.name),
-                      onTap: () => Navigator.of(context).pop(items[index]),
-                    );
-                  },
-                )
-              )
-            ],
-          )
+          child: (Player.isConnected)
+            ? searchWidget(context)
+            : Center(child: Text('Please Connect to a Streaming Service first')), // This might not be necessary because guests shouldn't have to connect.
         ),
       )
+    );
+  }
+
+  Widget searchWidget(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            onChanged: (query) {
+              search(query);
+            },
+            controller: editingController,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 0,
+              ),
+              hintText: 'Search for Songs',
+              prefixIcon: Icon(Icons.search),
+            ),
+          )
+        ),
+        Expanded(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(items[index].trackName),
+                subtitle: Text(items[index].artist),
+                trailing: Text(items[index].service.name),
+                onTap: () => Navigator.of(context).pop(items[index]),
+              );
+            },
+          )
+        )
+      ],
     );
   }
 
