@@ -39,8 +39,6 @@ class PlayerPanel extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
                   child: _state == PlayerState.playing
                       ? PauseIcon(
                           color: Colors.white,
@@ -53,6 +51,7 @@ class PlayerPanel extends StatelessWidget {
               title: Text(
                 _currentSong.trackName,
                 style: TextStyle(
+                  color: Colors.white,
                   fontWeight: FontWeight.w600,
                 ),
                 maxLines: 1,
@@ -61,7 +60,7 @@ class PlayerPanel extends StatelessWidget {
               subtitle: Text(
                 _currentSong.artists,
                 style: TextStyle(
-                  color: Color(0xFFADB9CD),
+                  color: Colors.white,
                   // letterSpacing: 1,
                 ),
                 maxLines: 1,
@@ -75,11 +74,9 @@ class PlayerPanel extends StatelessWidget {
                   // stream.skipMusic(_currentSong);
                 },
                 child: Container(
-                    width: double.infinity,
-                    alignment: Alignment.centerLeft,
                     child: SkipIcon(
-                      color: Colors.white,
-                    )),
+                  color: Colors.white,
+                )),
               ),
             ),
           );

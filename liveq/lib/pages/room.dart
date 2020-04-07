@@ -113,7 +113,7 @@ class _RoomState extends State<Room> {
                 alignment: Alignment.center,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 50,
+                  height: 75,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(_radius),
@@ -134,7 +134,7 @@ class _RoomState extends State<Room> {
                   ),
                   child: (player.isConnected)
                       ? _musicPlayer(context)
-                      : _connectionStatus(context), //MusicPlayer(),
+                      : _connectionStatus(context), // PlayerPanel(),
                 ),
               ),
             ],
