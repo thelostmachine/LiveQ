@@ -83,23 +83,6 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     state = PlayerState.paused;
   }
 
-  void stop() {
-    // currentlyPlaying.service.stop();
-    state = PlayerState.stopped;
-  }
-
-  void skip() {
-    // currentlyPlaying.service.stop();
-    state = PlayerState.stopped;
-
-    // delete first song in playlist list
-    // if playlist is empty return
-    // else get song at first index
-
-    // currentlyPlaying.service.playTrack();
-    // state = PlayerState.playing;
-  }
-
   PlayerState getPlayerState() {
     return state;
   }
