@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:liveq/pages/search.dart';
 import 'package:liveq/utils/player.dart';
-import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
-import 'package:liveq/utils/services.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 
@@ -30,21 +28,10 @@ class _RoomState extends State<Room> {
 
     // if host send createRequest; else send joinRequest
     // initialize and subscribe to server stream of songs in queue
-
-    Service.canConnectToPreviousService().then((availableServices) {
-      if (availableServices != null) {
-        setState(() {
-          _availableServices = availableServices;
-        });
-
-        Service.loadServices().then((service) {
-          player.setService(service);
-
-          setState(() {
-            player.isConnected = true;
-          });
-        });
-      }
+    player.connectToCachedServices(() {
+      setState(() {
+        _availableServices = player.connectedServices.map((e) => e.name).toList();
+      });
     });
   }
 

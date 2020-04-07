@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
-import 'package:liveq/utils/services.dart';
 import 'package:liveq/widgets/songtile.dart';
 
 class Search extends StatefulWidget {
@@ -18,6 +17,7 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
+    // _player.setService(SoundCloud());
     _isConnected = _player.isConnected;
   }
 

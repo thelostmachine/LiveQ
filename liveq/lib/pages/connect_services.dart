@@ -5,9 +5,11 @@ import 'package:spotify_sdk/models/crossfade_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 import 'package:liveq/utils/player.dart';
-import 'package:liveq/utils/services.dart';
 
 class ConnectServices extends StatefulWidget {
+
+  final Player player = Player();
+
   @override
   _ConnectServicesState createState() => _ConnectServicesState();
 }
@@ -32,6 +34,9 @@ class _ConnectServicesState extends State<ConnectServices> {
     );
   }
 
+  /// use a ListView.Builder using player.potentialServices
+  /// use player.potentialServices[index].connect() to connect. It'll set the service
+  /// automatically
   Widget _flowWidget(BuildContext context) {
     return StreamBuilder<ConnectionStatus>(
         stream: SpotifySdk.subscribeConnectionStatus(),
@@ -47,37 +52,40 @@ class _ConnectServicesState extends State<ConnectServices> {
                           _loading = true;
                         });
 
-                        _didConnect = await Spotify().connect();
-                        Player().setService(Spotify());
+                        widget.player.potentialServices[0].connect();
 
-                        setState(() {
-                          _loading = false;
-                        });
-                      },
-                      icon: Icon(MdiIcons.spotify),
-                      label: Text('Spotify')),
-                  RaisedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(MdiIcons.music),
-                    label: Text('Apple Music'),
-                  ),
-                ],
-              ),
-              _loading
-                  ? Container(
-                      color: Colors.black12,
-                      child: Center(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text('Connecting...'),
-                          SizedBox(height: 10),
-                          CircularProgressIndicator()
-                        ],
-                      )))
-                  : SizedBox(),
-            ],
-          );
-        });
+                    setState(() {
+                      _loading = false;
+                    });
+                  },
+                  icon: Icon(MdiIcons.spotify),
+                  label: Text('Spotify')
+                ),
+                RaisedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(MdiIcons.music),
+                  label: Text('SoundCloud'),
+                ),
+              ],
+            ),
+            _loading
+              ? Container(
+                color: Colors.black12,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('Connecting...'),
+                      SizedBox(height: 10),
+                      CircularProgressIndicator()
+                    ],
+                  )
+                )
+              )
+              : SizedBox(),
+          ],
+        );
+      }
+    );
   }
 }

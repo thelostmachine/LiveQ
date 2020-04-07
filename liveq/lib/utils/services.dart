@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+import 'package:flutter/material.dart' as material;
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
@@ -7,32 +10,44 @@ import 'package:spotify/spotify.dart';
 import 'package:liveq/utils/song.dart';
 
 abstract class Service {
+
+  static const String SOUNDCLOUD = 'SoundCloud';
   static const String SPOTIFY = 'Spotify';
-  static const String APPLE = 'Apple';
+  static const String APPLE = 'Apple Music';
+
+  // final List<String>  
 
   String name;
   // bool connected;
   // Future<bool> get isConnected;
 
-  static List<Service> services = List();
+  static final List<Service> potentialServices = [Spotify(), SoundCloud()];
+  static List<Service> connectedServices = List();
 
-  Future<bool> connect();
+  String iconImagePath;
+
+  Future<bool> connect() {
+    connectedServices.add(this);
+    return Future.value(true);
+  }
 
   Future<void> play(String uri);
   Future<void> resume();
   Future<void> pause();
-  Future<void> stop();
+
+  material.Image getImage() {
+    return material.Image(image: material.AssetImage(iconImagePath));
+  }
 
   Future<List<Song>> search(String query);
 
   Future<void> saveService() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (!services.contains(this)) {
-      services.add(this);
+    if (!connectedServices.contains(this)) {
 
       List<String> serviceStrings = List();
-      services.forEach((s) {
+      connectedServices.forEach((s) {
         serviceStrings.add(s.name);
       });
 
@@ -57,7 +72,7 @@ abstract class Service {
       }
     }
 
-    return (services.length > 0) ? services[0] : null;
+    return (connectedServices.length > 0) ? connectedServices[0] : null;
   }
 
   static Service fromString(String s) {
@@ -67,6 +82,9 @@ abstract class Service {
       case SPOTIFY:
         service = Spotify();
         break;
+      case SOUNDCLOUD:
+        service = SoundCloud();
+        break;
       case APPLE:
         break;
     }
@@ -75,8 +93,111 @@ abstract class Service {
   }
 }
 
+class SoundCloud extends Service {
+
+  final String name = Service.SOUNDCLOUD;
+
+  final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
+  final String userId = '857371-474509-874152-946359';
+
+  static final Service _soundcloud = SoundCloud._internal();
+
+  SoundCloud._internal();
+
+  factory SoundCloud() {
+    return _soundcloud;
+  }
+
+  @override
+  Future<bool> connect() {
+    super.connect();
+    // TODO: implement connect
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> pause() {
+    // TODO: implement pause
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> play(String uri) {
+    // TODO: implement play
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> resume() {
+    // TODO: implement resume
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<List<Song>> search(String query) async {
+    List<Song> searchResults = List();
+    String search = 'https://api-v2.soundcloud.com/search?q=porter%20robinson&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
+    // String search = 'https://api-v2.soundcloud.com/search/queries?q=';
+    // search += formatSearch(query);
+    // search += '&client_id=$clientId';
+    // search += '&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
+    // search += '&variant_ids=';
+    // search += '&facet=model';
+    // search += '&user_id=$userId';
+
+    // search = 'https://api-v2.soundcloud.com/search?q=juice%20wrld&sc_a_id=8518dae7c71781e17004bb10b29a999e555ad4ce&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
+
+    var response = await http.get(search, headers: {
+      'Accept': 'application/json'
+    });
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+
+      for (var item in jsonResponse['collection']) {
+        print(item.toString());
+      }
+    } else {
+      print('ERROR');
+      print(response.statusCode);
+    }
+
+    // var search = await spotifyWebApi.search
+    //   .get(query)
+    //   .first()
+    //   .catchError((err) => print((err as SpotifyException).message));
+
+    // if (search != null) {
+
+    //   search.forEach((pages) {
+    //     pages.items.forEach((track) async {
+    //       if (track is Track) {
+    //         String id = track.id;
+    //         String uri = track.uri;
+    //         String trackName = track.name;
+    //         String artist = track.artists[0].name;
+    //         String imageUri = track.album.images[1].url;
+    //         Duration durationMilli = track.duration;
+    //         Service service = this;
+
+    //         searchResults.add(Song(id, uri, trackName, artist, imageUri, durationMilli, service));
+    //       }
+    //      });
+    //    });
+    // }
+
+    return searchResults;
+  }
+
+  String formatSearch(String query) {
+    return query.replaceAll(' ', '%20');
+  }
+  
+}
+
 class Spotify extends Service {
   final String name = Service.SPOTIFY;
+  final String iconImagePath = 'assets\images\Spotify_Icon_RGB_Green.png';
 
   // Developer tokens. DO NOT CHANGE
   final String clientId = '03237b2409b24752a3f0c33262ad2d02';
@@ -110,6 +231,7 @@ class Spotify extends Service {
   /// Connect to the SpotifySDK and get an [authenticationToken]
   @override
   Future<bool> connect() async {
+    super.connect();
     // Use the spotify package to create credentials. This is only needed for Search
     var credentials = SpotifyApiCredentials(clientId, clientSecret);
     spotifyWebApi = SpotifyApi(credentials);
@@ -140,12 +262,6 @@ class Spotify extends Service {
   @override
   Future<void> resume() async {
     await SpotifySdk.resume();
-  }
-
-  /// Stop a [Song]
-  @override
-  Future<void> stop() async {
-    // await SpotifySdk.stop();
   }
 
   /// Use the [authenticationToken] to search a query using the Spotify Web API
@@ -181,4 +297,43 @@ class Spotify extends Service {
 
     return searchResults;
   }
+}
+
+class Apple extends Service {
+
+  final String name = Service.APPLE;
+  final String iconImagePath = 'assets\images\Apple_Music_Icon.psd';
+
+  static final Service _apple = Apple._internal();
+
+  Apple._internal();
+
+  factory Apple() {
+    return _apple;
+  }
+
+  @override
+  Future<void> pause() {
+    // TODO: implement pause
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> play(String uri) {
+      // TODO: implement play
+      throw UnimplementedError();
+    }
+  
+    @override
+    Future<void> resume() {
+      // TODO: implement resume
+      throw UnimplementedError();
+    }
+  
+    @override
+    Future<List<Song>> search(String uri) {
+    // TODO: implement search
+    throw UnimplementedError();
+  }
+  
 }

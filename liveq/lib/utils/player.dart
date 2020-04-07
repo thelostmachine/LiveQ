@@ -1,14 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 
 import 'song.dart';
-
-// class Player {
-//   static Song currentlyPlaying;
-//   static Service currentService;
-//   static bool isConnected = false;
-//   static PlayerState state = PlayerState.stopped;
 
 enum ModelProperties {
   queue,
@@ -17,7 +12,18 @@ enum ModelProperties {
 class Player extends PropertyChangeNotifier<ModelProperties> {
   Song _currentSong;
   Service _currentService;
+  Service searchService;
 
+  /// List of services we can connect to
+  get potentialServices {
+    return Service.potentialServices;
+  }
+
+  /// List of services we are connected to
+  List<Service> get connectedServices {
+    return Service.connectedServices;
+  }
+  
   // Service get _currentService {
   //   __currentService.isConnected.then((connected) {
   //     if (!connected) {
@@ -100,6 +106,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   void setService(Service service) {
     _currentService = service;
+    isConnected = true;
   }
 
   void next() async {
@@ -119,8 +126,19 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       resume();
     }
   }
-
+  
   Future<List<Song>> search(String query) async {
-    return _currentService.search(query);
+    return searchService.search(query);
+  }
+
+  void connectToCachedServices(VoidCallback callback) async {
+    Service.canConnectToPreviousService().then((availableServices) async {
+      if (availableServices != null) {
+        Service firstServiceInList = await Service.loadServices();
+        setService(firstServiceInList);
+
+        callback();
+      }
+    });
   }
 }
