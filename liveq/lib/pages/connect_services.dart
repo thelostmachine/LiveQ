@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/utils/player.dart';
-import 'package:liveq/utils/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/crossfade_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
+import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
 
 class ConnectServices extends StatefulWidget {
