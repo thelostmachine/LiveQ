@@ -74,7 +74,7 @@ class _RoomState extends State<Room> {
             //       // _currentService = newValue;
             //     });
             //   },
-            //   items: <String>['One', 'Two', 'Free', 'Four']
+            //   items: <String>['One', 'Two', 'Free', 'Four'] // list of icons maybe?
             //       .map<DropdownMenuItem<String>>((String value) {
             //     return DropdownMenuItem<String>(
             //       value: value,
@@ -113,7 +113,7 @@ class _RoomState extends State<Room> {
                 alignment: Alignment.center,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 75,
+                  height: 80,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(_radius),
