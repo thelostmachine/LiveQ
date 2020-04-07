@@ -23,7 +23,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   List<Service> get connectedServices {
     return Service.connectedServices;
   }
-  
+
   // Service get _currentService {
   //   __currentService.isConnected.then((connected) {
   //     if (!connected) {
@@ -109,19 +109,21 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       resume();
     }
   }
-  
+
   Future<List<Song>> search(String query) async {
     return searchService.search(query);
   }
 
   void connectToCachedServices(VoidCallback callback) async {
-    Service.canConnectToPreviousService().then((availableServices) async {
-      if (availableServices != null) {
-        Service firstServiceInList = await Service.loadServices();
-        setService(firstServiceInList);
+    Service.canConnectToPreviousService().then(
+      (availableServices) async {
+        if (availableServices != null) {
+          Service firstServiceInList = await Service.loadServices();
+          setService(firstServiceInList);
 
-        callback();
-      }
-    });
+          callback();
+        }
+      },
+    );
   }
 }

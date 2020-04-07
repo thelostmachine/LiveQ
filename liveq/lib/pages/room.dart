@@ -30,7 +30,8 @@ class _RoomState extends State<Room> {
     // initialize and subscribe to server stream of songs in queue
     player.connectToCachedServices(() {
       setState(() {
-        _availableServices = player.connectedServices.map((e) => e.name).toList();
+        _availableServices =
+            player.connectedServices.map((e) => e.name).toList();
       });
     });
   }
@@ -170,21 +171,6 @@ class _RoomState extends State<Room> {
             physics: BouncingScrollPhysics(),
             itemCount: queue.length,
             itemBuilder: (context, index) {
-              // Song track = queue[index];
-
-              // return ListTile(
-              //   title: Text(track.trackName),
-              //   subtitle: Text(track.artists),
-              //   leading: ConstrainedBox(
-              //       constraints: BoxConstraints(
-              //         minWidth: 44,
-              //         minHeight: 44,
-              //         maxWidth: 64,
-              //         maxHeight: 64,
-              //       ),
-              //       child: track.cachedImage),
-              //   trailing: Text(Song.parseDuration(track)),
-              // );
               return SongTile(song: queue[index]);
             });
       },

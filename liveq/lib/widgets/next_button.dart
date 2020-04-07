@@ -16,7 +16,7 @@ class NextButton extends StatelessWidget {
         // onPressed: () {},
         onPressed: _onTap,
         textColor: Colors.white,
-        color: Color(0xffed6c6c),
+        color: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(6),
         ),
