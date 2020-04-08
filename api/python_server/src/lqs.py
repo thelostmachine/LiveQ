@@ -15,31 +15,42 @@ class LiveQServicer(interface_pb2_grpc.LiveQServicer):
         self.db = server_resources.RoomDB()
     
     def CreateRoom(self, request, context):
-        print(request)
         reply_info = self.db.AddRoom(request.room_name)
-        return interface_pb2.CreateReply(room_key=reply_info[0], host_id=reply_info[1])
+        if reply_info[0] == '-1':
+            status = interface_pb2.Status(status=-1)
+        else
+            status = interface_pb2.Status(status=0)
+        return interface_pb2.CreateReply(status=status, room_key=reply_info[0], host_id=reply_info[1])
 
     def JoinRoom(self, request, context):
-        print(request)
-        reply_info = str(self.db.JoinRoom(request.room_key))
-        return interface_pb2.JoinReply(guest_id=reply_info)
+        reply_info = self.db.JoinRoom(request.room_key)
+        if reply_info == ['-1', '0']:
+            status = interface_pb2.Status(status=-1)
+        else
+            status = interface_pb2.Status(status=0)
+        return interface_pb2.JoinReply(status=status, room_name=reply_info[0], guest_id=reply_info[1])
 
-    def UpdateQueue(self, request, context):
-        print(request)
+    def AddService(self, request, context):
+        reply_info = self.db.AddServiceToRoom(request.room_key, request.service)
+        return interface_pb2.Status(status=reply_info)
+
+    def GetServices(self, request, context):
+        if request.room_key in self.db.rooms.keys():
+            for service in self.db.rooms[request.room_key].services:
+                yield service
+
+    def GetQueue(self, request, context):
         q = self.db.rooms[request.room_key].q
         for song in q:
             yield song
 
     def AddSong(self, request, context):
-        print(request)
         self.db.AddSongToRoom(request.room_key, request.song)
         for song in self.db.rooms[request.room_key].q:
-            #interface_pb2.QueueReply(song_id=song.song_id, service_id=song.service_id)
-            #print(song.song_id) 
             yield song
 
     def DeleteSong(self, request, context):
-        self.db.DeleteSong(request.room_key, interface_pb2.QueueReply(song_id=request.song_id, service_id=request.service_id))
+        self.db.DeleteSongFromRoom(request.room_key, request.song)
         q = self.db.rooms[request.room_key].q
         for song in q:
             yield song
