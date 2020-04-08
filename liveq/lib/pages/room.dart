@@ -177,24 +177,24 @@ class _RoomState extends State<Room> {
                 itemCount: player.connectedServices
                     .length, // replace connectedServices with allowedServices
                 itemBuilder: (BuildContext context, int index) {
-                  if (player.connectedServices[index].name !=
-                      player.searchService.name) {
-                    return SimpleDialogOption(
-                      onPressed: () {
-                        player.searchService = player.connectedServices[
-                            index]; // replace connectedServices with allowedServices
-                        Navigator.pop(
-                            context, player.connectedServices[index].name);
-                      }, // replace connectedServices with allowedServices
-                      child: ListTile(
-                        leading: ImageIcon(AssetImage(player
-                            .connectedServices[index]
-                            .iconImagePath)), // replace connectedServices with allowedServices
-                        title: Text(player.connectedServices[index]
-                            .name), // replace connectedServices with allowedServices
-                      ),
-                    );
-                  }
+                  return player.connectedServices[index].name !=
+                          player.searchService.name
+                      ? SimpleDialogOption(
+                          onPressed: () {
+                            player.searchService = player.connectedServices[
+                                index]; // replace connectedServices with allowedServices
+                            Navigator.pop(
+                                context, player.connectedServices[index].name);
+                          }, // replace connectedServices with allowedServices
+                          child: ListTile(
+                            leading: ImageIcon(AssetImage(player
+                                .connectedServices[index]
+                                .iconImagePath)), // replace connectedServices with allowedServices
+                            title: Text(player.connectedServices[index]
+                                .name), // replace connectedServices with allowedServices
+                          ),
+                        )
+                      : null;
                 },
               ),
             ],
