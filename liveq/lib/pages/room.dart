@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:liveq/pages/search.dart';
 import 'package:liveq/utils/player.dart';
+import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
@@ -63,13 +64,25 @@ class _RoomState extends State<Room> {
                 }
               }),
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () => _searchSong(context),
-              ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => _searchSong(context),
             ),
+            player.searchService != null
+                ? IconButton(
+                    icon: ImageIcon(
+                        AssetImage(player.searchService.iconImagePath)),
+                    onPressed: player.connectedServices.length > 1
+                        ? () => _selectSearchService(context)
+                        : null,
+                  )
+                : // replace connectedServices with allowedServices
+                IconButton(
+                    icon: Icon(Icons.music_note),
+                    onPressed: player.connectedServices.isNotEmpty
+                        ? () => _selectSearchService(context)
+                        : null,
+                  ), // replace connectedServices with allowedServices
           ],
         ),
         body: PropertyChangeProvider(
@@ -141,6 +154,58 @@ class _RoomState extends State<Room> {
 
     if (result != null) {
       player.addSong(result);
+    }
+  }
+
+  Future<void> _selectSearchService(BuildContext context) async {
+    switch (await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            // title: const Text('Select Search Service'),
+            children: <Widget>[
+              player.searchService != null
+                  ? ListTile(
+                      leading: ImageIcon(
+                          AssetImage(player.searchService.iconImagePath)),
+                      title: Text(player.searchService.name),
+                    )
+                  : Container(),
+              Divider(),
+              ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: player.connectedServices
+                    .length, // replace connectedServices with allowedServices
+                itemBuilder: (BuildContext context, int index) {
+                  if (player.connectedServices[index].name !=
+                      player.searchService.name) {
+                    return SimpleDialogOption(
+                      onPressed: () {
+                        player.searchService = player.connectedServices[
+                            index]; // replace connectedServices with allowedServices
+                        Navigator.pop(
+                            context, player.connectedServices[index].name);
+                      }, // replace connectedServices with allowedServices
+                      child: ListTile(
+                        leading: ImageIcon(AssetImage(player
+                            .connectedServices[index]
+                            .iconImagePath)), // replace connectedServices with allowedServices
+                        title: Text(player.connectedServices[index]
+                            .name), // replace connectedServices with allowedServices
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          );
+        })) {
+      case Service.SPOTIFY:
+        // ...
+        break;
+      case Service.SOUNDCLOUD:
+        // ...
+        break;
     }
   }
 

@@ -68,22 +68,43 @@ class _SearchState extends State<Search> {
             child: (_isConnected)
                 ? searchWidget(context)
                 : Center(
-                    child: Text(
-                        'Please connect to a streaming service first')), // This might not be necessary because guests shouldn't have to connect.
+                    child: Text('Please connect to a streaming service first',
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ), // This might not be necessary because guests shouldn't have to connect.
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              // Add your onPressed code here!
-            },
-            label: Text('Spotify'),
-            icon: ImageIcon(
-              AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
-            ),
-            backgroundColor: Theme.of(context).primaryColor,
-          ),
+          floatingActionButton: _getFAB(),
+          // floatingActionButton: FloatingActionButton.extended(
+          //   onPressed: null,
+          //   label: Text('Spotify'),
+          //   icon: ImageIcon(
+          //     AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
+          //   ),
+          // ),
         ),
       ),
     );
+  }
+
+  Widget _getFAB() {
+    if (_player.searchService != null) {
+      return FloatingActionButton.extended(
+        onPressed: null,
+        // label: Text('Spotify'),
+        // icon: ImageIcon(
+        //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
+        // ),
+        label: Text(_player.searchService.name),
+        icon: ImageIcon(AssetImage(_player.searchService.iconImagePath)),
+        backgroundColor: Theme.of(context).primaryColor,
+      );
+    } else {
+      return FloatingActionButton.extended(
+        onPressed: null,
+        label: Text('No Service'),
+        icon: Icon(Icons.error_outline),
+        backgroundColor: Theme.of(context).primaryColor,
+      );
+    }
   }
 
   Widget searchWidget(BuildContext context) {

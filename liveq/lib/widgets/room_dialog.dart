@@ -48,7 +48,6 @@ Future<void> createRoomDialog(
     BuildContext context, TextEditingController myController) async {
   return showDialog<void>(
     context: context,
-    // barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
         // title: Text('Enter Room Name'),
