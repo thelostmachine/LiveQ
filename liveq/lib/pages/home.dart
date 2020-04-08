@@ -31,7 +31,7 @@ class Home extends StatelessWidget {
                 children: <Widget>[
                   NextButton('JOIN A ROOM',
                       () => joinRoomDialog(context, myController)),
-                  NextButton('CREATE NEW ROOM', () => {}),
+                  NextButton('CREATE NEW ROOM', () => () => createRoomDialog(context, myController))),
                 ],
               ),
             ),
