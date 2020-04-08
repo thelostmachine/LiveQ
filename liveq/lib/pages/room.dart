@@ -52,24 +52,6 @@ class _RoomState extends State<Room> {
           // title: Text(args.roomName),
           title: Text('Room Name'),
           actions: <Widget>[
-            // DropdownButton<String>(
-            //   value: _currentService,
-            //   icon: Icon(Icons.arrow_drop_down),
-            //   iconSize: 24,
-            //   elevation: 16,
-            //   onChanged: (String newValue) {
-            //     setState(() {
-            //       // _currentService = newValue;
-            //     });
-            //   },
-            //   items: <String>['One', 'Two', 'Free', 'Four'] // list of icons maybe?
-            //       .map<DropdownMenuItem<String>>((String value) {
-            //     return DropdownMenuItem<String>(
-            //       value: value,
-            //       child: Text(value),
-            //     );
-            //   }).toList(),
-            // ),
             IconButton(
               icon: Icon(Icons.music_note),
               onPressed: () => Navigator.pushNamed(context, '/connect_services')
