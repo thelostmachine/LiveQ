@@ -33,7 +33,7 @@ Future<void> joinRoomDialog(
                   '/room',
                   arguments: RoomArguments(
                     myController.text,
-                    'test',
+                    'Room Name',
                     false,
                   ),
                 );
@@ -48,7 +48,6 @@ Future<void> createRoomDialog(
     BuildContext context, TextEditingController myController) async {
   return showDialog<void>(
     context: context,
-    // barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
         // title: Text('Enter Room Name'),
@@ -70,7 +69,15 @@ Future<void> createRoomDialog(
               child: const Text('SUBMIT'),
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/room');
+                Navigator.pushNamed(
+                  context,
+                  '/room',
+                  arguments: RoomArguments(
+                    'abcd1234',
+                    myController.text,
+                    true,
+                  ),
+                );
               })
         ],
       );

@@ -10,12 +10,11 @@ import 'package:spotify/spotify.dart';
 import 'package:liveq/utils/song.dart';
 
 abstract class Service {
-
   static const String SOUNDCLOUD = 'SoundCloud';
   static const String SPOTIFY = 'Spotify';
   static const String APPLE = 'Apple Music';
 
-  // final List<String>  
+  // final List<String>
 
   String name;
   // bool connected;
@@ -45,7 +44,6 @@ abstract class Service {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (!connectedServices.contains(this)) {
-
       List<String> serviceStrings = List();
       connectedServices.forEach((s) {
         serviceStrings.add(s.name);
@@ -94,7 +92,6 @@ abstract class Service {
 }
 
 class SoundCloud extends Service {
-
   final String name = Service.SOUNDCLOUD;
 
   final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
@@ -126,17 +123,18 @@ class SoundCloud extends Service {
     // TODO: implement play
     throw UnimplementedError();
   }
-  
+
   @override
   Future<void> resume() {
     // TODO: implement resume
     throw UnimplementedError();
   }
-  
+
   @override
   Future<List<Song>> search(String query) async {
     List<Song> searchResults = List();
-    String search = 'https://api-v2.soundcloud.com/search?q=porter%20robinson&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
+    String search =
+        'https://api-v2.soundcloud.com/search?q=porter%20robinson&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
     // String search = 'https://api-v2.soundcloud.com/search/queries?q=';
     // search += formatSearch(query);
     // search += '&client_id=$clientId';
@@ -147,9 +145,8 @@ class SoundCloud extends Service {
 
     // search = 'https://api-v2.soundcloud.com/search?q=juice%20wrld&sc_a_id=8518dae7c71781e17004bb10b29a999e555ad4ce&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
 
-    var response = await http.get(search, headers: {
-      'Accept': 'application/json'
-    });
+    var response =
+        await http.get(search, headers: {'Accept': 'application/json'});
 
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -192,12 +189,11 @@ class SoundCloud extends Service {
   String formatSearch(String query) {
     return query.replaceAll(' ', '%20');
   }
-  
 }
 
 class Spotify extends Service {
   final String name = Service.SPOTIFY;
-  final String iconImagePath = 'assets\images\Spotify_Icon_RGB_Green.png';
+  final String iconImagePath = 'assets/images/Spotify_Icon_RGB_Green.png';
 
   // Developer tokens. DO NOT CHANGE
   final String clientId = '03237b2409b24752a3f0c33262ad2d02';
@@ -275,24 +271,28 @@ class Spotify extends Service {
         .catchError((err) => print((err as SpotifyException).message));
 
     if (search != null) {
-      search.forEach((pages) {
-        pages.items.forEach((track) async {
-          if (track is Track) {
-            String id = track.id;
-            String uri = track.uri;
-            String trackName = track.name;
-            List<String> _artistNames =
-                track.artists.map((val) => val.name).toList();
-            String artists = _artistNames.join(", ");
-            String imageUri = track.album.images[1].url;
-            int duration = track.durationMs;
-            Service service = this;
+      search.forEach(
+        (pages) {
+          pages.items.forEach(
+            (track) async {
+              if (track is Track) {
+                String id = track.id;
+                String uri = track.uri;
+                String trackName = track.name;
+                List<String> _artistNames =
+                    track.artists.map((val) => val.name).toList();
+                String artists = _artistNames.join(", ");
+                String imageUri = track.album.images[1].url;
+                int duration = track.durationMs;
+                Service service = this;
 
-            searchResults.add(
-                Song(id, uri, trackName, artists, imageUri, duration, service));
-          }
-        });
-      });
+                searchResults.add(Song(
+                    id, uri, trackName, artists, imageUri, duration, service));
+              }
+            },
+          );
+        },
+      );
     }
 
     return searchResults;
@@ -300,9 +300,8 @@ class Spotify extends Service {
 }
 
 class Apple extends Service {
-
   final String name = Service.APPLE;
-  final String iconImagePath = 'assets\images\Apple_Music_Icon.psd';
+  final String iconImagePath = 'assets/images/Apple_Music_Icon.psd';
 
   static final Service _apple = Apple._internal();
 
@@ -320,20 +319,19 @@ class Apple extends Service {
 
   @override
   Future<void> play(String uri) {
-      // TODO: implement play
-      throw UnimplementedError();
-    }
-  
-    @override
-    Future<void> resume() {
-      // TODO: implement resume
-      throw UnimplementedError();
-    }
-  
-    @override
-    Future<List<Song>> search(String uri) {
+    // TODO: implement play
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> resume() {
+    // TODO: implement resume
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Song>> search(String uri) {
     // TODO: implement search
     throw UnimplementedError();
   }
-  
 }

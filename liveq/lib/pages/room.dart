@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:liveq/pages/search.dart';
 import 'package:liveq/utils/player.dart';
+import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
@@ -19,7 +20,7 @@ class _RoomState extends State<Room> {
   @override
   void initState() {
     super.initState();
-    // TODO: Change quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
+    // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
     Future.delayed(Duration.zero, () {
       setState(() {
         args = ModalRoute.of(context).settings.arguments;
@@ -30,7 +31,8 @@ class _RoomState extends State<Room> {
     // initialize and subscribe to server stream of songs in queue
     player.connectToCachedServices(() {
       setState(() {
-        _availableServices = player.connectedServices.map((e) => e.name).toList();
+        _availableServices =
+            player.connectedServices.map((e) => e.name).toList();
       });
     });
   }
@@ -51,24 +53,6 @@ class _RoomState extends State<Room> {
           // title: Text(args.roomName),
           title: Text('Room Name'),
           actions: <Widget>[
-            // DropdownButton<String>(
-            //   value: _currentService,
-            //   icon: Icon(Icons.arrow_drop_down),
-            //   iconSize: 24,
-            //   elevation: 16,
-            //   onChanged: (String newValue) {
-            //     setState(() {
-            //       // _currentService = newValue;
-            //     });
-            //   },
-            //   items: <String>['One', 'Two', 'Free', 'Four'] // list of icons maybe?
-            //       .map<DropdownMenuItem<String>>((String value) {
-            //     return DropdownMenuItem<String>(
-            //       value: value,
-            //       child: Text(value),
-            //     );
-            //   }).toList(),
-            // ),
             IconButton(
               icon: Icon(Icons.music_note),
               onPressed: () => Navigator.pushNamed(context, '/connect_services')
@@ -80,13 +64,25 @@ class _RoomState extends State<Room> {
                 }
               }),
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () => _searchSong(context),
-              ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => _searchSong(context),
             ),
+            player.searchService != null
+                ? IconButton(
+                    icon: ImageIcon(
+                        AssetImage(player.searchService.iconImagePath)),
+                    onPressed: player.connectedServices.length > 1
+                        ? () => _selectSearchService(context)
+                        : null,
+                  )
+                : // replace connectedServices with allowedServices
+                IconButton(
+                    icon: Icon(Icons.music_note),
+                    onPressed: player.connectedServices.isNotEmpty
+                        ? () => _selectSearchService(context)
+                        : null,
+                  ), // replace connectedServices with allowedServices
           ],
         ),
         body: PropertyChangeProvider(
@@ -161,6 +157,60 @@ class _RoomState extends State<Room> {
     }
   }
 
+  Future<void> _selectSearchService(BuildContext context) async {
+    switch (await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            // title: const Text('Select Search Service'),
+            children: <Widget>[
+              player.searchService != null
+                  ? ListTile(
+                      leading: ImageIcon(
+                          AssetImage(player.searchService.iconImagePath)),
+                      title: Text(player.searchService.name),
+                    )
+                  : Container(),
+              Divider(),
+              ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: player.connectedServices
+                    .length, // replace connectedServices with allowedServices
+                itemBuilder: (BuildContext context, int index) {
+                  return player.connectedServices[index].name !=
+                          player.searchService.name
+                      ? SimpleDialogOption(
+                          onPressed: () {
+                            setState(() {
+                              player.searchService = player.connectedServices[
+                                  index]; // replace connectedServices with allowedServices
+                            });
+                            Navigator.pop(
+                                context, player.connectedServices[index].name);
+                          }, // replace connectedServices with allowedServices
+                          child: ListTile(
+                            leading: ImageIcon(AssetImage(player
+                                .connectedServices[index]
+                                .iconImagePath)), // replace connectedServices with allowedServices
+                            title: Text(player.connectedServices[index]
+                                .name), // replace connectedServices with allowedServices
+                          ),
+                        )
+                      : null;
+                },
+              ),
+            ],
+          );
+        })) {
+      case Service.SPOTIFY:
+        // ...
+        break;
+      case Service.SOUNDCLOUD:
+        // ...
+        break;
+    }
+  }
+
   Widget _queueListView(BuildContext context) {
     return PropertyChangeConsumer<Player>(
       properties: [ModelProperties.queue],
@@ -170,21 +220,6 @@ class _RoomState extends State<Room> {
             physics: BouncingScrollPhysics(),
             itemCount: queue.length,
             itemBuilder: (context, index) {
-              // Song track = queue[index];
-
-              // return ListTile(
-              //   title: Text(track.trackName),
-              //   subtitle: Text(track.artists),
-              //   leading: ConstrainedBox(
-              //       constraints: BoxConstraints(
-              //         minWidth: 44,
-              //         minHeight: 44,
-              //         maxWidth: 64,
-              //         maxHeight: 64,
-              //       ),
-              //       child: track.cachedImage),
-              //   trailing: Text(Song.parseDuration(track)),
-              // );
               return SongTile(song: queue[index]);
             });
       },

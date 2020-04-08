@@ -7,16 +7,36 @@ import 'pages/room.dart';
 import 'pages/search.dart';
 import 'pages/connect_services.dart';
 
-void main() =>
-    runApp(MaterialApp(title: 'LiveQ', initialRoute: '/room', routes: {
-      '/home': (context) => Home(),
-      '/room': (context) => Room(),
-      '/search': (context) => Search(),
-      '/connect_services': (context) => ConnectServices(),
-      '/sound': (context) => SoundCloud(),
-    }));
-
-
+void main() => runApp(
+      MaterialApp(
+        title: 'LiveQ',
+        theme: ThemeData(
+          primarySwatch: MaterialColor(
+            Colors.red[400].value,
+            <int, Color>{
+              50: Colors.red[50],
+              100: Colors.red[50],
+              200: Colors.red[100],
+              300: Colors.red[200],
+              400: Colors.red[300],
+              500: Colors.red[400],
+              600: Colors.red[500],
+              700: Colors.red[600],
+              800: Colors.red[700],
+              900: Colors.red[800],
+            },
+          ),
+        ),
+        initialRoute: '/room',
+        routes: {
+          '/home': (context) => Home(),
+          '/room': (context) => Room(),
+          '/search': (context) => Search(),
+          '/connect_services': (context) => ConnectServices(),
+          '/sound': (context) => SoundCloud(),
+        },
+      ),
+    );
 
 class SoundCloud extends StatefulWidget {
   @override
@@ -47,11 +67,9 @@ class SoundCloudState extends State<SoundCloud> {
       ).toString(),
       withJavascript: true,
       bottomNavigationBar: BottomAppBar(
-        child: RaisedButton(
-          child: Text('Hide'),
-          onPressed: () => flutterWebviewPlugin.hide()
-        )
-      ),
+          child: RaisedButton(
+              child: Text('Hide'),
+              onPressed: () => flutterWebviewPlugin.hide())),
     );
   }
 }

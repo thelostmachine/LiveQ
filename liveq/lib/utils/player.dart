@@ -13,6 +13,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   Song _currentSong;
   Service _currentService;
   Service searchService;
+  // List<Service> allowedServices; // passed in through server data for guest/host?
 
   /// List of services we can connect to
   get potentialServices {
@@ -23,7 +24,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   List<Service> get connectedServices {
     return Service.connectedServices;
   }
-  
+
   // Service get _currentService {
   //   __currentService.isConnected.then((connected) {
   //     if (!connected) {
@@ -109,19 +110,21 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       resume();
     }
   }
-  
+
   Future<List<Song>> search(String query) async {
     return searchService.search(query);
   }
 
   void connectToCachedServices(VoidCallback callback) async {
-    Service.canConnectToPreviousService().then((availableServices) async {
-      if (availableServices != null) {
-        Service firstServiceInList = await Service.loadServices();
-        setService(firstServiceInList);
+    Service.canConnectToPreviousService().then(
+      (availableServices) async {
+        if (availableServices != null) {
+          Service firstServiceInList = await Service.loadServices();
+          setService(firstServiceInList);
 
-        callback();
-      }
-    });
+          callback();
+        }
+      },
+    );
   }
 }

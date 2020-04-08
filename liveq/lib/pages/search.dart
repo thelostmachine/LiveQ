@@ -68,12 +68,43 @@ class _SearchState extends State<Search> {
             child: (_isConnected)
                 ? searchWidget(context)
                 : Center(
-                    child: Text(
-                        'Please connect to a streaming service first')), // This might not be necessary because guests shouldn't have to connect.
+                    child: Text('Please connect to a streaming service first',
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ), // This might not be necessary because guests shouldn't have to connect.
           ),
+          floatingActionButton: _getFAB(),
+          // floatingActionButton: FloatingActionButton.extended(
+          //   onPressed: null,
+          //   label: Text('Spotify'),
+          //   icon: ImageIcon(
+          //     AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
+          //   ),
+          // ),
         ),
       ),
     );
+  }
+
+  Widget _getFAB() {
+    if (_player.searchService != null) {
+      return FloatingActionButton.extended(
+        onPressed: null,
+        // label: Text('Spotify'),
+        // icon: ImageIcon(
+        //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
+        // ),
+        label: Text(_player.searchService.name),
+        icon: ImageIcon(AssetImage(_player.searchService.iconImagePath)),
+        backgroundColor: Theme.of(context).primaryColor,
+      );
+    } else {
+      return FloatingActionButton.extended(
+        onPressed: null,
+        label: Text('No Service'),
+        icon: Icon(Icons.error_outline),
+        backgroundColor: Theme.of(context).primaryColor,
+      );
+    }
   }
 
   Widget searchWidget(BuildContext context) {
@@ -85,33 +116,6 @@ class _SearchState extends State<Search> {
             song: items[index],
             onTap: () => Navigator.of(context).pop(items[index]));
       },
-
-      // return ListView.builder(
-      //   // shrinkWrap: true,
-      //   itemCount: items.length,
-      //   itemBuilder: (context, index) {
-      //     Song track = items[index];
-      //     Image image = Image.network(track.imageUri);
-
-      //     return ListTile(
-      //       title: Text(track.trackName),
-      //       subtitle: Text(track.artists),
-      //       leading: ConstrainedBox(
-      //           constraints: BoxConstraints(
-      //             minWidth: 44,
-      //             minHeight: 44,
-      //             maxWidth: 64,
-      //             maxHeight: 64,
-      //           ),
-      //           child: image),
-      //       trailing: Text(track.service.name),
-      //       onTap: () {
-      //         // Cache the image if it's being added to the queue so we don't have to make another network call
-      //         track.cacheImage(image);
-      //         Navigator.of(context).pop(track);
-      //       },
-      //     );
-      //   },
     );
   }
 

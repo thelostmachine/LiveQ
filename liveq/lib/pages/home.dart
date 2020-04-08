@@ -13,18 +13,28 @@ class Home extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'LiveQ',
-              style: Theme.of(context).textTheme.headline4.merge(
-                    TextStyle(fontWeight: FontWeight.bold),
-                  ),
+            Container(
+              height: MediaQuery.of(context).size.height / 1.5,
+              child: Center(
+                child: Text(
+                  'LiveQ',
+                  style: Theme.of(context).textTheme.headline4.merge(
+                        TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                ),
+              ),
             ),
-            SizedBox(height: 150),
-            NextButton(
-                'JOIN A ROOM', () => joinRoomDialog(context, myController)),
-            NextButton('CREATE NEW ROOM', () => {}),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  NextButton('JOIN A ROOM',
+                      () => joinRoomDialog(context, myController)),
+                  NextButton('CREATE NEW ROOM', () => () => createRoomDialog(context, myController))),
+                ],
+              ),
+            ),
           ],
         ),
       ),

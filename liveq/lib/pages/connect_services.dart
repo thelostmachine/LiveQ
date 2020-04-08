@@ -7,7 +7,6 @@ import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:liveq/utils/player.dart';
 
 class ConnectServices extends StatefulWidget {
-
   final Player player = Player();
 
   @override
@@ -54,38 +53,36 @@ class _ConnectServicesState extends State<ConnectServices> {
 
                         widget.player.potentialServices[0].connect();
 
-                    setState(() {
-                      _loading = false;
-                    });
-                  },
-                  icon: Icon(MdiIcons.spotify),
-                  label: Text('Spotify')
-                ),
-                RaisedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(MdiIcons.music),
-                  label: Text('SoundCloud'),
-                ),
-              ],
-            ),
-            _loading
-              ? Container(
-                color: Colors.black12,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('Connecting...'),
-                      SizedBox(height: 10),
-                      CircularProgressIndicator()
-                    ],
-                  )
-                )
-              )
-              : SizedBox(),
-          ],
-        );
-      }
-    );
+                        setState(() {
+                          _loading = false;
+                        });
+                      },
+                      icon: Icon(MdiIcons.spotify),
+                      label: Text('Spotify')),
+                  RaisedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(MdiIcons.music),
+                    label: Text('SoundCloud'),
+                  ),
+                ],
+              ),
+              _loading
+                  ? Container(
+                      color: Colors.black12,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Connecting...'),
+                            SizedBox(height: 10),
+                            CircularProgressIndicator()
+                          ],
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
+            ],
+          );
+        });
   }
 }
