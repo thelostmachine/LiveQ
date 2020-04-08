@@ -20,7 +20,7 @@ class _RoomState extends State<Room> {
   @override
   void initState() {
     super.initState();
-    // TODO: Change quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
+    // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
     Future.delayed(Duration.zero, () {
       setState(() {
         args = ModalRoute.of(context).settings.arguments;
@@ -181,8 +181,10 @@ class _RoomState extends State<Room> {
                           player.searchService.name
                       ? SimpleDialogOption(
                           onPressed: () {
-                            player.searchService = player.connectedServices[
-                                index]; // replace connectedServices with allowedServices
+                            setState(() {
+                              player.searchService = player.connectedServices[
+                                  index]; // replace connectedServices with allowedServices
+                            });
                             Navigator.pop(
                                 context, player.connectedServices[index].name);
                           }, // replace connectedServices with allowedServices
