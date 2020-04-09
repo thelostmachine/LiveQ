@@ -44,13 +44,21 @@ class _ConnectServicesState extends State<ConnectServices> {
             separatorBuilder: (BuildContext context, int index) =>
                 Divider(height: 1),
             itemBuilder: (BuildContext context, int index) {
-              return Service.potentialServices[index].isConnected == true
+              return Service.connectedServices
+                          .contains(Service.potentialServices[index]) ==
+                      true
                   ? CheckboxListTile(
                       title: Text(Service.potentialServices[index].name),
-                      // value: Service.selectedServices.contains(Service.potentialServices[index]),
-                      // selected: Service.selectedServices.contains(Service.potentialServices[index]),
+                      value: Service.selectedServices
+                          .contains(Service.potentialServices[index]),
                       onChanged: (bool value) {
-                        setState(() {});
+                        setState(() {
+                          value
+                              ? Service.selectedServices
+                                  .remove(Service.potentialServices[index])
+                              : Service.selectedServices
+                                  .add(Service.potentialServices[index]);
+                        });
                       },
                       secondary:
                           Service.potentialServices[index].getImageIcon(),
@@ -59,8 +67,8 @@ class _ConnectServicesState extends State<ConnectServices> {
                       children: <Widget>[
                         CheckboxListTile(
                           title: Text(Service.potentialServices[index].name),
-                          // value: false,
-                          // selected: false,
+                          value: Service.selectedServices
+                              .contains(Service.potentialServices[index]),
                           onChanged: null,
                           secondary:
                               Service.potentialServices[index].getImageIcon(),
@@ -68,6 +76,7 @@ class _ConnectServicesState extends State<ConnectServices> {
                         Row(
                           children: <Widget>[
                             LinkText(() => {}),
+                            // Launch circular progress indicator when link is clicked - error icon displayed if connecting failed
                           ],
                         )
                       ],
@@ -83,7 +92,11 @@ class _ConnectServicesState extends State<ConnectServices> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 FlatButton(
-                  onPressed: () => {},
+                  onPressed: Service.canCreateRoom()
+                      ? () => {
+                            //Service.saveService(); // save selected and connected services
+                          }
+                      : null,
                   child: Row(
                     children: <Widget>[
                       const Text('DONE'),

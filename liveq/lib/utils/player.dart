@@ -13,7 +13,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   Song _currentSong;
   Service _currentService;
   Service searchService;
-  // List of services allowed in the room
+  // Set of services allowed in the room
   // Set<Service> allowedServices; // passed in through server data for guest/host?
 
   /// List of services we can connect to
@@ -21,8 +21,8 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     return Service.potentialServices;
   }
 
-  /// List of services we are connected to
-  List<Service> get connectedServices {
+  /// Set of services we are connected to
+  Set<Service> get connectedServices {
     return Service.connectedServices;
   }
 
@@ -67,11 +67,13 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   void play(Song song) async {
     if (song != null) {
       _currentSong = song;
-      _currentSong.service.play(_currentSong.uri);
+      _currentService = _currentSong.service;
+      _currentService.play(_currentSong.uri);
       state = PlayerState.playing;
-    } else {
-      resume();
     }
+    // else {
+    //   resume();
+    // }
   }
 
   void resume() {
@@ -97,7 +99,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   void next() async {
-    if (queue != null && queue.length > 0) {
+    if (queue != null && queue.length > 1) {
       Song nextSong = getNextSong();
 
       // Stop playing the current song on the current service if we're switching Services
@@ -107,11 +109,12 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
       _currentSong = nextSong;
       _currentService = _currentSong.service;
-      state = PlayerState.playing;
       _currentService.play(_currentSong.uri);
-    } else {
-      resume();
+      state = PlayerState.playing;
     }
+    // else {
+    //   resume();
+    // }
   }
 
   Future<List<Song>> search(String query) async {

@@ -175,21 +175,24 @@ class _RoomState extends State<Room> {
                 itemCount: player.connectedServices
                     .length, // replace connectedServices with allowedServices
                 itemBuilder: (BuildContext context, int index) {
-                  return player.connectedServices[index].name !=
+                  return player.connectedServices.toList()[index].name !=
                           player.searchService.name
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
-                              player.searchService = player.connectedServices[
+                              player.searchService = player.connectedServices
+                                      .toList()[
                                   index]; // replace connectedServices with allowedServices
                             });
-                            Navigator.pop(
-                                context, player.connectedServices[index].name);
+                            Navigator.pop(context,
+                                player.connectedServices.toList()[index].name);
                           }, // replace connectedServices with allowedServices
                           child: ListTile(
-                            leading: player.connectedServices[index]
+                            leading: player.connectedServices
+                                .toList()[index]
                                 .getImageIcon(), // replace connectedServices with allowedServices
-                            title: Text(player.connectedServices[index]
+                            title: Text(player.connectedServices
+                                .toList()[index]
                                 .name), // replace connectedServices with allowedServices
                           ),
                         )

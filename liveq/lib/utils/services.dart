@@ -22,7 +22,7 @@ abstract class Service {
   // Future<bool> get isConnected;
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
-  static List<Service> connectedServices = List();
+  static Set<Service> connectedServices = {};
   static Set<Service> selectedServices = {};
 
   String iconImagePath;
@@ -72,7 +72,9 @@ abstract class Service {
       }
     }
 
-    return (connectedServices.length > 0) ? connectedServices[0] : null;
+    return (connectedServices.length > 0)
+        ? connectedServices.toList()[0]
+        : null;
   }
 
   static Service fromString(String s) {
@@ -90,6 +92,15 @@ abstract class Service {
     }
 
     return service;
+  }
+
+  static bool canCreateRoom() {
+    if (selectedServices.isNotEmpty &&
+        connectedServices.containsAll(selectedServices)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
