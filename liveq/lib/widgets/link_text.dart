@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
 class LinkText extends StatefulWidget {
+  final String content;
   final VoidCallback _handleTap;
-  LinkText(this._handleTap);
+  LinkText(this.content, this._handleTap);
 
   @override
   _LinkTextState createState() => _LinkTextState();
@@ -28,7 +29,7 @@ class _LinkTextState extends State<LinkText> {
   Widget build(BuildContext context) {
     return RichText(
       text: TextSpan(
-        text: 'LINK',
+        text: widget.content,
         style: TextStyle(
           color: Colors.blueAccent,
         ),

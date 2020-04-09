@@ -62,20 +62,17 @@ class _ConnectServicesState extends State<ConnectServices> {
                     )
                   : Column(
                       children: <Widget>[
-                        CheckboxListTile(
+                        ListTile(
                           title: Text(Service.potentialServices[index].name),
-                          value: Service.connectedServices
-                              .contains(Service.potentialServices[index]),
-                          onChanged: null,
-                          secondary:
+                          leading:
                               Service.potentialServices[index].getImageIcon(),
+                          trailing: Row(
+                            children: <Widget>[
+                              // Launch circular progress indicator when link is clicked - error icon displayed if connecting failed
+                              LinkText('LINK', () => {}),
+                            ],
+                          ),
                         ),
-                        Row(
-                          children: <Widget>[
-                            LinkText(() => {}),
-                            // Launch circular progress indicator when link is clicked - error icon displayed if connecting failed
-                          ],
-                        )
                       ],
                     );
             },
@@ -108,6 +105,8 @@ class _ConnectServicesState extends State<ConnectServices> {
       ],
     );
   }
+
+  void linkService() async {}
 
   /// use a ListView.Builder using player.potentialServices
   /// use player.potentialServices[index].connect() to connect. It'll set the service
