@@ -23,7 +23,6 @@ abstract class Service {
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
   static Set<Service> connectedServices = {};
-  static Set<Service> selectedServices = {};
 
   String iconImagePath;
 
@@ -95,12 +94,7 @@ abstract class Service {
   }
 
   static bool canCreateRoom() {
-    if (selectedServices.isNotEmpty &&
-        connectedServices.containsAll(selectedServices)) {
-      return true;
-    } else {
-      return false;
-    }
+    return connectedServices.isNotEmpty ? true : false;
   }
 }
 

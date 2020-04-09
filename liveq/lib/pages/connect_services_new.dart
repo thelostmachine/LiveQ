@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/crossfade_state.dart';
@@ -16,8 +15,6 @@ class ConnectServices extends StatefulWidget {
 class _ConnectServicesState extends State<ConnectServices> {
   bool _loading = false;
   bool _didConnect = false;
-
-  CrossfadeState crossfadeState;
 
   @override
   Widget build(BuildContext context) {
@@ -49,15 +46,15 @@ class _ConnectServicesState extends State<ConnectServices> {
                       true
                   ? CheckboxListTile(
                       title: Text(Service.potentialServices[index].name),
-                      value: Service.selectedServices
+                      value: Service.connectedServices
                           .contains(Service.potentialServices[index]),
                       onChanged: (bool value) {
                         setState(() {
                           value
-                              ? Service.selectedServices
-                                  .remove(Service.potentialServices[index])
-                              : Service.selectedServices
-                                  .add(Service.potentialServices[index]);
+                              ? Service.connectedServices
+                                  .add(Service.potentialServices[index])
+                              : Service.connectedServices
+                                  .remove(Service.potentialServices[index]);
                         });
                       },
                       secondary:
@@ -67,7 +64,7 @@ class _ConnectServicesState extends State<ConnectServices> {
                       children: <Widget>[
                         CheckboxListTile(
                           title: Text(Service.potentialServices[index].name),
-                          value: Service.selectedServices
+                          value: Service.connectedServices
                               .contains(Service.potentialServices[index]),
                           onChanged: null,
                           secondary:
@@ -94,7 +91,7 @@ class _ConnectServicesState extends State<ConnectServices> {
                 FlatButton(
                   onPressed: Service.canCreateRoom()
                       ? () => {
-                            //Service.saveService(); // save selected and connected services
+                            //Service.saveService(); // save connected services
                           }
                       : null,
                   child: Row(
