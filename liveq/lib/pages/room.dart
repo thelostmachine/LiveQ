@@ -59,7 +59,7 @@ class _RoomState extends State<Room> {
                   .then((didConnect) {
                 if (didConnect) {
                   setState(() {
-                    player.isConnected = true;
+                    // player.isConnected = true;
                   });
                 }
               }),
@@ -115,7 +115,7 @@ class _RoomState extends State<Room> {
                       ],
                     ),
                   ),
-                  child: (player.isConnected)
+                  child: (player.isConnected())
                       ? _musicPlayer(context)
                       : _connectionStatus(context), // PlayerPanel(),
                 ),

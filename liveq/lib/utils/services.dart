@@ -18,6 +18,7 @@ abstract class Service {
 
   String name;
   // bool connected;
+  bool isConnected = false;
   // Future<bool> get isConnected;
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];

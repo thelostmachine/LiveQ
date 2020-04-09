@@ -42,7 +42,6 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   List<Song> queue = List();
 
-  bool isConnected = false;
   PlayerState state = PlayerState.stopped;
 
   static final Player _player = Player._internal();
@@ -90,7 +89,10 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   void setService(Service service) {
     _currentService = service;
-    isConnected = true;
+  }
+
+  bool isConnected() {
+    return _currentService.isConnected;
   }
 
   void next() async {

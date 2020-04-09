@@ -18,7 +18,7 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
     // _player.setService(SoundCloud());
-    _isConnected = _player.isConnected;
+    _isConnected = _player.isConnected();
   }
 
   @override
