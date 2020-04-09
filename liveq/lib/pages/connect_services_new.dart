@@ -34,6 +34,8 @@ class _ConnectServicesState extends State<ConnectServices> {
       children: <Widget>[
         Text("Link and select your music services",
             style: Theme.of(context).textTheme.subtitle1),
+        Text("You must select at least one service to create a room.",
+            style: Theme.of(context).textTheme.bodyText2),
         Expanded(
           child: ListView.separated(
             physics: BouncingScrollPhysics(),
@@ -45,7 +47,8 @@ class _ConnectServicesState extends State<ConnectServices> {
               return Service.potentialServices[index].isConnected == true
                   ? CheckboxListTile(
                       title: Text(Service.potentialServices[index].name),
-                      // value: ,
+                      // value: selectedServices.contains(Service.potentialServices[index]),
+                      // selected: selectedServices.contains(Service.potentialServices[index]),
                       onChanged: (bool value) {
                         setState(() {});
                       },
@@ -56,7 +59,8 @@ class _ConnectServicesState extends State<ConnectServices> {
                       children: <Widget>[
                         CheckboxListTile(
                           title: Text(Service.potentialServices[index].name),
-                          // value: ,
+                          // value: false,
+                          // selected: false,
                           onChanged: null,
                           secondary:
                               Service.potentialServices[index].getImageIcon(),
