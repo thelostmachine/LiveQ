@@ -7,8 +7,6 @@ import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:liveq/utils/services.dart';
 
 class ConnectServices extends StatefulWidget {
-  final Player player = Player();
-
   @override
   _ConnectServicesState createState() => _ConnectServicesState();
 }
@@ -24,10 +22,6 @@ class _ConnectServicesState extends State<ConnectServices> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Music Services'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(_didConnect),
-        ),
       ),
       body: _flowWidget(context),
     );
@@ -47,7 +41,15 @@ class _ConnectServicesState extends State<ConnectServices> {
                 Divider(height: 1),
             itemBuilder: (BuildContext context, int index) {
               return Service.potentialServices[index].isConnected == true
-                  ? Text('test')
+                  ? CheckboxListTile(
+                      title: Text(Service.potentialServices[index].name),
+                      // value: ,
+                      onChanged: (bool value) {
+                        setState(() {});
+                      },
+                      secondary:
+                          Service.potentialServices[index].getImageIcon(),
+                    )
                   : Text('test');
             },
           ),
@@ -94,7 +96,7 @@ class _ConnectServicesState extends State<ConnectServices> {
                           _loading = true;
                         });
 
-                        widget.player.potentialServices[0].connect();
+                        Service.potentialServices[0].connect();
 
                         setState(() {
                           _loading = false;

@@ -94,7 +94,7 @@ class _SearchState extends State<Search> {
         //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
         // ),
         label: Text(_player.searchService.name),
-        icon: ImageIcon(AssetImage(_player.searchService.iconImagePath)),
+        icon: _player.searchService.getImageIcon(),
         backgroundColor: Theme.of(context).primaryColor,
       );
     } else {

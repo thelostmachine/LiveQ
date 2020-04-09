@@ -35,8 +35,8 @@ abstract class Service {
   Future<void> resume();
   Future<void> pause();
 
-  material.Image getImage() {
-    return material.Image(image: material.AssetImage(iconImagePath));
+  material.ImageIcon getImageIcon() {
+    return material.ImageIcon(material.AssetImage(iconImagePath));
   }
 
   Future<List<Song>> search(String query);

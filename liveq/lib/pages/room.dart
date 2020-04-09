@@ -70,8 +70,7 @@ class _RoomState extends State<Room> {
             ),
             player.searchService != null
                 ? IconButton(
-                    icon: ImageIcon(
-                        AssetImage(player.searchService.iconImagePath)),
+                    icon: player.searchService.getImageIcon(),
                     onPressed: player.connectedServices.length > 1
                         ? () => _selectSearchService(context)
                         : null,
@@ -166,8 +165,7 @@ class _RoomState extends State<Room> {
             children: <Widget>[
               player.searchService != null
                   ? ListTile(
-                      leading: ImageIcon(
-                          AssetImage(player.searchService.iconImagePath)),
+                      leading: player.searchService.getImageIcon(),
                       title: Text(player.searchService.name),
                     )
                   : Container(),
@@ -189,9 +187,8 @@ class _RoomState extends State<Room> {
                                 context, player.connectedServices[index].name);
                           }, // replace connectedServices with allowedServices
                           child: ListTile(
-                            leading: ImageIcon(AssetImage(player
-                                .connectedServices[index]
-                                .iconImagePath)), // replace connectedServices with allowedServices
+                            leading: player.connectedServices[index]
+                                .getImageIcon(), // replace connectedServices with allowedServices
                             title: Text(player.connectedServices[index]
                                 .name), // replace connectedServices with allowedServices
                           ),
