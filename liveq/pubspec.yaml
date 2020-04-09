@@ -60,6 +60,7 @@ flutter:
   assets:
     - assets/images/
     - assets/soundcloud.html
+    - assets/test.html
     # - images/a_dot_ham.jpeg
   # assets:
   #   - images/a_dot_burr.jpeg

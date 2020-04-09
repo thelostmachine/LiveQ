@@ -7,6 +7,7 @@ import 'song.dart';
 
 enum ModelProperties {
   queue,
+  soundcloudTrack,
 }
 
 class Player extends PropertyChangeNotifier<ModelProperties> {
@@ -54,6 +55,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   void addSong(Song song) {
+    print(song.trackName);
     queue.add(song);
     notifyListeners(ModelProperties.queue);
   }
@@ -64,11 +66,13 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     return next;
   }
 
-  void play(Song song) async {
+  Future play(Song song) async {
     if (song != null) {
       _currentSong = song;
-      _currentSong.service.play(_currentSong.uri);
+      _currentService = song.service;
       state = PlayerState.playing;
+
+      return _currentSong.service.play(_currentSong.uri);
     } else {
       resume();
     }
@@ -90,10 +94,11 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   void setService(Service service) {
     _currentService = service;
+    searchService = service;
     isConnected = true;
   }
 
-  void next() async {
+  Future next() async {
     if (queue != null && queue.length > 0) {
       Song nextSong = getNextSong();
 
@@ -102,16 +107,19 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
         _currentService.pause();
       }
 
-      _currentSong = nextSong;
-      _currentService = _currentSong.service;
-      state = PlayerState.playing;
-      _currentService.play(_currentSong.uri);
-    } else {
-      resume();
+      return play(nextSong);
     }
+
+    return null;
+  }
+
+  void connect(Service service) async {
+    service.connect();
+    setService(service);
   }
 
   Future<List<Song>> search(String query) async {
+    print('searching with ${searchService.name}');
     return searchService.search(query);
   }
 

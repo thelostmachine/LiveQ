@@ -30,8 +30,10 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   NextButton('JOIN A ROOM',
-                      () => joinRoomDialog(context, myController)),
-                  NextButton('CREATE NEW ROOM', () => () => createRoomDialog(context, myController))),
+                    () => joinRoomDialog(context, myController)),
+                  NextButton(
+                    'CREATE NEW ROOM',
+                    () => createRoomDialog(context, myController)),
                 ],
               ),
             ),

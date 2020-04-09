@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/client.dart';
 
 import 'package:liveq/utils/utils.dart';
 
@@ -26,15 +27,19 @@ Future<void> joinRoomDialog(
               }),
           FlatButton(
               child: const Text('SUBMIT'),
-              onPressed: () {
+              onPressed: () async {
+                String roomId = myController.text;
+                String roomName = await client.JoinRoom(roomId);
+                print('joining room $roomName');
+
                 Navigator.pop(context);
                 Navigator.pushNamed(
                   context,
                   '/room',
                   arguments: RoomArguments(
-                    myController.text,
-                    'Room Name',
-                    false,
+                    roomName: roomName,
+                    roomID: roomId,
+                    host: false
                   ),
                 );
               })
@@ -67,17 +72,23 @@ Future<void> createRoomDialog(
               }),
           FlatButton(
               child: const Text('SUBMIT'),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(
-                  context,
-                  '/room',
-                  arguments: RoomArguments(
-                    'abcd1234',
-                    myController.text,
-                    true,
-                  ),
-                );
+              onPressed: () async {
+                String roomName = myController.text;
+                print('creating $roomName');
+                String roomId = await Client().CreateRoom(roomName);
+
+                print('create room with id $roomId');
+
+                // Navigator.pop(context);
+                // Navigator.pushNamed(
+                //   context,
+                //   '/room',
+                //   arguments: RoomArguments(
+                //     roomName: roomName,
+                //     roomID: roomId,
+                //     host: true
+                //   ),
+                // );
               })
         ],
       );

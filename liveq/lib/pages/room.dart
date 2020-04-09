@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:liveq/pages/search.dart';
+import 'package:liveq/pages/soundcloud.dart' as SCWidget;
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
+import 'package:liveq/utils/services.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 
@@ -35,6 +37,9 @@ class _RoomState extends State<Room> {
             player.connectedServices.map((e) => e.name).toList();
       });
     });
+
+    // set soundcloud
+    player.connect(SoundCloud());
   }
 
   @override
@@ -44,14 +49,14 @@ class _RoomState extends State<Room> {
 
   @override
   Widget build(BuildContext context) {
-    // final RoomArguments args = ModalRoute.of(context).settings.arguments;
+    final RoomArguments args = ModalRoute.of(context).settings.arguments;
     final double _radius = 25.0;
     return WillPopScope(
       onWillPop: () => _onWillPop(),
       child: Scaffold(
         appBar: AppBar(
           // title: Text(args.roomName),
-          title: Text('Room Name'),
+          title: Text('${args.roomName} - ${args.roomID}'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.music_note),
@@ -235,7 +240,28 @@ class _RoomState extends State<Room> {
           children: <Widget>[
             RaisedButton(onPressed: () => player.resume(), child: Text('Play')),
             RaisedButton(onPressed: () => player.pause(), child: Text('Pause')),
-            RaisedButton(onPressed: () => player.next(), child: Text('Next')),
+            RaisedButton(
+              onPressed: () {
+                Future action = player.next();
+                action.then((value) {
+                  if (value is String) {
+                    // print('string');
+                    
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SCWidget.SoundCloud(value)
+                      )
+                    );
+                  }
+                });
+              },
+              child: Text('Next')
+            ),
+            Visibility(
+              child: SCWidget.SoundCloud('hi'),
+              visible: false,
+            )
           ],
         ));
   }

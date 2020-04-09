@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/utils.dart';
 
 Future<void> createRoomDialog(
     BuildContext context, TextEditingController myController) async {
@@ -24,9 +25,19 @@ Future<void> createRoomDialog(
               }),
           FlatButton(
               child: const Text('SUBMIT'),
-              onPressed: () {
+              onPressed: () async {
+                String roomName = myController.text;
+                String roomId = await client.CreateRoom(roomName);
+
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/room');
+                Navigator.pushNamed(
+                  context,
+                  '/room',
+                  arguments: RoomArguments(
+                    roomName: roomName,
+                    roomID: roomId,
+                    host: true
+                  ));
               })
         ],
       );
