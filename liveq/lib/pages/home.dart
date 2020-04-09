@@ -27,11 +27,12 @@ class Home extends StatelessWidget {
             ),
             Expanded(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  NextButton('CREATE NEW ROOM',
+                      () => () => createRoomDialog(context, myController)),
                   NextButton('JOIN A ROOM',
                       () => joinRoomDialog(context, myController)),
-                  NextButton('CREATE NEW ROOM', () => () => createRoomDialog(context, myController))),
                 ],
               ),
             ),
