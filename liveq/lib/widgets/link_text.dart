@@ -2,22 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
 class LinkText extends StatefulWidget {
-
   final VoidCallback _handleTap;
-  LinkText(this._handleTap)
+  LinkText(this._handleTap);
 
   @override
   _LinkTextState createState() => _LinkTextState();
 }
 
-class LinkTextState extends State<LinkText> {
+class _LinkTextState extends State<LinkText> {
   TapGestureRecognizer _tapGestureRecognizer;
 
   @override
   void initState() {
     super.initState();
-    _tapGestureRecognizer = TapGestureRecognizer()
-      ..onTap = widget._handleTap;
+    _tapGestureRecognizer = TapGestureRecognizer()..onTap = widget._handleTap;
   }
 
   @override

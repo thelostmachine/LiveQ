@@ -47,8 +47,8 @@ class _ConnectServicesState extends State<ConnectServices> {
               return Service.potentialServices[index].isConnected == true
                   ? CheckboxListTile(
                       title: Text(Service.potentialServices[index].name),
-                      // value: selectedServices.contains(Service.potentialServices[index]),
-                      // selected: selectedServices.contains(Service.potentialServices[index]),
+                      // value: Service.selectedServices.contains(Service.potentialServices[index]),
+                      // selected: Service.selectedServices.contains(Service.potentialServices[index]),
                       onChanged: (bool value) {
                         setState(() {});
                       },

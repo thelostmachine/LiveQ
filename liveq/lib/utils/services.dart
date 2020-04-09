@@ -23,6 +23,7 @@ abstract class Service {
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
   static List<Service> connectedServices = List();
+  static Set<Service> selectedServices = {};
 
   String iconImagePath;
 

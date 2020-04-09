@@ -14,7 +14,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   Service _currentService;
   Service searchService;
   // List of services allowed in the room
-  // List<Service> allowedServices; // passed in through server data for guest/host?
+  // Set<Service> allowedServices; // passed in through server data for guest/host?
 
   /// List of services we can connect to
   get potentialServices {
