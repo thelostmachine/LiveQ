@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/crossfade_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
+import 'package:liveq/widgets/link_text.dart';
 import 'package:liveq/utils/services.dart';
 
 class ConnectServices extends StatefulWidget {
@@ -50,7 +52,22 @@ class _ConnectServicesState extends State<ConnectServices> {
                       secondary:
                           Service.potentialServices[index].getImageIcon(),
                     )
-                  : Text('test');
+                  : Column(
+                      children: <Widget>[
+                        CheckboxListTile(
+                          title: Text(Service.potentialServices[index].name),
+                          // value: ,
+                          onChanged: null,
+                          secondary:
+                              Service.potentialServices[index].getImageIcon(),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            LinkText(() => {}),
+                          ],
+                        )
+                      ],
+                    );
             },
           ),
         ),
