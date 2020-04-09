@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:liveq/pages/search.dart';
 import 'package:liveq/pages/soundcloud.dart' as SCWidget;
+import 'package:liveq/utils/client.dart';
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
+import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/widgets/songtile.dart';
@@ -18,17 +22,11 @@ class _RoomState extends State<Room> {
   RoomArguments args;
   List<String> _availableServices;
   Player player = Player();
+  Timer timer;
 
   @override
   void initState() {
     super.initState();
-    // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
-    // Future.delayed(Duration.zero, () {
-    //   setState(() {
-    //     args = ModalRoute.of(context).settings.arguments;
-    //   });
-    // });
-    args = ModalRoute.of(context).settings.arguments;
 
     // if host send createRequest; else send joinRequest
     // initialize and subscribe to server stream of songs in queue
@@ -40,24 +38,28 @@ class _RoomState extends State<Room> {
     });
 
     // set soundcloud
-    player.connect(SoundCloud());
+    // player.connect(SoundCloud());
+
+    timer = Timer.periodic(Duration(milliseconds: 100), (_) => player.loadQueue());
   }
 
   @override
   void dispose() {
+    timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final RoomArguments args = ModalRoute.of(context).settings.arguments;
+    final RoomArguments args = ModalRoute.of(context).settings.arguments;
+
     final double _radius = 25.0;
     return WillPopScope(
       onWillPop: () => _onWillPop(),
       child: Scaffold(
         appBar: AppBar(
           // title: Text(args.roomName),
-          title: Text('${args.roomName} - ${args.roomID}'),
+          title: Text('${args.roomID}'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.music_note),

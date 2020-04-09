@@ -100,6 +100,7 @@ class SoundCloud extends Service {
 
   final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
   final String userId = '857371-474509-874152-946359';
+  final String iconImagePath = 'assets/images/soundcloud.png';
 
   static final Service _soundcloud = SoundCloud._internal();
 

@@ -7,8 +7,8 @@ enum PlayerState {
 }
 
 class RoomArguments {
-  final String roomID;
-  final String roomName;
+  String roomID = '';
+  String roomName = '';
   final bool host;
 
   RoomArguments({this.roomID, this.roomName, this.host});

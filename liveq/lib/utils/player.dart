@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/client.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
@@ -55,15 +56,23 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   void addSong(Song song) {
-    print(song.trackName);
-    queue.add(song);
-    notifyListeners(ModelProperties.queue);
+    client.AddSong(song);
   }
 
   Song getNextSong() {
-    Song next = queue.removeAt(0);
-    notifyListeners(ModelProperties.queue);
+    Song next = queue[0];
+    client.DeleteSong(next);
+
     return next;
+  }
+
+  loadQueue() async {
+    client.GetQueue().then((q) {
+      if (q != null) {
+        queue = q;
+        notifyListeners(ModelProperties.queue);
+      }
+    });
   }
 
   Future play(Song song) async {
@@ -93,6 +102,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   void setService(Service service) {
+    client.AddService(service.name);
     _currentService = service;
     searchService = service;
     isConnected = true;
