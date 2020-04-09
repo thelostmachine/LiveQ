@@ -23,11 +23,12 @@ class _RoomState extends State<Room> {
   void initState() {
     super.initState();
     // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
-    Future.delayed(Duration.zero, () {
-      setState(() {
-        args = ModalRoute.of(context).settings.arguments;
-      });
-    });
+    // Future.delayed(Duration.zero, () {
+    //   setState(() {
+    //     args = ModalRoute.of(context).settings.arguments;
+    //   });
+    // });
+    args = ModalRoute.of(context).settings.arguments;
 
     // if host send createRequest; else send joinRequest
     // initialize and subscribe to server stream of songs in queue
@@ -49,7 +50,7 @@ class _RoomState extends State<Room> {
 
   @override
   Widget build(BuildContext context) {
-    final RoomArguments args = ModalRoute.of(context).settings.arguments;
+    // final RoomArguments args = ModalRoute.of(context).settings.arguments;
     final double _radius = 25.0;
     return WillPopScope(
       onWillPop: () => _onWillPop(),

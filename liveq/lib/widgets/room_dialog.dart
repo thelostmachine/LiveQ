@@ -79,16 +79,16 @@ Future<void> createRoomDialog(
 
                 print('create room with id $roomId');
 
-                // Navigator.pop(context);
-                // Navigator.pushNamed(
-                //   context,
-                //   '/room',
-                //   arguments: RoomArguments(
-                //     roomName: roomName,
-                //     roomID: roomId,
-                //     host: true
-                //   ),
-                // );
+                Navigator.pop(context);
+                Navigator.pushNamed(
+                  context,
+                  '/room',
+                  arguments: RoomArguments(
+                    roomName: roomName,
+                    roomID: roomId,
+                    host: true
+                  ),
+                );
               })
         ],
       );

@@ -19,7 +19,7 @@ abstract class Service {
   // final List<String>
 
   String name;
-  // bool connected;
+  bool isConnected = false;
   // Future<bool> get isConnected;
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
@@ -30,6 +30,7 @@ abstract class Service {
   Future<bool> connect() async {
     connectedServices.add(this);
     await saveService();
+    isConnected = true;
     return Future.value(true);
   }
 
