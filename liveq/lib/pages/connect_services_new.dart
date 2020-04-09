@@ -4,7 +4,7 @@ import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/crossfade_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
-import 'package:liveq/utils/player.dart';
+import 'package:liveq/utils/services.dart';
 
 class ConnectServices extends StatefulWidget {
   final Player player = Player();
@@ -30,6 +30,49 @@ class _ConnectServicesState extends State<ConnectServices> {
         ),
       ),
       body: _flowWidget(context),
+    );
+  }
+
+  Widget _listPotentialServices(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text("Link and select your music services",
+            style: Theme.of(context).textTheme.subtitle1),
+        Expanded(
+          child: ListView.separated(
+            physics: BouncingScrollPhysics(),
+            itemCount: Service.potentialServices.length,
+            // itemExtent: 110,
+            separatorBuilder: (BuildContext context, int index) =>
+                Divider(height: 1),
+            itemBuilder: (BuildContext context, int index) {
+              return Service.potentialServices[index].isConnected == true
+                  ? Text('test')
+                  : Text('test');
+            },
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FlatButton(
+                  onPressed: () => {},
+                  child: Row(
+                    children: <Widget>[
+                      const Text('DONE'),
+                      Icon(Icons.done),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          ],
+        )
+      ],
     );
   }
 
