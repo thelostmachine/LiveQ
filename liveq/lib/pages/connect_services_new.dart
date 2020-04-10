@@ -17,11 +17,18 @@ class _ConnectServicesState extends State<ConnectServices> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Music Services'),
+    return WillPopScope(
+      onWillPop: () {
+        //Service.saveService(); // save connected services
+        Navigator.pop(context, true);
+        return Future.value(true);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Music Services'),
+        ),
+        body: _flowWidget(context),
       ),
-      body: _flowWidget(context),
     );
   }
 

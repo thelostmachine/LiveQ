@@ -23,7 +23,8 @@ abstract class Service {
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
   static Set<Service> connectedServices = {};
-  static Service defaultService;
+  static Service
+      defaultService; // set searchService and currentService to defaultService in room's init
 
   String iconImagePath;
 

@@ -13,6 +13,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   Song _currentSong;
   Service _currentService;
   Service searchService;
+
   // Set of services allowed in the room
   // Set<Service> allowedServices; // passed in through server data for guest/host?
 
