@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
-import 'package:spotify_sdk/models/crossfade_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 import 'package:liveq/widgets/link_text.dart';
@@ -29,9 +28,9 @@ class _ConnectServicesState extends State<ConnectServices> {
   Widget _listPotentialServices(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text("Link and select your music services",
+        Text("Link your music services, then select a default",
             style: Theme.of(context).textTheme.subtitle1),
-        Text("You must select at least one service to create a room.",
+        Text("You must link at least one service to create a room.",
             style: Theme.of(context).textTheme.bodyText2),
         Expanded(
           child: ListView.separated(
@@ -44,17 +43,14 @@ class _ConnectServicesState extends State<ConnectServices> {
               return Service.connectedServices
                           .contains(Service.potentialServices[index]) ==
                       true
-                  ? CheckboxListTile(
+                  ? RadioListTile(
                       title: Text(Service.potentialServices[index].name),
-                      value: Service.connectedServices
-                          .contains(Service.potentialServices[index]),
-                      onChanged: (bool value) {
+                      subtitle: const Text('Premium Subscription Active'),
+                      value: Service.potentialServices[index],
+                      groupValue: Service.defaultService,
+                      onChanged: (Service value) {
                         setState(() {
-                          value
-                              ? Service.connectedServices
-                                  .add(Service.potentialServices[index])
-                              : Service.connectedServices
-                                  .remove(Service.potentialServices[index]);
+                          Service.defaultService = value;
                         });
                       },
                       secondary:
@@ -62,16 +58,20 @@ class _ConnectServicesState extends State<ConnectServices> {
                     )
                   : Column(
                       children: <Widget>[
-                        ListTile(
+                        RadioListTile(
                           title: Text(Service.potentialServices[index].name),
-                          leading:
+                          subtitle: const Text('Premium Subscription Required'),
+                          value: Service.potentialServices[index],
+                          groupValue: Service.defaultService,
+                          onChanged: null,
+                          secondary:
                               Service.potentialServices[index].getImageIcon(),
-                          trailing: Row(
-                            children: <Widget>[
-                              // Launch circular progress indicator when link is clicked - error icon displayed if connecting failed
-                              LinkText('LINK', () => {}),
-                            ],
-                          ),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            LinkText('LINK', () => {}),
+                            // Launch circular progress indicator when link is clicked - error icon displayed if connecting failed
+                          ],
                         ),
                       ],
                     );
