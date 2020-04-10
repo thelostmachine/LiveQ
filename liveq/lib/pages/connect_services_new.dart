@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
@@ -27,7 +26,7 @@ class _ConnectServicesState extends State<ConnectServices> {
         appBar: AppBar(
           title: Text('Music Services'),
         ),
-        body: _flowWidget(context),
+        body: _listPotentialServices(context),
       ),
     );
   }
@@ -77,6 +76,9 @@ class _ConnectServicesState extends State<ConnectServices> {
                         Row(
                           children: <Widget>[
                             LinkText('LINK', () => {}),
+                            _loading == true
+                                ? CircularProgressIndicator()
+                                : Container(),
                             // Launch circular progress indicator when link is clicked - error icon displayed if connecting failed
                           ],
                         ),
@@ -113,58 +115,16 @@ class _ConnectServicesState extends State<ConnectServices> {
     );
   }
 
-  void linkService() async {}
+  void linkService(Service _linkingService) async {
+    setState(() {
+      _loading = true;
+    });
 
-  /// use a ListView.Builder using player.potentialServices
-  /// use player.potentialServices[index].connect() to connect. It'll set the service
-  /// automatically
-  Widget _flowWidget(BuildContext context) {
-    return StreamBuilder<ConnectionStatus>(
-        stream: SpotifySdk.subscribeConnectionStatus(),
-        builder: (context, snapshot) {
-          return Stack(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton.icon(
-                      onPressed: () async {
-                        setState(() {
-                          _loading = true;
-                        });
+    await _linkingService.connect();
+    //if error connecting return false, else return true
 
-                        Service.potentialServices[0].connect();
-
-                        setState(() {
-                          _loading = false;
-                        });
-                      },
-                      icon: Icon(MdiIcons.spotify),
-                      label: Text('Spotify')),
-                  RaisedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(MdiIcons.music),
-                    label: Text('SoundCloud'),
-                  ),
-                ],
-              ),
-              _loading
-                  ? Container(
-                      color: Colors.black12,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Connecting...'),
-                            SizedBox(height: 10),
-                            CircularProgressIndicator()
-                          ],
-                        ),
-                      ),
-                    )
-                  : SizedBox(),
-            ],
-          );
-        });
+    setState(() {
+      _loading = false;
+    });
   }
 }
