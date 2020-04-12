@@ -100,7 +100,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   void next() async {
-    if (queue != null && queue.length > 1) {
+    if (queue != null && queue.isNotEmpty) {
       Song nextSong = getNextSong();
 
       // Stop playing the current song on the current service if we're switching Services
@@ -116,6 +116,13 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     // else {
     //   resume();
     // }
+  }
+
+  // Calls when song is finished playing
+  void onComplete() {
+    _currentService.pause();
+    state = PlayerState.stopped;
+    next();
   }
 
   Future<List<Song>> search(String query) async {

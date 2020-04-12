@@ -34,10 +34,14 @@ class _ConnectServicesState extends State<ConnectServices> {
   Widget _listPotentialServices(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text("Link your music services, then select a default",
-            style: Theme.of(context).textTheme.subtitle1),
-        Text("You must link at least one service to create a room.",
-            style: Theme.of(context).textTheme.bodyText2),
+        Text(
+          "Select your music services",
+          style: Theme.of(context).textTheme.subtitle1,
+        ),
+        Text(
+          "You must select at least one service to create a room.",
+          style: Theme.of(context).textTheme.bodyText2,
+        ),
         Expanded(
           child: ListView.separated(
             physics: BouncingScrollPhysics(),
@@ -46,44 +50,21 @@ class _ConnectServicesState extends State<ConnectServices> {
             separatorBuilder: (BuildContext context, int index) =>
                 Divider(height: 1),
             itemBuilder: (BuildContext context, int index) {
-              return Service.connectedServices
-                          .contains(Service.potentialServices[index]) ==
-                      true
-                  ? RadioListTile(
-                      title: Text(Service.potentialServices[index].name),
-                      subtitle: const Text('Premium Subscription Active'),
-                      value: Service.potentialServices[index],
-                      groupValue: Service.defaultService,
-                      onChanged: (Service value) {
-                        setState(() {
-                          Service.defaultService = value;
-                        });
-                      },
-                      secondary:
-                          Service.potentialServices[index].getImageIcon(),
-                    )
-                  : Column(
-                      children: <Widget>[
-                        RadioListTile(
-                          title: Text(Service.potentialServices[index].name),
-                          subtitle: const Text('Premium Subscription Required'),
-                          value: Service.potentialServices[index],
-                          groupValue: Service.defaultService,
-                          onChanged: null,
-                          secondary:
-                              Service.potentialServices[index].getImageIcon(),
-                        ),
-                        Row(
-                          children: <Widget>[
-                            LinkText('LINK', () => {}),
-                            _loading == true
-                                ? CircularProgressIndicator()
-                                : Container(),
-                            // Launch circular progress indicator when link is clicked - error icon displayed if connecting failed
-                          ],
-                        ),
-                      ],
-                    );
+              return CheckboxListTile(
+                title: Text(Service.potentialServices[index].name),
+                value: Service.connectedServices
+                    .contains(Service.potentialServices[index]),
+                onChanged: (bool value) {
+                  setState(() {
+                    value
+                        ? Service.connectedServices
+                            .add(Service.potentialServices[index])
+                        : Service.connectedServices
+                            .remove(Service.potentialServices[index]);
+                  });
+                },
+                secondary: Service.potentialServices[index].getImageIcon(),
+              );
             },
           ),
         ),

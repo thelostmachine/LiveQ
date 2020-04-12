@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:liveq/pages/search.dart';
 import 'package:liveq/utils/player.dart';
@@ -39,6 +40,7 @@ class _RoomState extends State<Room> {
 
   @override
   void dispose() {
+    // Disconnect Services
     super.dispose();
   }
 
@@ -209,6 +211,43 @@ class _RoomState extends State<Room> {
         // ...
         break;
     }
+  }
+
+  Future<void> _roomCodeDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Room Code'),
+          content: SingleChildScrollView(
+            child: GestureDetector(
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: 'test')); // args.roomID
+                Scaffold.of(context).showSnackBar(
+                    SnackBar(content: const Text('Copied to Clipboard')));
+              },
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'abcd1234', // args.roomID
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  Icon(Icons.content_copy),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _queueListView(BuildContext context) {

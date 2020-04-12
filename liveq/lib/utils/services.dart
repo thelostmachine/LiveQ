@@ -24,8 +24,6 @@ abstract class Service {
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
   static Set<Service> connectedServices = {};
-  static Service
-      defaultService; // set searchService and currentService to defaultService in room's init
 
   String iconImagePath;
 
@@ -97,10 +95,7 @@ abstract class Service {
   }
 
   static bool canCreateRoom() {
-    return (connectedServices.isNotEmpty &&
-            connectedServices.contains(defaultService))
-        ? true
-        : false;
+    return connectedServices.isNotEmpty ? true : false;
   }
 }
 
