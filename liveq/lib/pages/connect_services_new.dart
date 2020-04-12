@@ -18,7 +18,7 @@ class _ConnectServicesState extends State<ConnectServices> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        //Service.saveService(); // save connected services
+        //Service.saveService(); // save connected services to cache
         Navigator.pop(context, true);
         return Future.value(true);
       },
@@ -78,7 +78,7 @@ class _ConnectServicesState extends State<ConnectServices> {
                 FlatButton(
                   onPressed: Service.canCreateRoom()
                       ? () => {
-                            //Service.saveService(); // save connected services
+                            //Service.saveService(); // save connected services to cache
                           }
                       : null,
                   child: Row(

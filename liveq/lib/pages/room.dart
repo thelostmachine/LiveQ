@@ -239,7 +239,7 @@ class _RoomState extends State<Room> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
