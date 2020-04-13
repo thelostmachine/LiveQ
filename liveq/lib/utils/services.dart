@@ -19,7 +19,7 @@ abstract class Service {
 
   String name;
   // bool connected;
-  bool isConnected = false;
+  // bool isConnected = false;
   // Future<bool> get isConnected;
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
@@ -79,7 +79,6 @@ abstract class Service {
     if (serviceStrings != null) {
       for (String s in serviceStrings) {
         Service service = fromString(s);
-        // connectedServices.add(service);
         await service.connect();
       }
     }
@@ -88,6 +87,24 @@ abstract class Service {
         ? connectedServices.toList()[0]
         : null;
   }
+
+  // // WIP
+  // static Future<void> loadServices() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
+
+  //   if (serviceStrings != null && serviceStrings.isNotEmpty) {
+  //     for (String s in serviceStrings) {
+  //       Service service = fromString(s);
+  //       connectedServices.add(service);
+  //       // await service.connect();
+  //     }
+  //   }
+
+  //   // return (connectedServices.length > 0)
+  //   //     ? connectedServices.toList()[0]
+  //   //     : null;
+  // }
 
   static Future<void> connectToServices() async {
     for (Service s in connectedServices) {

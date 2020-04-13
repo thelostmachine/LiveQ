@@ -15,7 +15,8 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   Service searchService;
 
   // Set of services allowed in the room
-  // Set<Service> allowedServices; // passed in through server data for guest/host?
+  Set<Service> allowedServices =
+      {}; // passed in through server data for guest/host?
 
   /// List of services we can connect to
   get potentialServices {
@@ -44,6 +45,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   List<Song> queue = List();
 
+  bool isConnected = false;
   PlayerState state = PlayerState.stopped;
 
   static final Player _player = Player._internal();
@@ -95,10 +97,6 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     _currentService = service;
   }
 
-  // bool isConnected() {
-  //   return _currentService.isConnected;
-  // }
-
   void next() async {
     if (queue != null && queue.isNotEmpty) {
       Song nextSong = getNextSong();
@@ -141,4 +139,17 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       },
     );
   }
+
+  // void connectToServices(VoidCallback callback) async {
+  //   Service.canConnectToPreviousService().then(
+  //     (availableServices) async {
+  //       if (availableServices != null) {
+  //         Service firstServiceInList = await Service.loadServices();
+  //         setService(firstServiceInList);
+
+  //         callback();
+  //       }
+  //     },
+  //   );
+  // }
 }

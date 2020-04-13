@@ -9,6 +9,7 @@ class Home extends StatelessWidget {
 
   Home({Key key}) : super(key: key);
 
+  //TODO: Add service settings button
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +35,8 @@ class Home extends StatelessWidget {
                       'CREATE NEW ROOM',
                       Service.connectedServices.isNotEmpty == true
                           ? () => createRoomDialog(context, myController)
-                          : () => createRoomDialog(context, myController)),
+                          : () => createRoomDialog(context,
+                              myController)), // () => Navigator.pushNamed(context,'/connect_services')
                   NextButton('JOIN A ROOM',
                       () => joinRoomDialog(context, myController)),
                 ],

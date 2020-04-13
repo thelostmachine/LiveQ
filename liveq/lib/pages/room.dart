@@ -21,12 +21,12 @@ class _RoomState extends State<Room> {
   @override
   void initState() {
     super.initState();
-    // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
-    Future.delayed(Duration.zero, () {
-      setState(() {
-        args = ModalRoute.of(context).settings.arguments;
-      });
-    });
+    // // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
+    // Future.delayed(Duration.zero, () {
+    //   setState(() {
+    //     args = ModalRoute.of(context).settings.arguments;
+    //   });
+    // });
 
     // if host send createRequest; else send joinRequest
     // initialize and subscribe to server stream of songs in queue
@@ -61,7 +61,7 @@ class _RoomState extends State<Room> {
                   .then((didConnect) {
                 if (didConnect) {
                   setState(() {
-                    // player.isConnected = true;
+                    player.isConnected = true;
                   });
                 }
               }),
@@ -116,7 +116,7 @@ class _RoomState extends State<Room> {
                       ],
                     ),
                   ),
-                  child: (player.isConnected())
+                  child: (player.isConnected)
                       ? _musicPlayer(context)
                       : _connectionStatus(context), // PlayerPanel(),
                 ),
@@ -279,22 +279,22 @@ class _RoomState extends State<Room> {
         ));
   }
 
-  // Widget _connectionStatus(BuildContext context) {
-  //   return Container(
-  //     height: 50,
-  //     child: Text((_availableServices != null)
-  //         ? 'Connecting to ${listServices()}'
-  //         : 'Connect a Streaming Service to enable the Music Player'),
-  //   );
-  // }
+  Widget _connectionStatus(BuildContext context) {
+    return Container(
+      height: 50,
+      child: Text((_availableServices != null)
+          ? 'Connecting to ${listServices()}'
+          : 'Connect a Streaming Service to enable the Music Player'),
+    );
+  }
 
-  // String listServices() {
-  //   String services = '';
-  //   for (int i = 0; i < _availableServices.length; i++) {
-  //     services += _availableServices[i] +
-  //         ((i < _availableServices.length - 1) ? ', ' : '');
-  //   }
-  //   //return _availableServices.join(", ");
-  //   return services;
-  // }
+  String listServices() {
+    String services = '';
+    for (int i = 0; i < _availableServices.length; i++) {
+      services += _availableServices[i] +
+          ((i < _availableServices.length - 1) ? ', ' : '');
+    }
+    //return _availableServices.join(", ");
+    return services;
+  }
 }

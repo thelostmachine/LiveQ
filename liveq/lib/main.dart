@@ -6,11 +6,12 @@ import 'package:liveq/pages/home.dart';
 import 'package:liveq/pages/room.dart';
 import 'package:liveq/pages/search.dart';
 import 'package:liveq/pages/connect_services.dart';
+// import 'package:liveq/pages/connect_services_new.dart';
 import 'package:liveq/utils/services.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  Service.loadServices();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // Service.loadServices();
   runApp(
     MaterialApp(
       title: 'LiveQ',
