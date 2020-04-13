@@ -55,6 +55,17 @@ abstract class Service {
     }
   }
 
+  static Future<void> saveServices() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    List<String> serviceStrings = List();
+    connectedServices.forEach((s) {
+      serviceStrings.add(s.name);
+    });
+
+    prefs.setStringList('serviceList', serviceStrings);
+  }
+
   static Future<List<String>> canConnectToPreviousService() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
@@ -68,6 +79,7 @@ abstract class Service {
     if (serviceStrings != null) {
       for (String s in serviceStrings) {
         Service service = fromString(s);
+        // connectedServices.add(service);
         await service.connect();
       }
     }
@@ -75,6 +87,16 @@ abstract class Service {
     return (connectedServices.length > 0)
         ? connectedServices.toList()[0]
         : null;
+  }
+
+  static Future<void> connectToServices() async {
+    for (Service s in connectedServices) {
+      await s.connect();
+      //if service cannot connect - remove from connectedServices
+    }
+    // return (connectedServices.isNotEmpty)
+    //     ? connectedServices.toList()[0]
+    //     : null;
   }
 
   static Service fromString(String s) {
@@ -246,7 +268,7 @@ class Spotify extends Service {
           clientId: this.clientId, redirectUrl: this.redirectUri);
     }
 
-    await saveService();
+    // await saveService();
     return spotifyWebApi != null;
   }
 

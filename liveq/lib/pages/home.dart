@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:liveq/widgets/next_button.dart';
 import 'package:liveq/widgets/room_dialog.dart';
+import 'package:liveq/utils/services.dart';
 
 class Home extends StatelessWidget {
   final myController = TextEditingController();
@@ -29,8 +30,11 @@ class Home extends StatelessWidget {
               child: Column(
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  NextButton('CREATE NEW ROOM',
-                      () => createRoomDialog(context, myController)),
+                  NextButton(
+                      'CREATE NEW ROOM',
+                      Service.connectedServices.isNotEmpty == true
+                          ? () => createRoomDialog(context, myController)
+                          : () => createRoomDialog(context, myController)),
                   NextButton('JOIN A ROOM',
                       () => joinRoomDialog(context, myController)),
                 ],

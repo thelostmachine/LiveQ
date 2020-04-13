@@ -95,9 +95,9 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     _currentService = service;
   }
 
-  bool isConnected() {
-    return _currentService.isConnected;
-  }
+  // bool isConnected() {
+  //   return _currentService.isConnected;
+  // }
 
   void next() async {
     if (queue != null && queue.isNotEmpty) {

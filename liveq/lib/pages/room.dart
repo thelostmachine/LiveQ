@@ -279,22 +279,22 @@ class _RoomState extends State<Room> {
         ));
   }
 
-  Widget _connectionStatus(BuildContext context) {
-    return Container(
-      height: 50,
-      child: Text((_availableServices != null)
-          ? 'Connecting to ${listServices()}'
-          : 'Connect a Streaming Service to enable the Music Player'),
-    );
-  }
+  // Widget _connectionStatus(BuildContext context) {
+  //   return Container(
+  //     height: 50,
+  //     child: Text((_availableServices != null)
+  //         ? 'Connecting to ${listServices()}'
+  //         : 'Connect a Streaming Service to enable the Music Player'),
+  //   );
+  // }
 
-  String listServices() {
-    String services = '';
-    for (int i = 0; i < _availableServices.length; i++) {
-      services += _availableServices[i] +
-          ((i < _availableServices.length - 1) ? ', ' : '');
-    }
-    //return _availableServices.join(", ");
-    return services;
-  }
+  // String listServices() {
+  //   String services = '';
+  //   for (int i = 0; i < _availableServices.length; i++) {
+  //     services += _availableServices[i] +
+  //         ((i < _availableServices.length - 1) ? ', ' : '');
+  //   }
+  //   //return _availableServices.join(", ");
+  //   return services;
+  // }
 }
