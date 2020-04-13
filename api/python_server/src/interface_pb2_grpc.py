@@ -24,6 +24,16 @@ class LiveQStub(object):
         request_serializer=interface__pb2.KeyRequest.SerializeToString,
         response_deserializer=interface__pb2.JoinReply.FromString,
         )
+    self.DeleteRoom = channel.unary_unary(
+        '/liveq.LiveQ/DeleteRoom',
+        request_serializer=interface__pb2.KeyRequest.SerializeToString,
+        response_deserializer=interface__pb2.Status.FromString,
+        )
+    self.LeaveRoom = channel.unary_unary(
+        '/liveq.LiveQ/LeaveRoom',
+        request_serializer=interface__pb2.LeaveRequest.SerializeToString,
+        response_deserializer=interface__pb2.Status.FromString,
+        )
     self.AddService = channel.unary_unary(
         '/liveq.LiveQ/AddService',
         request_serializer=interface__pb2.ServiceRequest.SerializeToString,
@@ -63,6 +73,20 @@ class LiveQServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def JoinRoom(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def DeleteRoom(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def LeaveRoom(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -116,6 +140,16 @@ def add_LiveQServicer_to_server(servicer, server):
           servicer.JoinRoom,
           request_deserializer=interface__pb2.KeyRequest.FromString,
           response_serializer=interface__pb2.JoinReply.SerializeToString,
+      ),
+      'DeleteRoom': grpc.unary_unary_rpc_method_handler(
+          servicer.DeleteRoom,
+          request_deserializer=interface__pb2.KeyRequest.FromString,
+          response_serializer=interface__pb2.Status.SerializeToString,
+      ),
+      'LeaveRoom': grpc.unary_unary_rpc_method_handler(
+          servicer.LeaveRoom,
+          request_deserializer=interface__pb2.LeaveRequest.FromString,
+          response_serializer=interface__pb2.Status.SerializeToString,
       ),
       'AddService': grpc.unary_unary_rpc_method_handler(
           servicer.AddService,

@@ -1,0 +1,5 @@
+to compile dart: protoc -I. interface.proto --plugin=protoc-gen-dart=c:\Users\eriks\AppData\Roaming\Pub\Cache\bin\protoc-gen-dart.bat --dart_out=grpc:.
+to compile python: python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. interface.proto
+to generate descriptor:  protoc --proto_path=. --include_imports --include_source_info --descriptor_set_out=api_descriptor.pb interface.proto
+to deploy to gcloud endpoints:  gcloud endpoints services deploy api_descriptor.pb api_config.yaml
+to submit build: gcloud builds submit --tag gcr.io/liveq-273521/server-image

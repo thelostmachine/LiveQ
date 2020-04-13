@@ -18,7 +18,7 @@ class LiveQServicer(interface_pb2_grpc.LiveQServicer):
         reply_info = self.db.AddRoom(request.room_name)
         if reply_info[0] == '-1':
             status = interface_pb2.Status(status=-1)
-        else
+        else:
             status = interface_pb2.Status(status=0)
         return interface_pb2.CreateReply(status=status, room_key=reply_info[0], host_id=reply_info[1])
 
@@ -26,9 +26,17 @@ class LiveQServicer(interface_pb2_grpc.LiveQServicer):
         reply_info = self.db.JoinRoom(request.room_key)
         if reply_info == ['-1', '0']:
             status = interface_pb2.Status(status=-1)
-        else
+        else:
             status = interface_pb2.Status(status=0)
         return interface_pb2.JoinReply(status=status, room_name=reply_info[0], guest_id=reply_info[1])
+
+    def DeleteRoom(self, request, context):
+        reply_info = self.db.DelRoom(request.room_key)
+        return interface_pb2.Status(status=reply_info)
+        
+    def LeaveRoom(self, request, context):
+        reply_info = self.db.RemoveFromRoom(request.room_key, request.id)
+        return interface_pb2.Status(status=reply_info)
 
     def AddService(self, request, context):
         reply_info = self.db.AddServiceToRoom(request.room_key, request.service)
@@ -45,15 +53,12 @@ class LiveQServicer(interface_pb2_grpc.LiveQServicer):
             yield song
 
     def AddSong(self, request, context):
-        self.db.AddSongToRoom(request.room_key, request.song)
-        for song in self.db.rooms[request.room_key].q:
-            yield song
+        reply = self.db.AddSongToRoom(request.room_key, request.song)
+        return interface_pb2.Status(status=reply)
 
     def DeleteSong(self, request, context):
-        self.db.DeleteSongFromRoom(request.room_key, request.song)
-        q = self.db.rooms[request.room_key].q
-        for song in q:
-            yield song
+        reply = self.db.DeleteSongFromRoom(request.room_key, request.song)
+        return interface_pb2.Status(status=reply)
             
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

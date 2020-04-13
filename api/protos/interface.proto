@@ -9,6 +9,8 @@ option java_package = "LiveQ";
 service LiveQ {
     rpc CreateRoom(CreateRequest) returns (CreateReply) {}
     rpc JoinRoom(KeyRequest) returns (JoinReply) {}
+    rpc DeleteRoom(KeyRequest) returns (Status) {}
+    rpc LeaveRoom(LeaveRequest) returns (Status) {}
     rpc AddService(ServiceRequest) returns (Status) {}
     rpc GetServices(KeyRequest) returns (stream ServiceMsg) {}
     rpc GetQueue(KeyRequest) returns (stream SongMsg) {}
@@ -34,6 +36,11 @@ message JoinReply {
     Status status = 1;
     string room_name = 2;
     string guest_id = 3;
+}
+
+message LeaveRequest {
+    string room_key = 1;
+    string id = 2;
 }
 
 message ServiceRequest {
