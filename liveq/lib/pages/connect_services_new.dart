@@ -87,8 +87,11 @@ class _ConnectServicesState extends State<ConnectServices> {
                 children: <Widget>[
                   FlatButton(
                     onPressed: Service.canCreateRoom()
-                        ? () => Service
-                            .saveServices() // save connected services to cache
+                        ? () {
+                            Service
+                                .saveServices(); // save connected services to cache
+                            Navigator.pop(context);
+                          }
                         : null,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
