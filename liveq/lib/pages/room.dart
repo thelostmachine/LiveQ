@@ -100,7 +100,7 @@ class _RoomState extends State<Room> {
                 child: _queueListView(context),
               ),
               Align(
-                alignment: Alignment.center,
+                alignment: Alignment.bottomCenter,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 80,

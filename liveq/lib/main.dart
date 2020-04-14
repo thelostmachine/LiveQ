@@ -5,8 +5,8 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:liveq/pages/home.dart';
 import 'package:liveq/pages/room.dart';
 import 'package:liveq/pages/search.dart';
-import 'package:liveq/pages/connect_services.dart';
-// import 'package:liveq/pages/connect_services_new.dart';
+// import 'package:liveq/pages/connect_services.dart';
+import 'package:liveq/pages/connect_services_new.dart';
 import 'package:liveq/utils/services.dart';
 
 void main() {
@@ -32,7 +32,7 @@ void main() {
           },
         ),
       ),
-      initialRoute: '/home',
+      initialRoute: '/connect_services',
       routes: {
         '/home': (context) => Home(),
         '/room': (context) => Room(),
