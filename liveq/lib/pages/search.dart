@@ -11,14 +11,12 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   List<Song> items = List();
   TextEditingController _editingController = TextEditingController();
-  bool _isConnected;
   Player _player = Player();
 
   @override
   void initState() {
     super.initState();
     // _player.setService(SoundCloud());
-    _isConnected = _player.isConnected;
   }
 
   @override
@@ -65,7 +63,8 @@ class _SearchState extends State<Search> {
             ),
           ),
           body: Container(
-            child: (_isConnected)
+            child: (_player.searchService != null &&
+                    _player.searchService.isConnected == true)
                 ? searchWidget(context)
                 : Center(
                     child: Text('Please connect to a streaming service first',
@@ -73,13 +72,6 @@ class _SearchState extends State<Search> {
                   ), // This might not be necessary because guests shouldn't have to connect.
           ),
           floatingActionButton: _getFAB(),
-          // floatingActionButton: FloatingActionButton.extended(
-          //   onPressed: null,
-          //   label: const Text('Spotify'),
-          //   icon: ImageIcon(
-          //     AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
-          //   ),
-          // ),
         ),
       ),
     );

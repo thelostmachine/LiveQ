@@ -11,7 +11,7 @@ import 'package:liveq/utils/services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // Service.loadServices();
+  Service.loadServices();
   runApp(
     MaterialApp(
       title: 'LiveQ',

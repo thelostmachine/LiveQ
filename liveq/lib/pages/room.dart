@@ -70,20 +70,26 @@ class _RoomState extends State<Room> {
               icon: Icon(Icons.search),
               onPressed: () => _searchSong(context),
             ),
-            player.searchService != null
+            (player.searchService != null &&
+                    player.searchService.isConnected == true)
                 ? IconButton(
                     icon: player.searchService.getImageIcon(),
                     onPressed: player.connectedServices.length > 1
-                        ? () => _selectSearchService(context)
+                        ? () => _selectSearchService()
                         : null,
                   )
                 : // replace connectedServices with allowedServices
                 IconButton(
                     icon: Icon(Icons.music_note),
                     onPressed: player.connectedServices.isNotEmpty
-                        ? () => _selectSearchService(context)
+                        ? () => _selectSearchService()
                         : null,
                   ), // replace connectedServices with allowedServices
+            IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () => _roomCodeDialog(),
+              // onPressed: args.roomID != null ? () => _roomCodeDialog() : null,
+            ),
           ],
         ),
         body: PropertyChangeProvider(
@@ -158,14 +164,14 @@ class _RoomState extends State<Room> {
     }
   }
 
-  Future<void> _selectSearchService(BuildContext context) async {
+  Future<void> _selectSearchService() async {
     switch (await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
             // title: const Text('Select Search Service'),
             children: <Widget>[
-              player.searchService != null
+              (player.searchService != null && player.searchService.isConnected)
                   ? ListTile(
                       leading: player.searchService.getImageIcon(),
                       title: Text(player.searchService.name),
@@ -222,16 +228,21 @@ class _RoomState extends State<Room> {
           content: SingleChildScrollView(
             child: GestureDetector(
               onTap: () {
-                Clipboard.setData(ClipboardData(text: 'test')); // args.roomID
-                Scaffold.of(context).showSnackBar(
-                    SnackBar(content: const Text('Copied to Clipboard')));
+                Clipboard.setData(
+                    ClipboardData(text: 'testing')); // args.roomID
+                Scaffold.of(context).showSnackBar(SnackBar(
+                    content: const Text(
+                        'Copied to Clipboard'))); // NOTE: snackbar not working on web
               },
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
                     'abcd1234', // args.roomID
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
+                  SizedBox(width: 5),
                   Icon(Icons.content_copy),
                 ],
               ),
