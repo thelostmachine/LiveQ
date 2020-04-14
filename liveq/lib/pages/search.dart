@@ -78,7 +78,8 @@ class _SearchState extends State<Search> {
   }
 
   Widget _getFAB() {
-    if (_player.searchService != null) {
+    if (_player.searchService != null &&
+        _player.searchService.isConnected == true) {
       return FloatingActionButton.extended(
         onPressed: null,
         // label: const Text('Spotify'),
