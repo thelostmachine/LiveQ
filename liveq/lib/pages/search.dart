@@ -64,7 +64,8 @@ class _SearchState extends State<Search> {
           ),
           body: Container(
             child: (_player.searchService != null &&
-                    _player.searchService.isConnected == true)
+                    _player.searchService.isConnected ==
+                        true) // potentially need notify_listeners here
                 ? searchWidget(context)
                 : Center(
                     child: Text('Please connect to a streaming service first',
@@ -78,6 +79,7 @@ class _SearchState extends State<Search> {
   }
 
   Widget _getFAB() {
+    // potentially need notify_listeners here
     if (_player.searchService != null &&
         _player.searchService.isConnected == true) {
       return FloatingActionButton.extended(

@@ -32,11 +32,13 @@ class Home extends StatelessWidget {
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   NextButton(
-                      'CREATE NEW ROOM',
-                      Service.connectedServices.isNotEmpty == true
-                          ? () => createRoomDialog(context, myController)
-                          : () => createRoomDialog(context,
-                              myController)), // () => Navigator.pushNamed(context,'/connect_services')
+                    'CREATE NEW ROOM',
+                    Service.connectedServices.isNotEmpty ==
+                            true // Add notify_listeners here
+                        ? () => createRoomDialog(context, myController)
+                        : () =>
+                            Navigator.pushNamed(context, '/connect_services'),
+                  ),
                   NextButton('JOIN A ROOM',
                       () => joinRoomDialog(context, myController)),
                 ],

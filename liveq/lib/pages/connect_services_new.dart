@@ -48,13 +48,14 @@ class _ConnectServicesState extends State<ConnectServices> {
             style: Theme.of(context).textTheme.subtitle2,
           ),
         ),
+        Divider(),
         Expanded(
           child: ListView.separated(
             physics: BouncingScrollPhysics(),
             itemCount: Service.potentialServices.length,
             // itemExtent: 110,
             separatorBuilder: (BuildContext context, int index) =>
-                Divider(height: 2),
+                Divider(), //TODO: Figure out why dividers are not showing
             itemBuilder: (BuildContext context, int index) {
               return CheckboxListTile(
                 title: Text(Service.potentialServices[index].name),
@@ -79,9 +80,7 @@ class _ConnectServicesState extends State<ConnectServices> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              Divider(
-                height: 1,
-              ),
+              Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
