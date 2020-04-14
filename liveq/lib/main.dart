@@ -10,7 +10,7 @@ import 'package:liveq/pages/connect_services.dart';
 import 'package:liveq/utils/services.dart';
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   // Service.loadServices();
   runApp(
     MaterialApp(
@@ -32,7 +32,7 @@ void main() {
           },
         ),
       ),
-      initialRoute: '/room',
+      initialRoute: '/home',
       routes: {
         '/home': (context) => Home(),
         '/room': (context) => Room(),

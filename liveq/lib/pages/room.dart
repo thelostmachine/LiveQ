@@ -22,11 +22,11 @@ class _RoomState extends State<Room> {
   void initState() {
     super.initState();
     // // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
-    // Future.delayed(Duration.zero, () {
-    //   setState(() {
-    //     args = ModalRoute.of(context).settings.arguments;
-    //   });
-    // });
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        args = ModalRoute.of(context).settings.arguments;
+      });
+    });
 
     // if host send createRequest; else send joinRequest
     // initialize and subscribe to server stream of songs in queue

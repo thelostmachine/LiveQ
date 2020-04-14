@@ -75,7 +75,7 @@ class _SearchState extends State<Search> {
           floatingActionButton: _getFAB(),
           // floatingActionButton: FloatingActionButton.extended(
           //   onPressed: null,
-          //   label: Text('Spotify'),
+          //   label: const Text('Spotify'),
           //   icon: ImageIcon(
           //     AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
           //   ),
@@ -89,7 +89,7 @@ class _SearchState extends State<Search> {
     if (_player.searchService != null) {
       return FloatingActionButton.extended(
         onPressed: null,
-        // label: Text('Spotify'),
+        // label: const Text('Spotify'),
         // icon: ImageIcon(
         //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
         // ),

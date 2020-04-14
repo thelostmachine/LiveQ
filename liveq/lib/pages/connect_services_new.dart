@@ -24,7 +24,7 @@ class _ConnectServicesState extends State<ConnectServices> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Music Services'),
+          title: const Text('Music Services'),
         ),
         body: _listPotentialServices(context),
       ),
