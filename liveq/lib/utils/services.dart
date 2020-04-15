@@ -106,16 +106,6 @@ abstract class Service {
   //   //     : null;
   // }
 
-  static Future<void> connectToServices() async {
-    for (Service s in connectedServices) {
-      await s.connect();
-      // if service cannot connect - remove from connectedServices
-    }
-    // return (connectedServices.isNotEmpty)
-    //     ? connectedServices.toList()[0]
-    //     : null;
-  }
-
   static Service fromString(String s) {
     Service service;
 

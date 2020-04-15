@@ -146,6 +146,9 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       bool serviceConnected = await s.connect();
       if (serviceConnected) {
         s.isConnected = true;
+      } else {
+        // if service cannot connect - remove from allowedServices
+        allowedServices.remove(s); // need setState?
       }
     }
 
@@ -153,15 +156,5 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       setService(allowedServices.toList()[0]);
       callback();
     }
-    Service.canConnectToPreviousService().then(
-      (availableServices) async {
-        if (availableServices != null) {
-          Service firstServiceInList = await Service.loadServices();
-          setService(firstServiceInList);
-
-          callback();
-        }
-      },
-    );
   }
 }

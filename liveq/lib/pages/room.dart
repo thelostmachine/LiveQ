@@ -17,7 +17,9 @@ class _RoomState extends State<Room> {
   RoomArguments args;
   List<String> _availableServices;
   Player player = Player();
-  bool connectedToServer;
+  // Flag that shows whether we are connected to the server and server's room
+  bool _connectedToServer; // = false
+  bool _connectedToServices = false;
 
   @override
   void initState() {
@@ -29,17 +31,27 @@ class _RoomState extends State<Room> {
       });
     });
 
-    // if host send createRoom; else send joinRoom
-    // initialize and subscribe to server stream of songs in queue
+    if (args != null) {
+      // if host send createRoom; else send joinRoom
+      // If received response from server, set connectedToServer=true - FutureBuilder success
+      // On response failure, show 'failed to connect to server room' error message - FutureBuilder failure
+      // Set args.roomName and args.roomID received from server
 
-    // if host then connect to services
-    // player.connectToServices
-    player.connectToCachedServices(() {
-      setState(() {
-        _availableServices =
-            player.connectedServices.map((e) => e.name).toList();
+      // initialize and subscribe to server stream of songs in queue
+
+      // if host then connect to services
+      // player.connectToServices(() {
+      //   setState(() {
+      //     connectedToServices = true;
+      //   });
+      // });
+      player.connectToCachedServices(() {
+        setState(() {
+          _availableServices =
+              player.connectedServices.map((e) => e.name).toList();
+        });
       });
-    });
+    }
   }
 
   @override

@@ -63,6 +63,7 @@ class _SearchState extends State<Search> {
             ),
           ),
           body: Container(
+            // _player.allowedServices.contains(_player.searchService) == true - signifies that searchService is connected
             child: (_player.searchService != null &&
                     _player.searchService.isConnected ==
                         true) // potentially need notify_listeners here
@@ -80,6 +81,7 @@ class _SearchState extends State<Search> {
 
   Widget _getFAB() {
     // potentially need notify_listeners here
+    // _player.allowedServices.contains(_player.searchService) == true
     if (_player.searchService != null &&
         _player.searchService.isConnected == true) {
       return FloatingActionButton.extended(
