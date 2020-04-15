@@ -74,10 +74,9 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       _currentService = _currentSong.service;
       _currentService.play(_currentSong.uri);
       state = PlayerState.playing;
+    } else {
+      resume();
     }
-    // else {
-    //   resume();
-    // }
   }
 
   void resume() {
@@ -104,12 +103,12 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
       // Stop playing the current song on the current service if we're switching Services
       if (_currentService != nextSong.service) {
-        _currentService.pause();
+        pause();
       }
 
       _currentSong = nextSong;
       _currentService = _currentSong.service;
-      _currentService.play(_currentSong.uri);
+      play(_currentSong);
       state = PlayerState.playing;
     }
     // else {
@@ -119,8 +118,6 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   // Calls when song is finished playing
   void onComplete() {
-    _currentService.pause();
-    state = PlayerState.stopped;
     next();
   }
 

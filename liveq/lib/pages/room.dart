@@ -30,7 +30,6 @@ class _RoomState extends State<Room> {
         args = ModalRoute.of(context).settings.arguments;
       });
 
-      print('INITSTATE');
       if (args != null) {
         // if host send createRoom; else send joinRoom
         // If received response from server, set connectedToServer=true - FutureBuilder success
@@ -86,8 +85,7 @@ class _RoomState extends State<Room> {
                   )
                 : IconButton(
                     icon: Icon(Icons.music_note),
-                    onPressed: player.allowedServices
-                            .isNotEmpty // && connectedToServices == true
+                    onPressed: player.allowedServices.isNotEmpty
                         ? () => _selectSearchService()
                         : null,
                   ),

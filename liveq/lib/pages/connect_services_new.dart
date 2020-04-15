@@ -16,6 +16,10 @@ class _ConnectServicesState extends State<ConnectServices> {
 
   @override
   Widget build(BuildContext context) {
+    print('CONNECTED_SERVICES');
+    for (var s in Service.connectedServices) {
+      print('${s.name}');
+    }
     return WillPopScope(
       onWillPop: () {
         Service.saveServices(); // save connected services to cache

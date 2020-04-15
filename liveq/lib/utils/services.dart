@@ -25,10 +25,7 @@ abstract class Service {
 
   String iconImagePath;
 
-  Future<bool> connect() {
-    connectedServices.add(this);
-    return Future.value(true);
-  }
+  Future<bool> connect();
 
   Future<void> play(String uri);
   Future<void> resume();
@@ -109,7 +106,7 @@ class SoundCloud extends Service {
 
   @override
   Future<bool> connect() {
-    super.connect();
+    // super.connect();
     // TODO: implement connect
     throw UnimplementedError();
   }
@@ -229,7 +226,7 @@ class Spotify extends Service {
   /// Connect to the SpotifySDK and get an [authenticationToken]
   @override
   Future<bool> connect() async {
-    super.connect();
+    // super.connect();
     // Use the spotify package to create credentials. This is only needed for Search
     var credentials = SpotifyApiCredentials(clientId, clientSecret);
     spotifyWebApi = SpotifyApi(credentials);
@@ -240,7 +237,6 @@ class Spotify extends Service {
           clientId: this.clientId, redirectUrl: this.redirectUri);
     }
 
-    // await saveService();
     return spotifyWebApi != null;
   }
 
@@ -311,6 +307,13 @@ class Apple extends Service {
 
   factory Apple() {
     return _apple;
+  }
+
+  @override
+  Future<bool> connect() {
+    // super.connect();
+    // TODO: implement connect
+    throw UnimplementedError();
   }
 
   @override
