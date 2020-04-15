@@ -40,9 +40,11 @@ class _RoomState extends State<Room> {
       // initialize and subscribe to server stream of songs in queue
 
       // if host then connect to services
+      // set player.allowedServices.addAll(Service.connectedServices); // for guest, need to receive from server
+      // player.allowedServices.addAll(Service.connectedServices);
       // player.connectToServices(() {
       //   setState(() {
-      //     connectedToServices = true;
+      //     _connectedToServices = true;
       //   });
       // });
       player.connectToCachedServices(() {
@@ -153,7 +155,7 @@ class _RoomState extends State<Room> {
                         ],
                       ),
                     ),
-                    child: (player.isConnected)
+                    child: (_connectedToServices)
                         ? _musicPlayer(context)
                         : _connectionStatus(context), // PlayerPanel(),
                   ),
