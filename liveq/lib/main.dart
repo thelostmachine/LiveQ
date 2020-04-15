@@ -32,7 +32,7 @@ void main() {
           },
         ),
       ),
-      initialRoute: '/connect_services',
+      initialRoute: '/home',
       routes: {
         '/home': (context) => Home(),
         '/room': (context) => Room(),

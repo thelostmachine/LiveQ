@@ -86,25 +86,29 @@ class _ConnectServicesState extends State<ConnectServices> {
               Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  FlatButton(
-                    onPressed: Service.canCreateRoom()
-                        ? () {
-                            Service
-                                .saveServices(); // save connected services to cache
-                            Navigator.pop(context);
-                          }
-                        : null,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        const Text('DONE'),
-                      ],
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: FlatButton(
+                      onPressed: Service.canCreateRoom()
+                          ? () {
+                              Service
+                                  .saveServices(); // save connected services to cache
+                              Navigator.pop(context);
+                            }
+                          : null,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          const Text('DONE'),
+                        ],
+                      ),
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
