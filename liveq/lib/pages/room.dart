@@ -24,7 +24,7 @@ class _RoomState extends State<Room> {
   @override
   void initState() {
     super.initState();
-    // // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
+    // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
     Future.delayed(Duration.zero, () {
       setState(() {
         args = ModalRoute.of(context).settings.arguments;
@@ -69,17 +69,6 @@ class _RoomState extends State<Room> {
               ? Text(args.roomName)
               : const Text(''),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.music_note),
-              onPressed: () => Navigator.pushNamed(context, '/connect_services')
-                  .then((didConnect) {
-                if (didConnect) {
-                  setState(() {
-                    player.isConnected = true;
-                  });
-                }
-              }),
-            ),
             IconButton(
               icon: Icon(Icons.search),
               // connectedToServer == true
