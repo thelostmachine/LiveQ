@@ -70,7 +70,10 @@ class _ConnectServicesState extends State<ConnectServices> {
                             .remove(Service.potentialServices[index]);
                   });
                 },
-                // secondary: Service.potentialServices[index].getImageIcon(),
+                secondary:
+                    Service.potentialServices[index].iconImagePath != null
+                        ? Service.potentialServices[index].getImageIcon()
+                        : Icon(Icons.library_music),
               );
             },
           ),
