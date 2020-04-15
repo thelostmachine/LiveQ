@@ -35,14 +35,14 @@ class _ConnectServicesState extends State<ConnectServices> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.only(left: 16.0, top: 24.0, right: 16.0),
           child: Text(
             "Select your music services",
             style: Theme.of(context).textTheme.headline6,
           ),
         ),
         Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Text(
             "You must select at least one service to create a room.",
             style: Theme.of(context).textTheme.subtitle2,
