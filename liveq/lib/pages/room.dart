@@ -29,8 +29,11 @@ class _RoomState extends State<Room> {
       });
     });
 
-    // if host send createRequest; else send joinRequest
+    // if host send createRoom; else send joinRoom
     // initialize and subscribe to server stream of songs in queue
+
+    // if host then connect to services
+    // player.connectToServices
     player.connectToCachedServices(() {
       setState(() {
         _availableServices =
@@ -75,7 +78,8 @@ class _RoomState extends State<Room> {
             ),
             // connectedToServer == true
             (player.searchService != null &&
-                    player.searchService.isConnected == true)
+                    player.searchService.isConnected ==
+                        true) // player.allowedServices.contains(player.searchService)
                 ? IconButton(
                     icon: player.searchService.getImageIcon(),
                     onPressed: player.connectedServices.length > 1
@@ -104,9 +108,9 @@ class _RoomState extends State<Room> {
   }
 
   Widget _roomBody() {
-    //TODO: Add FutureBuilder to display status of connecting to server
     final double _radius = 25.0;
     return args != null
+        // TODO: Add FutureBuilder to display status of connecting to server
         ? PropertyChangeProvider(
             value: player,
             child: Column(
@@ -185,7 +189,9 @@ class _RoomState extends State<Room> {
           return SimpleDialog(
             title: const Text('Select Search Service'),
             children: <Widget>[
-              (player.searchService != null && player.searchService.isConnected)
+              (player.searchService != null &&
+                      player.searchService
+                          .isConnected) // player.allowedServices.contains(player.searchService)
                   ? ListTile(
                       leading: player.searchService.getImageIcon(),
                       title: Text(player.searchService.name),

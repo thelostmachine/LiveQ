@@ -109,7 +109,7 @@ abstract class Service {
   static Future<void> connectToServices() async {
     for (Service s in connectedServices) {
       await s.connect();
-      //if service cannot connect - remove from connectedServices
+      // if service cannot connect - remove from connectedServices
     }
     // return (connectedServices.isNotEmpty)
     //     ? connectedServices.toList()[0]

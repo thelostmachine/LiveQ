@@ -6,7 +6,6 @@ Future<void> joinRoomDialog(
     BuildContext context, TextEditingController myController) async {
   return showDialog<void>(
     context: context,
-    // barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
         // title: Text('Enter Room Code'),
@@ -33,7 +32,7 @@ Future<void> joinRoomDialog(
                   '/room',
                   arguments: RoomArguments(
                     myController.text,
-                    'Room Name',
+                    'Room Name', // null
                     false,
                   ),
                 );
@@ -73,7 +72,7 @@ Future<void> createRoomDialog(
                   context,
                   '/room',
                   arguments: RoomArguments(
-                    'abcd1234',
+                    'abcd1234', // null
                     myController.text,
                     true,
                   ),

@@ -45,7 +45,8 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   List<Song> queue = List();
 
-  bool isConnected = false;
+  bool isConnected =
+      false; // Set true when all services in allowedServices are connected
   PlayerState state = PlayerState.stopped;
 
   static final Player _player = Player._internal();
@@ -140,16 +141,27 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     );
   }
 
-  // void connectToServices(VoidCallback callback) async {
-  //   Service.canConnectToPreviousService().then(
-  //     (availableServices) async {
-  //       if (availableServices != null) {
-  //         Service firstServiceInList = await Service.loadServices();
-  //         setService(firstServiceInList);
+  void connectToServices(VoidCallback callback) async {
+    for (Service s in allowedServices) {
+      bool serviceConnected = await s.connect();
+      if (serviceConnected) {
+        s.isConnected = true;
+      }
+    }
 
-  //         callback();
-  //       }
-  //     },
-  //   );
-  // }
+    if (allowedServices.isNotEmpty) {
+      setService(allowedServices.toList()[0]);
+      callback();
+    }
+    Service.canConnectToPreviousService().then(
+      (availableServices) async {
+        if (availableServices != null) {
+          Service firstServiceInList = await Service.loadServices();
+          setService(firstServiceInList);
+
+          callback();
+        }
+      },
+    );
+  }
 }

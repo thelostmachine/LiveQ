@@ -55,7 +55,7 @@ class _ConnectServicesState extends State<ConnectServices> {
             itemCount: Service.potentialServices.length,
             // itemExtent: 110,
             separatorBuilder: (BuildContext context, int index) =>
-                Divider(), //TODO: Figure out why dividers are not showing
+                Divider(), // TODO: Figure out why dividers are not showing
             itemBuilder: (BuildContext context, int index) {
               return CheckboxListTile(
                 title: Text(Service.potentialServices[index].name),
