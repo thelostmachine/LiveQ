@@ -29,31 +29,26 @@ class _RoomState extends State<Room> {
       setState(() {
         args = ModalRoute.of(context).settings.arguments;
       });
-    });
 
-    if (args != null) {
-      // if host send createRoom; else send joinRoom
-      // If received response from server, set connectedToServer=true - FutureBuilder success
-      // On response failure, show 'failed to connect to server room' error message - FutureBuilder failure
-      // Set args.roomName and args.roomID received from server
+      print('INITSTATE');
+      if (args != null) {
+        // if host send createRoom; else send joinRoom
+        // If received response from server, set connectedToServer=true - FutureBuilder success
+        // On response failure, show 'failed to connect to server room' error message - FutureBuilder failure
+        // Set args.roomName and args.roomID received from server
 
-      // initialize and subscribe to server stream of songs in queue
+        // initialize and subscribe to server stream of songs in queue
 
-      // if host then connect to services
-      // set player.allowedServices.addAll(Service.connectedServices); // for guest, need to receive from server
-      // player.allowedServices.addAll(Service.connectedServices);
-      // player.connectToServices(() {
-      //   setState(() {
-      //     _connectedToServices = true;
-      //   });
-      // });
-      player.connectToCachedServices(() {
-        setState(() {
-          _availableServices =
-              player.connectedServices.map((e) => e.name).toList();
+        // if host then connect to services
+        // set player.allowedServices.addAll(Service.connectedServices); // for guest, need to receive services from server
+        player.allowedServices.addAll(Service.connectedServices);
+        player.connectToServices(() {
+          setState(() {
+            _connectedToServices = true;
+          });
         });
-      });
-    }
+      }
+    });
   }
 
   @override
@@ -96,17 +91,17 @@ class _RoomState extends State<Room> {
                         true) // player.allowedServices.contains(player.searchService)
                 ? IconButton(
                     icon: player.searchService.getImageIcon(),
-                    onPressed: player.connectedServices.length > 1
+                    onPressed: player.allowedServices.length > 1
                         ? () => _selectSearchService()
                         : null,
                   )
-                : // replace connectedServices with allowedServices
-                IconButton(
+                : IconButton(
                     icon: Icon(Icons.music_note),
-                    onPressed: player.connectedServices.isNotEmpty
+                    onPressed: player.allowedServices
+                            .isNotEmpty // && connectedToServices == true
                         ? () => _selectSearchService()
                         : null,
-                  ), // replace connectedServices with allowedServices
+                  ),
             IconButton(
               icon: Icon(Icons.share),
               // connectedToServer == true
@@ -196,6 +191,7 @@ class _RoomState extends State<Room> {
     }
   }
 
+  // TODO: DIALOG NOT LOADING
   Future<void> _selectSearchService() async {
     switch (await showDialog<String>(
         context: context,
@@ -217,8 +213,12 @@ class _RoomState extends State<Room> {
                 itemCount: player.connectedServices
                     .length, // replace connectedServices with allowedServices
                 itemBuilder: (BuildContext context, int index) {
-                  return player.connectedServices.toList()[index].name !=
-                          player.searchService.name
+                  return (player.connectedServices.toList()[index].name !=
+                              player.searchService.name &&
+                          player.connectedServices
+                                  .toList()[index]
+                                  .isConnected ==
+                              true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
@@ -325,50 +325,54 @@ class _RoomState extends State<Room> {
   }
 
   Widget _connectionStatus(BuildContext context) {
-    return Container(
-      height: 80,
-      child: Center(
-        child: Text(
-          (_availableServices != null)
-              ? 'Connecting to ${listServices()}'
-              : 'Connect a Streaming Service to enable the Music Player',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-
     // return Container(
     //   height: 80,
     //   child: Center(
     //     child: Text(
-    //       (player.allowedServices.isNotEmpty)
-    //           ? 'Connecting to ${listServices()}' //TODO: Add circular progress indicator in connecting display
-    //           : 'Connect a Streaming Service to Enable the Music Player',
+    //       (_availableServices != null)
+    //           ? 'Connecting to ${listServices()}'
+    //           : 'Connect a Streaming Service to enable the Music Player',
     //       style: TextStyle(
     //         color: Colors.white,
     //       ),
     //     ),
     //   ),
     // );
+
+    return Container(
+      height: 80,
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            (player.allowedServices.isNotEmpty)
+                ? 'Connecting to ${listServices()}' //TODO: Add circular progress indicator in connecting display
+                : 'Connect a Streaming Service to Enable the Music Player', //Failed to Connect to Streaming Services
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   String listServices() {
     String services = '';
-    for (int i = 0; i < _availableServices.length; i++) {
-      services += _availableServices[i] +
-          ((i < _availableServices.length - 1) ? ', ' : '');
-    }
+    // for (int i = 0; i < _availableServices.length; i++) {
+    //   services += _availableServices[i] +
+    //       ((i < _availableServices.length - 1) ? ', ' : '');
+    // }
 
-    // for (var s in player.allowedServices.toList()) {
-    //   if (!s.isConnected) {
-    //     services += '$s, ';
-    //   }
-    // }
-    // if (services.isNotEmpty) {
-    //   services.replaceRange(services.length - 2, services.length, '');
-    // }
+    for (var s in player.allowedServices.toList()) {
+      if (!s.isConnected) {
+        services += '${s.name}, ';
+      }
+    }
+    if (services.isNotEmpty) {
+      services =
+          services.replaceRange(services.length - 2, services.length, '');
+    }
     return services;
   }
 }

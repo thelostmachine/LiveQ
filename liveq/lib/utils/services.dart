@@ -15,8 +15,6 @@ abstract class Service {
   static const String SPOTIFY = 'Spotify';
   static const String APPLE = 'Apple Music';
 
-  // final List<String>
-
   String name;
   // bool connected;
   bool isConnected = false;
@@ -36,24 +34,15 @@ abstract class Service {
   Future<void> resume();
   Future<void> pause();
 
-  material.ImageIcon getImageIcon() {
-    return material.ImageIcon(material.AssetImage(iconImagePath));
+  material.Widget getImageIcon() {
+    if (iconImagePath != null) {
+      return material.ImageIcon(material.AssetImage(iconImagePath));
+    } else {
+      return material.Icon(material.Icons.music_note);
+    }
   }
 
   Future<List<Song>> search(String query);
-
-  Future<void> saveService() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if (!connectedServices.contains(this)) {
-      List<String> serviceStrings = List();
-      connectedServices.forEach((s) {
-        serviceStrings.add(s.name);
-      });
-
-      prefs.setStringList('serviceList', serviceStrings);
-    }
-  }
 
   static Future<void> saveServices() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -66,45 +55,21 @@ abstract class Service {
     prefs.setStringList('serviceList', serviceStrings);
   }
 
-  static Future<List<String>> canConnectToPreviousService() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
-    return serviceStrings;
-  }
-
-  static Future<Service> loadServices() async {
+  // WIP
+  static Future<void> loadServices() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
 
-    if (serviceStrings != null) {
+    if (serviceStrings != null && serviceStrings.isNotEmpty) {
       for (String s in serviceStrings) {
         Service service = fromString(s);
-        await service.connect();
+        connectedServices.add(service);
       }
     }
-
-    return (connectedServices.length > 0)
-        ? connectedServices.toList()[0]
-        : null;
+    // return (connectedServices.length > 0)
+    //     ? connectedServices.toList()[0]
+    //     : null;
   }
-
-  // // WIP
-  // static Future<void> loadServices() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
-
-  //   if (serviceStrings != null && serviceStrings.isNotEmpty) {
-  //     for (String s in serviceStrings) {
-  //       Service service = fromString(s);
-  //       connectedServices.add(service);
-  //       // await service.connect();
-  //     }
-  //   }
-
-  //   // return (connectedServices.length > 0)
-  //   //     ? connectedServices.toList()[0]
-  //   //     : null;
-  // }
 
   static Service fromString(String s) {
     Service service;

@@ -70,10 +70,7 @@ class _ConnectServicesState extends State<ConnectServices> {
                             .remove(Service.potentialServices[index]);
                   });
                 },
-                secondary:
-                    Service.potentialServices[index].iconImagePath != null
-                        ? Service.potentialServices[index].getImageIcon()
-                        : Icon(Icons.library_music),
+                secondary: Service.potentialServices[index].getImageIcon(),
               );
             },
           ),
@@ -93,8 +90,8 @@ class _ConnectServicesState extends State<ConnectServices> {
                     child: FlatButton(
                       onPressed: Service.canCreateRoom()
                           ? () {
-                              Service
-                                  .saveServices(); // save connected services to cache
+                              // save connected services to cache
+                              Service.saveServices();
                               Navigator.pop(context);
                             }
                           : null,

@@ -128,19 +128,6 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     return searchService.search(query);
   }
 
-  void connectToCachedServices(VoidCallback callback) async {
-    Service.canConnectToPreviousService().then(
-      (availableServices) async {
-        if (availableServices != null) {
-          Service firstServiceInList = await Service.loadServices();
-          setService(firstServiceInList);
-
-          callback();
-        }
-      },
-    );
-  }
-
   void connectToServices(VoidCallback callback) async {
     for (Service s in allowedServices) {
       bool serviceConnected = await s.connect();
@@ -154,6 +141,8 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
     if (allowedServices.isNotEmpty) {
       setService(allowedServices.toList()[0]);
+      searchService = allowedServices
+          .toList()[0]; // may need to set searchService in room for host/guest
       callback();
     }
   }
