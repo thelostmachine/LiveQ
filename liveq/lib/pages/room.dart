@@ -17,6 +17,7 @@ class _RoomState extends State<Room> {
   RoomArguments args;
   List<String> _availableServices;
   Player player = Player();
+  bool connectedToServer;
 
   @override
   void initState() {
@@ -47,12 +48,11 @@ class _RoomState extends State<Room> {
   @override
   Widget build(BuildContext context) {
     // final RoomArguments args = ModalRoute.of(context).settings.arguments;
-    final double _radius = 25.0;
     return WillPopScope(
       onWillPop: () => _onWillPop(),
       child: Scaffold(
         appBar: AppBar(
-          // title: Text(args.roomName),
+          // connectedToServer == true
           title: (args != null && args.roomName != null)
               ? Text(args.roomName)
               : const Text(''),
@@ -70,8 +70,10 @@ class _RoomState extends State<Room> {
             ),
             IconButton(
               icon: Icon(Icons.search),
+              // connectedToServer == true
               onPressed: () => _searchSong(context),
             ),
+            // connectedToServer == true
             (player.searchService != null &&
                     player.searchService.isConnected == true)
                 ? IconButton(
@@ -89,52 +91,61 @@ class _RoomState extends State<Room> {
                   ), // replace connectedServices with allowedServices
             IconButton(
               icon: Icon(Icons.share),
+              // connectedToServer == true
               onPressed: (args != null && args.roomID != null)
                   ? () => _roomCodeDialog()
                   : null,
             ),
           ],
         ),
-        body: PropertyChangeProvider(
-          value: player,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: _queueListView(context),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(_radius),
-                      topRight: Radius.circular(_radius),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: [
-                        0.0,
-                        0.7,
-                      ],
-                      colors: [
-                        Color(0xFF47ACE1),
-                        Color(0xFFDF5F9D),
-                      ],
-                    ),
-                  ),
-                  child: (player.isConnected)
-                      ? _musicPlayer(context)
-                      : _connectionStatus(context), // PlayerPanel(),
-                ),
-              ),
-            ],
-          ),
-        ),
+        body: _roomBody(),
       ),
     );
+  }
+
+  Widget _roomBody() {
+    //TODO: Add FutureBuilder to display status of connecting to server
+    final double _radius = 25.0;
+    return args != null
+        ? PropertyChangeProvider(
+            value: player,
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: _queueListView(context),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(_radius),
+                        topRight: Radius.circular(_radius),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: [
+                          0.0,
+                          0.7,
+                        ],
+                        colors: [
+                          Color(0xFF47ACE1),
+                          Color(0xFFDF5F9D),
+                        ],
+                      ),
+                    ),
+                    child: (player.isConnected)
+                        ? _musicPlayer(context)
+                        : _connectionStatus(context), // PlayerPanel(),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Container();
   }
 
   Future<bool> _onWillPop() async {
@@ -295,11 +306,32 @@ class _RoomState extends State<Room> {
 
   Widget _connectionStatus(BuildContext context) {
     return Container(
-      height: 50,
-      child: Text((_availableServices != null)
-          ? 'Connecting to ${listServices()}'
-          : 'Connect a Streaming Service to enable the Music Player'),
+      height: 80,
+      child: Center(
+        child: Text(
+          (_availableServices != null)
+              ? 'Connecting to ${listServices()}'
+              : 'Connect a Streaming Service to enable the Music Player',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
     );
+
+    // return Container(
+    //   height: 80,
+    //   child: Center(
+    //     child: Text(
+    //       (player.allowedServices.isNotEmpty)
+    //           ? 'Connecting to ${listServices()}' //TODO: Add circular progress indicator in connecting display
+    //           : 'Connect a Streaming Service to Enable the Music Player',
+    //       style: TextStyle(
+    //         color: Colors.white,
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   String listServices() {
@@ -308,7 +340,15 @@ class _RoomState extends State<Room> {
       services += _availableServices[i] +
           ((i < _availableServices.length - 1) ? ', ' : '');
     }
-    //return _availableServices.join(", ");
+
+    // for (var s in player.allowedServices.toList()) {
+    //   if (!s.isConnected) {
+    //     services += '$s, ';
+    //   }
+    // }
+    // if (services.isNotEmpty) {
+    //   services.replaceRange(services.length - 2, services.length, '');
+    // }
     return services;
   }
 }
