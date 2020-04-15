@@ -40,7 +40,7 @@ class _RoomState extends State<Room> {
 
   @override
   void dispose() {
-    // Disconnect Services
+    // Disconnect from services
     super.dispose();
   }
 
@@ -53,7 +53,9 @@ class _RoomState extends State<Room> {
       child: Scaffold(
         appBar: AppBar(
           // title: Text(args.roomName),
-          title: Text('Room Name'),
+          title: (args != null && args.roomName != null)
+              ? Text(args.roomName)
+              : const Text(''),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.music_note),
@@ -87,8 +89,9 @@ class _RoomState extends State<Room> {
                   ), // replace connectedServices with allowedServices
             IconButton(
               icon: Icon(Icons.share),
-              onPressed: () => _roomCodeDialog(),
-              // onPressed: args.roomID != null ? () => _roomCodeDialog() : null,
+              onPressed: (args != null && args.roomID != null)
+                  ? () => _roomCodeDialog()
+                  : null,
             ),
           ],
         ),
@@ -169,7 +172,7 @@ class _RoomState extends State<Room> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            // title: const Text('Select Search Service'),
+            title: const Text('Select Search Service'),
             children: <Widget>[
               (player.searchService != null && player.searchService.isConnected)
                   ? ListTile(
