@@ -27,34 +27,43 @@ Future<void> joinRoomDialog(
           FlatButton(
               child: const Text('SUBMIT'),
               onPressed: () async {
-                String roomId = myController.text;
-                String roomName = await client.JoinRoom(roomId);
-                print('joining room $roomName');
+                // String roomId = myController.text;
+                // String roomName = await client.JoinRoom(roomId);
+                // print('joining room $roomName');
 
+                // if (roomName.startsWith('Error')) {
+                //   showDialog(
+                //       context: context,
+                //       // barrierDismissible: false,
+                //       builder: (BuildContext context) {
+                //         return AlertDialog(
+                //           title: Text('Unable to join Room. Incorrect Key'),
+                //           actions: <Widget>[
+                //             FlatButton(
+                //               child: Text('Ok'),
+                //               onPressed: () => Navigator.of(context).pop(),
+                //             )
+                //           ],
+                //         );
+                //       });
+                // } else {
+                //   Navigator.pop(context);
+                //   Navigator.pushNamed(
+                //     context,
+                //     '/room',
+                //     arguments: RoomArguments(
+                //         roomName: roomName, roomID: roomId, host: false),
+                //   );
+                // }
                 Navigator.pop(context);
-                if (roomName.startsWith('Error')) {
-                  showDialog(
-                      context: context,
-                      // barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Unable to join Room. Incorrect Key'),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: Text('Ok'),
-                              onPressed: () => Navigator.of(context).pop(),
-                            )
-                          ],
-                        );
-                      });
-                } else {
-                  Navigator.pushNamed(
-                    context,
-                    '/room',
-                    arguments: RoomArguments(
-                        roomName: roomName, roomID: roomId, host: false),
-                  );
-                }
+                Navigator.pushNamed(
+                  context,
+                  '/room',
+                  arguments: RoomArguments(
+                      roomName: 'test_roomName',
+                      roomID: myController.text,
+                      host: false),
+                );
               })
         ],
       );
@@ -86,18 +95,27 @@ Future<void> createRoomDialog(
           FlatButton(
               child: const Text('SUBMIT'),
               onPressed: () async {
-                String roomName = myController.text;
-                print('creating $roomName');
-                String roomId = await client.CreateRoom(roomName);
+                // String roomName = myController.text;
+                // print('creating $roomName');
+                // String roomId = await client.CreateRoom(roomName);
 
-                print('create room with id $roomId');
+                // print('create room with id $roomId');
 
+                // Navigator.pop(context);
+                // Navigator.pushNamed(
+                //   context,
+                //   '/room',
+                //   arguments: RoomArguments(
+                //       roomName: roomName, roomID: roomId, host: true),
+                // );
                 Navigator.pop(context);
                 Navigator.pushNamed(
                   context,
                   '/room',
                   arguments: RoomArguments(
-                      roomName: roomName, roomID: roomId, host: true),
+                      roomName: myController.text,
+                      roomID: 'test_roomId',
+                      host: true),
                 );
               })
         ],
