@@ -1,14 +1,19 @@
 syntax = "proto3";
-
-
 package liveq;
+
+option java_multiple_files = true;
+option java_outer_classname = "LiveQProto";
+option java_package = "LiveQ";
+
 
 service LiveQ {
     rpc CreateRoom(CreateRequest) returns (CreateReply) {}
-    rpc JoinRoom(JoinRequest) returns (JoinReply) {}
-    rpc UpdateQueue(QueueRequest) returns (stream QueueReply) {}
-    rpc AddSong(SongRequest) returns (stream QueueReply) {}
-    rpc DeleteSong(SongRequest) returns (stream QueueReply) {}
+    rpc JoinRoom(KeyRequest) returns (JoinReply) {}
+    rpc AddService(ServiceRequest) returns (Status) {}
+    rpc GetServices(KeyRequest) returns (stream ServiceMsg) {}
+    rpc GetQueue(KeyRequest) returns (stream SongMsg) {}
+    rpc AddSong(SongRequest) returns (Status) {}
+    rpc DeleteSong(SongRequest) returns (Status) {}
 }
 
 message CreateRequest {
@@ -16,28 +21,45 @@ message CreateRequest {
 }
 
 message CreateReply {
-    string room_key = 1;
-    string host_id = 2;
+    Status status = 1;
+    string room_key = 2;
+    string host_id = 3;
 }
 
-message JoinRequest {
+message KeyRequest {
     string room_key = 1;
 }
 
 message JoinReply {
-    string guest_id = 1;
+    Status status = 1;
+    string room_name = 2;
+    string guest_id = 3;
 }
 
-message QueueRequest {
+message ServiceRequest {
     string room_key = 1;
+    ServiceMsg service = 2;
 }
 
-message QueueReply { 
+message Status {
+    int32 status = 1;
+}
+
+message ServiceMsg {
+    string name = 1;
+}
+
+message SongMsg {
     string song_id = 1;
-    string service_id = 2;
+    string uri = 2;
+    string name = 3;
+    string artist = 4;
+    string image_uri = 5;
+    int32 duration = 6;
+    string service = 7;
 }
 
 message SongRequest {
-    QueueReply song = 1;
+    SongMsg song = 1;
     string room_key = 2;
 }

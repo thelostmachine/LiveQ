@@ -21,23 +21,33 @@ class LiveQStub(object):
         )
     self.JoinRoom = channel.unary_unary(
         '/liveq.LiveQ/JoinRoom',
-        request_serializer=interface__pb2.JoinRequest.SerializeToString,
+        request_serializer=interface__pb2.KeyRequest.SerializeToString,
         response_deserializer=interface__pb2.JoinReply.FromString,
         )
-    self.UpdateQueue = channel.unary_stream(
-        '/liveq.LiveQ/UpdateQueue',
-        request_serializer=interface__pb2.QueueRequest.SerializeToString,
-        response_deserializer=interface__pb2.QueueReply.FromString,
+    self.AddService = channel.unary_unary(
+        '/liveq.LiveQ/AddService',
+        request_serializer=interface__pb2.ServiceRequest.SerializeToString,
+        response_deserializer=interface__pb2.Status.FromString,
         )
-    self.AddSong = channel.unary_stream(
+    self.GetServices = channel.unary_stream(
+        '/liveq.LiveQ/GetServices',
+        request_serializer=interface__pb2.KeyRequest.SerializeToString,
+        response_deserializer=interface__pb2.ServiceMsg.FromString,
+        )
+    self.GetQueue = channel.unary_stream(
+        '/liveq.LiveQ/GetQueue',
+        request_serializer=interface__pb2.KeyRequest.SerializeToString,
+        response_deserializer=interface__pb2.SongMsg.FromString,
+        )
+    self.AddSong = channel.unary_unary(
         '/liveq.LiveQ/AddSong',
         request_serializer=interface__pb2.SongRequest.SerializeToString,
-        response_deserializer=interface__pb2.QueueReply.FromString,
+        response_deserializer=interface__pb2.Status.FromString,
         )
-    self.DeleteSong = channel.unary_stream(
+    self.DeleteSong = channel.unary_unary(
         '/liveq.LiveQ/DeleteSong',
         request_serializer=interface__pb2.SongRequest.SerializeToString,
-        response_deserializer=interface__pb2.QueueReply.FromString,
+        response_deserializer=interface__pb2.Status.FromString,
         )
 
 
@@ -59,7 +69,21 @@ class LiveQServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def UpdateQueue(self, request, context):
+  def AddService(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetServices(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetQueue(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -90,23 +114,33 @@ def add_LiveQServicer_to_server(servicer, server):
       ),
       'JoinRoom': grpc.unary_unary_rpc_method_handler(
           servicer.JoinRoom,
-          request_deserializer=interface__pb2.JoinRequest.FromString,
+          request_deserializer=interface__pb2.KeyRequest.FromString,
           response_serializer=interface__pb2.JoinReply.SerializeToString,
       ),
-      'UpdateQueue': grpc.unary_stream_rpc_method_handler(
-          servicer.UpdateQueue,
-          request_deserializer=interface__pb2.QueueRequest.FromString,
-          response_serializer=interface__pb2.QueueReply.SerializeToString,
+      'AddService': grpc.unary_unary_rpc_method_handler(
+          servicer.AddService,
+          request_deserializer=interface__pb2.ServiceRequest.FromString,
+          response_serializer=interface__pb2.Status.SerializeToString,
       ),
-      'AddSong': grpc.unary_stream_rpc_method_handler(
+      'GetServices': grpc.unary_stream_rpc_method_handler(
+          servicer.GetServices,
+          request_deserializer=interface__pb2.KeyRequest.FromString,
+          response_serializer=interface__pb2.ServiceMsg.SerializeToString,
+      ),
+      'GetQueue': grpc.unary_stream_rpc_method_handler(
+          servicer.GetQueue,
+          request_deserializer=interface__pb2.KeyRequest.FromString,
+          response_serializer=interface__pb2.SongMsg.SerializeToString,
+      ),
+      'AddSong': grpc.unary_unary_rpc_method_handler(
           servicer.AddSong,
           request_deserializer=interface__pb2.SongRequest.FromString,
-          response_serializer=interface__pb2.QueueReply.SerializeToString,
+          response_serializer=interface__pb2.Status.SerializeToString,
       ),
-      'DeleteSong': grpc.unary_stream_rpc_method_handler(
+      'DeleteSong': grpc.unary_unary_rpc_method_handler(
           servicer.DeleteSong,
           request_deserializer=interface__pb2.SongRequest.FromString,
-          response_serializer=interface__pb2.QueueReply.SerializeToString,
+          response_serializer=interface__pb2.Status.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

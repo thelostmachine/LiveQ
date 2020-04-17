@@ -9,7 +9,6 @@ class Home extends StatelessWidget {
 
   Home({Key key}) : super(key: key);
 
-  //TODO: Add connect_service settings button
   @override
   Widget build(BuildContext context) {
     return Scaffold(

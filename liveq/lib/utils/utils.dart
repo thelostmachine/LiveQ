@@ -1,3 +1,5 @@
+import 'package:liveq/utils/client.dart';
+
 enum PlayerState {
   playing,
   paused,
@@ -5,9 +7,11 @@ enum PlayerState {
 }
 
 class RoomArguments {
-  final String roomID;
-  final String roomName;
+  String roomID = '';
+  String roomName = '';
   final bool host;
 
-  RoomArguments(this.roomID, this.roomName, this.host);
+  RoomArguments({this.roomID, this.roomName, this.host});
 }
+
+Client client = Client();

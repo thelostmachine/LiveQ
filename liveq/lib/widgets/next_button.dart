@@ -7,7 +7,7 @@ class NextButton extends StatelessWidget {
 
   // NextButton(this._content);
   NextButton(this._content, this._onTap);
-
+  
   @override
   Widget build(BuildContext context) {
     return SizedBox(

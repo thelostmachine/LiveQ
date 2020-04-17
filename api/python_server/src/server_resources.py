@@ -1,8 +1,6 @@
 import uuid
 import string
 import random
-import queue
-import interface_pb2
 
 class RoomDB:
     def __init__(self):
@@ -18,18 +16,29 @@ class RoomDB:
     def AddRoom(self, name):
         new_room = Room(name, self.generate_key())
         self.rooms[new_room.room_key] = new_room
-        return [new_room.room_key, str(new_room.host_id)]
+        if new_room.room_key in self.rooms.keys():
+            return [new_room.room_key, str(new_room.host_id)]
+        else
+            return ['-1', '0']
     
     def JoinRoom(self, key):
         if key in self.rooms.keys():
-            return self.rooms[key].AddGuest()
+            return [self.rooms[key].name, str(self.rooms[key].AddGuest())]
+        else
+            return ['-1', '0']
     
+    def AddServiceToRoom(self, key, service):
+        if key in self.rooms.key():
+            self.rooms[key].AddService(service)
+            return 0
+        else
+            return -1
+
     def AddSongToRoom(self, key, song):
         if key in self.rooms.keys():
-            print(song.song_id)
             self.rooms[key].AddSongToQ(song)
     
-    def DeleteSong(self, key, song):
+    def DeleteSongFromRoom(self, key, song):
         if key in self.rooms.keys():
             self.rooms[key].DelSongQ(song)
 
@@ -39,12 +48,16 @@ class Room:
         self.room_key = key
         self.host_id = uuid.uuid1()
         self.guest_ids = []
+        self.services = []
         self.q = []
 
     def AddGuest(self):
         guest_id = uuid.uuid1()
         self.guest_ids.append(guest_id)
         return guest_id
+
+    def AddService(self, service):
+        self.services.append(service)
 
     def AddSongToQ(self, song):
         self.q.append(song)

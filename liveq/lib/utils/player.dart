@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/client.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
@@ -7,6 +8,7 @@ import 'song.dart';
 
 enum ModelProperties {
   queue,
+  soundcloudTrack,
 }
 
 class Player extends PropertyChangeNotifier<ModelProperties> {
@@ -58,22 +60,33 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   void addSong(Song song) {
-    queue.add(song);
-    notifyListeners(ModelProperties.queue);
+    client.AddSong(song);
   }
 
   Song getNextSong() {
-    Song next = queue.removeAt(0);
-    notifyListeners(ModelProperties.queue);
+    Song next = queue[0];
+    client.DeleteSong(next);
+
     return next;
   }
 
-  void play(Song song) async {
+  loadQueue() async {
+    client.GetQueue().then((q) {
+      if (q != null) {
+        queue = q;
+        notifyListeners(ModelProperties.queue);
+      }
+    });
+  }
+
+  Future play(Song song) async {
     if (song != null) {
       _currentSong = song;
       _currentService = _currentSong.service;
-      _currentService.play(_currentSong.uri);
+      // _currentService.play(_currentSong.uri);
       state = PlayerState.playing;
+
+      return _currentService.play(_currentSong.uri);
     } else {
       resume();
     }
@@ -94,10 +107,13 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   void setService(Service service) {
+    client.AddService(service.name);
     _currentService = service;
+    searchService = service;
+    // isConnected = true;
   }
 
-  void next() async {
+  Future next() async {
     if (queue != null && queue.isNotEmpty) {
       Song nextSong = getNextSong();
 
@@ -108,12 +124,12 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
       _currentSong = nextSong;
       _currentService = _currentSong.service;
-      play(_currentSong);
+      // play(_currentSong);
       state = PlayerState.playing;
+      return play(_currentSong);
     }
-    // else {
-    //   resume();
-    // }
+
+    return null;
   }
 
   // Calls when song is finished playing
@@ -121,7 +137,13 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     next();
   }
 
+  void connect(Service service) async {
+    service.connect();
+    setService(service);
+  }
+
   Future<List<Song>> search(String query) async {
+    print('searching with ${searchService.name}');
     return searchService.search(query);
   }
 

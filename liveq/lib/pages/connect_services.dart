@@ -46,43 +46,48 @@ class _ConnectServicesState extends State<ConnectServices> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton.icon(
-                      onPressed: () async {
-                        setState(() {
-                          _loading = true;
-                        });
+                    onPressed: () async {
+                      setState(() {
+                        _loading = true;
+                      });
 
-                        widget.player.potentialServices[0].connect();
+                      // widget.player.potentialServices[0].connect();
+                      widget.player.connect(widget.player.potentialServices[0]);
 
-                        setState(() {
-                          _loading = false;
-                        });
-                      },
-                      icon: Icon(MdiIcons.spotify),
-                      label: Text('Spotify')),
-                  RaisedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(MdiIcons.music),
-                    label: Text('SoundCloud'),
-                  ),
-                ],
-              ),
-              _loading
-                  ? Container(
-                      color: Colors.black12,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Connecting...'),
-                            SizedBox(height: 10),
-                            CircularProgressIndicator()
-                          ],
-                        ),
-                      ),
-                    )
-                  : SizedBox(),
-            ],
-          );
-        });
+                    setState(() {
+                      _loading = false;
+                    });
+                  },
+                  icon: Icon(MdiIcons.spotify),
+                  label: Text('Spotify')
+                ),
+                RaisedButton.icon(
+                  onPressed: () {
+                    widget.player.connect(widget.player.potentialServices[1]);
+                  },
+                  icon: Icon(MdiIcons.music),
+                  label: Text('SoundCloud'),
+                ),
+              ],
+            ),
+            _loading
+              ? Container(
+                color: Colors.black12,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('Connecting...'),
+                      SizedBox(height: 10),
+                      CircularProgressIndicator()
+                    ],
+                  )
+                )
+              )
+              : SizedBox(),
+          ],
+        );
+      }
+    );
   }
 }

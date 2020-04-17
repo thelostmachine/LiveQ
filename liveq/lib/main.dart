@@ -8,6 +8,7 @@ import 'package:liveq/pages/search.dart';
 // import 'package:liveq/pages/connect_services.dart';
 import 'package:liveq/pages/connect_services_new.dart';
 import 'package:liveq/utils/services.dart';
+import 'package:liveq/pages/soundcloud.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,44 +39,8 @@ void main() {
         '/room': (context) => Room(),
         '/search': (context) => Search(),
         '/connect_services': (context) => ConnectServices(),
-        '/sound': (context) => SoundCloud(),
+        // '/sound': (context) => SoundCloud(),
       },
     ),
   );
-}
-
-class SoundCloud extends StatefulWidget {
-  @override
-  SoundCloudState createState() => SoundCloudState();
-}
-
-class SoundCloudState extends State<SoundCloud> {
-  String _fileText;
-
-  final flutterWebviewPlugin = FlutterWebviewPlugin();
-
-  @override
-  Widget build(BuildContext context) {
-    rootBundle.loadString('assets/soundcloud.html').then((value) {
-      setState(() {
-        _fileText = value;
-      });
-    });
-
-    return WebviewScaffold(
-      appBar: AppBar(
-        title: Text('SoundCloud'),
-      ),
-      // initialChild: SizedBox(height: 10),
-      url: Uri.dataFromString(
-        _fileText,
-        mimeType: 'text/html',
-      ).toString(),
-      withJavascript: true,
-      bottomNavigationBar: BottomAppBar(
-          child: RaisedButton(
-              child: Text('Hide'),
-              onPressed: () => flutterWebviewPlugin.hide())),
-    );
-  }
 }

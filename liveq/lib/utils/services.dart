@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/material.dart' as material;
@@ -9,6 +10,7 @@ import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 
 import 'package:liveq/utils/song.dart';
+import 'package:liveq/pages/soundcloud.dart' as SCWidget;
 
 abstract class Service {
   static const String SOUNDCLOUD = 'SoundCloud';
@@ -16,7 +18,6 @@ abstract class Service {
   static const String APPLE = 'Apple Music';
 
   String name;
-  // bool connected;
   bool isConnected = false;
   // Future<bool> get isConnected;
 
@@ -26,8 +27,14 @@ abstract class Service {
   String iconImagePath;
 
   Future<bool> connect();
+  // Future<bool> connect() async {
+  //   connectedServices.add(this);
+  //   await saveService();
+  //   isConnected = true;
+  //   return Future.value(true);
+  // }
 
-  Future<void> play(String uri);
+  Future play(String uri);
   Future<void> resume();
   Future<void> pause();
 
@@ -95,6 +102,7 @@ class SoundCloud extends Service {
 
   final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
   final String userId = '857371-474509-874152-946359';
+  final String iconImagePath = 'assets/images/soundcloud.png';
 
   static final Service _soundcloud = SoundCloud._internal();
 
@@ -108,7 +116,8 @@ class SoundCloud extends Service {
   Future<bool> connect() {
     // super.connect();
     // TODO: implement connect
-    throw UnimplementedError();
+    // throw UnimplementedError();
+    return Future.value(false);
   }
 
   @override
@@ -118,9 +127,12 @@ class SoundCloud extends Service {
   }
 
   @override
-  Future<void> play(String uri) {
-    // TODO: implement play
-    throw UnimplementedError();
+  Future<String> play(String uri) {
+    // AudioStream stream = AudioStream('https://api-v2.soundcloud.com/media/soundcloud:tracks:37262616/980a4ad2-b8b2-43dc-a4d8-1b58020960ac/stream/hls');
+    // stream.start();
+    print('wanting to play $uri');
+    return Future.value(uri);
+    // return Future.value(SCWidget.SoundCloud(uri));
   }
 
   @override
@@ -132,55 +144,45 @@ class SoundCloud extends Service {
   @override
   Future<List<Song>> search(String query) async {
     List<Song> searchResults = List();
-    String search =
-        'https://api-v2.soundcloud.com/search?q=porter%20robinson&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
-    // String search = 'https://api-v2.soundcloud.com/search/queries?q=';
-    // search += formatSearch(query);
-    // search += '&client_id=$clientId';
-    // search += '&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
-    // search += '&variant_ids=';
-    // search += '&facet=model';
-    // search += '&user_id=$userId';
+    print('here');
+    String search = 'https://api-v2.soundcloud.com/search?q=';
+    search += formatSearch(query);
+    search += '&variant_ids=';
+    search += '&facet=model';
+    search += '&user_id=$userId';
+    search += '&client_id=$clientId';
+    search += '&limit=10';
+    search += '&offset=0';
+    search += '&linked_partitioning=1';
+    search += '&app_version=1586177347';
+    search += '&app_locale=en';
+    search +=
+        '&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
 
-    // search = 'https://api-v2.soundcloud.com/search?q=juice%20wrld&sc_a_id=8518dae7c71781e17004bb10b29a999e555ad4ce&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
-
-    var response =
-        await http.get(search, headers: {'Accept': 'application/json'});
+    var response = await http.get(search);
 
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
 
       for (var item in jsonResponse['collection']) {
-        print(item.toString());
+        if (item['kind'] == 'track' && item['artwork_url'] != null) {
+          var track = item;
+          String id = track['id'].toString();
+          String uri = track['uri'];
+          String trackName = track['title'];
+          String artist = track['user']['full_name'];
+          String imageUri = track['artwork_url'];
+          int duration = track['full_duration'];
+          Service service = this;
+
+          searchResults.add(
+              Song(id, uri, trackName, artist, imageUri, duration, service));
+        }
       }
     } else {
       print('ERROR');
       print(response.statusCode);
     }
-
-    // var search = await spotifyWebApi.search
-    //   .get(query)
-    //   .first()
-    //   .catchError((err) => print((err as SpotifyException).message));
-
-    // if (search != null) {
-
-    //   search.forEach((pages) {
-    //     pages.items.forEach((track) async {
-    //       if (track is Track) {
-    //         String id = track.id;
-    //         String uri = track.uri;
-    //         String trackName = track.name;
-    //         String artist = track.artists[0].name;
-    //         String imageUri = track.album.images[1].url;
-    //         Duration durationMilli = track.duration;
-    //         Service service = this;
-
-    //         searchResults.add(Song(id, uri, trackName, artist, imageUri, durationMilli, service));
-    //       }
-    //      });
-    //    });
-    // }
 
     return searchResults;
   }
@@ -269,28 +271,24 @@ class Spotify extends Service {
         .catchError((err) => print((err as SpotifyException).message));
 
     if (search != null) {
-      search.forEach(
-        (pages) {
-          pages.items.forEach(
-            (track) async {
-              if (track is Track) {
-                String id = track.id;
-                String uri = track.uri;
-                String trackName = track.name;
-                List<String> _artistNames =
-                    track.artists.map((val) => val.name).toList();
-                String artists = _artistNames.join(", ");
-                String imageUri = track.album.images[1].url;
-                int duration = track.durationMs;
-                Service service = this;
+      search.forEach((pages) {
+        pages.items.forEach((track) async {
+          if (track is Track) {
+            String id = track.id;
+            String uri = track.uri;
+            String trackName = track.name;
+            List<String> _artistNames =
+                track.artists.map((val) => val.name).toList();
+            String artists = _artistNames.join(", ");
+            String imageUri = track.album.images[1].url;
+            int duration = track.durationMs;
+            Service service = this;
 
-                searchResults.add(Song(
-                    id, uri, trackName, artists, imageUri, duration, service));
-              }
-            },
-          );
-        },
-      );
+            searchResults.add(
+                Song(id, uri, trackName, artists, imageUri, duration, service));
+          }
+        });
+      });
     }
 
     return searchResults;
