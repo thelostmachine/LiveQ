@@ -1,17 +1,19 @@
-import 'package:grpc/grpc.dart';
 import 'interface.pb.dart';
 import 'interface.pbgrpc.dart';
 import 'song.dart';
+import 'dart:html';
 import 'package:liveq/utils/services.dart' as services;
+import 'package:grpc/grpc_web.dart';
+import 'package:liveq/utils/client_interface.dart' as grpcClient;
 
-
-class Client {
-  ClientChannel channel;
+class WebClient implements grpcClient.Client {
   LiveQClient stub;
   String key;
   String id;
-  Client() {
-    channel = ClientChannel('34.71.85.54', port: 80, options: const ChannelOptions(credentials: ChannelCredentials.insecure()));  
+  GrpcWebClientChannel channel;
+  
+  WebClient() {
+    channel = GrpcWebClientChannel.xhr(Uri.parse('http://34.71.85.54:80'));
     stub = LiveQClient(channel, options: CallOptions(timeout: Duration(seconds: 30)));
   }
 
@@ -145,3 +147,5 @@ class Client {
     }
   }
 }
+
+grpcClient.Client getClient() => WebClient();
