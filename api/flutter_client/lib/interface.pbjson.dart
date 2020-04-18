@@ -37,14 +37,6 @@ const JoinReply$json = const {
   ],
 };
 
-const LeaveRequest$json = const {
-  '1': 'LeaveRequest',
-  '2': const [
-    const {'1': 'room_key', '3': 1, '4': 1, '5': 9, '10': 'roomKey'},
-    const {'1': 'id', '3': 2, '4': 1, '5': 9, '10': 'id'},
-  ],
-};
-
 const ServiceRequest$json = const {
   '1': 'ServiceRequest',
   '2': const [
