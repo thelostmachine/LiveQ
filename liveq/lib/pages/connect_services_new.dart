@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 import 'package:liveq/widgets/link_text.dart';
 import 'package:liveq/utils/services.dart';
+import 'package:liveq/models/catalog.dart';
 
 class ConnectServices extends StatefulWidget {
   @override
@@ -16,13 +18,10 @@ class _ConnectServicesState extends State<ConnectServices> {
 
   @override
   Widget build(BuildContext context) {
-    print('CONNECTED_SERVICES');
-    for (var s in Service.connectedServices) {
-      print('${s.name}');
-    }
     return WillPopScope(
       onWillPop: () {
-        Service.saveServices(); // save connected services to cache
+        // save connected services to cache
+        Provider.of<CatalogModel>(context, listen: false).saveServices();
         Navigator.pop(context, true);
         return Future.value(true);
       },
@@ -54,27 +53,31 @@ class _ConnectServicesState extends State<ConnectServices> {
         ),
         Divider(),
         Expanded(
-          child: ListView.separated(
-            physics: BouncingScrollPhysics(),
-            itemCount: Service.potentialServices.length,
-            // itemExtent: 110,
-            separatorBuilder: (BuildContext context, int index) =>
-                Divider(), // TODO: Figure out why dividers are not showing
-            itemBuilder: (BuildContext context, int index) {
-              return CheckboxListTile(
-                title: Text(Service.potentialServices[index].name),
-                value: Service.connectedServices
-                    .contains(Service.potentialServices[index]),
-                onChanged: (bool value) {
-                  setState(() {
-                    value
-                        ? Service.connectedServices
-                            .add(Service.potentialServices[index])
-                        : Service.connectedServices
-                            .remove(Service.potentialServices[index]);
-                  });
+          child: Consumer<CatalogModel>(
+            builder: (context, catalog, child) {
+              return ListView.separated(
+                physics: BouncingScrollPhysics(),
+                itemCount: catalog.potentialServices.length,
+                // itemExtent: 110,
+                separatorBuilder: (BuildContext context, int index) =>
+                    Divider(), // TODO: Figure out why dividers are not showing
+                itemBuilder: (BuildContext context, int index) {
+                  return CheckboxListTile(
+                    title: Text(Service.potentialServices[index].name),
+                    value: catalog.connectedServices
+                        .contains(Service.potentialServices[index]),
+                    onChanged: (bool value) {
+                      setState(() {
+                        value
+                            ? catalog.addToConnectedServices(
+                                Service.potentialServices[index])
+                            : catalog.removeFromConnectedServices(
+                                Service.potentialServices[index]);
+                      });
+                    },
+                    secondary: catalog.potentialServices[index].getImageIcon(),
+                  );
                 },
-                secondary: Service.potentialServices[index].getImageIcon(),
               );
             },
           ),
@@ -91,21 +94,25 @@ class _ConnectServicesState extends State<ConnectServices> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: FlatButton(
-                      onPressed: Service.canCreateRoom()
-                          ? () {
-                              // save connected services to cache
-                              Service.saveServices();
-                              Navigator.pop(context);
-                            }
-                          : null,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          const Text('DONE'),
-                        ],
-                      ),
+                    child: Consumer<CatalogModel>(
+                      builder: (context, catalog, child) {
+                        return FlatButton(
+                          onPressed: catalog.canCreateRoom()
+                              ? () {
+                                  // save connected services to cache
+                                  catalog.saveServices();
+                                  Navigator.pop(context);
+                                }
+                              : null,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              const Text('DONE'),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

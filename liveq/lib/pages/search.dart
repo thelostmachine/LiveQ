@@ -95,14 +95,14 @@ class _SearchState extends State<Search> {
         // ),
         label: Text(_player.searchService.name),
         icon: _player.searchService.getImageIcon(),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).disabledColor,
       );
     } else {
       return FloatingActionButton.extended(
         onPressed: null,
         label: Text('No Service'),
         icon: Icon(Icons.error_outline),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).disabledColor,
       );
     }
   }
