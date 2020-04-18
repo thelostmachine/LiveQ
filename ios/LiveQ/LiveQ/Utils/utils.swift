@@ -16,6 +16,62 @@ import SwiftUI
 //    Song(id: 3, "FEFE", "6ix9ine", .SoundCloud),
 //]
 
+let client = Client()
+
+var authorizationToken: String?
+
+struct SearchResult: Decodable {
+    let tracks: Track
+    
+    func getSongs() -> [Song] {
+        var songs = [Song]()
+        
+        for item in tracks.items {
+            let song = Song(id: item.id, uri: item.uri, item.name, item.artists, imageUri: item.album.images[1].url, duration: item.duration / 1000, .Spotify)
+            songs.append(song)
+        }
+        
+        return songs
+    }
+}
+
+struct Track: Decodable {
+    let items: [Items]
+}
+
+struct Items: Decodable {
+    let album: Album
+    let artists: [Artist]
+    let duration: Int
+    let uri: String
+    let name: String
+    let id: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case album = "album"
+        case artists = "artists"
+        case duration = "duration_ms"
+        case uri = "uri"
+        case name = "name"
+        case id = "id"
+    }
+}
+
+struct Album: Decodable {
+    let images: [ImageJSON]
+}
+
+struct ImageJSON: Decodable {
+    let url: String
+    let height: Int
+    let width: Int
+}
+
+struct Artist: Decodable {
+    let name: String
+}
+
+
 extension Color {
     init(hex: Int, alpha: Double = 1) {
         let components = (

@@ -30,21 +30,6 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     return Service.connectedServices;
   }
 
-  // Service get _currentService {
-  //   __currentService.isConnected.then((connected) {
-  //     if (!connected) {
-  //       __currentService.connect();
-  //     }
-
-  //   });
-
-  //   return __currentService;
-  // }
-
-  // set _currentService(Service service) {
-  //   __currentService = service;
-  // }
-
   List<Song> queue = List();
 
   bool isConnected =
@@ -82,11 +67,15 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   Future play(Song song) async {
     if (song != null) {
       _currentSong = song;
-      _currentService = _currentSong.service;
-      // _currentService.play(_currentSong.uri);
+      _currentService = song.service;
+
+      String uri = _currentSong.uri;
+      if (_currentService is SoundCloud) {
+        uri = song.id;
+      }
       state = PlayerState.playing;
 
-      return _currentService.play(_currentSong.uri);
+      return _currentSong.service.play(uri);
     } else {
       resume();
     }
@@ -113,7 +102,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     // isConnected = true;
   }
 
-  Future next() async {
+  void next() async {
     if (queue != null && queue.isNotEmpty) {
       Song nextSong = getNextSong();
 

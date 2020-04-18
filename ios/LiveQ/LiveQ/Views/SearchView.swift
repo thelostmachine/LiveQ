@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import SpotifyKit
+//import Spartan
 
 struct SearchView: View {
     
@@ -17,7 +17,8 @@ struct SearchView: View {
     
     @State private var searchText = ""
     @State private var showCancelButton: Bool = false
-    @State private var tracks: [SpotifyTrack] = []
+    @State private var tracks: [Song] = []
+//    @State private var tracks: [SpotifyTrack] = []
     
     var body: some View {
         VStack {
@@ -32,16 +33,7 @@ struct SearchView: View {
                     }, onCommit: {
                         print("onCommit")
                         
-                        spotifyManager.find(SpotifyTrack.self, self.searchText) { tracks in
-                            self.tracks = tracks
-                            
-//                            for track in tracks {
-//                                print("URI:    \(track.uri), " +
-//                                    "Name:   \(track.name), " +
-//                                    "Artist: \(track.artist.name), " +
-//                                    "Album:  \(track.album?.name ?? "none")")
-//                            }
-                        }
+                        self.search(query: self.searchText)
                     }).foregroundColor(.primary)
                     
                     Button(action: {
@@ -66,12 +58,8 @@ struct SearchView: View {
             }
             .padding(.horizontal)
             .navigationBarHidden(showCancelButton)
-            
-            //                List(songs.filter{ $0.name.hasPrefix(searchText) || searchText == "" }) { song in
-            //                    SongRow(song: song)
-            //                }
             List {
-                ForEach(getSongs()) { song in
+                ForEach(self.tracks) { song in
                     Button(action: {
                         self.queue.objectWillChange.send()
                         self.queue.queue(song)
@@ -81,38 +69,38 @@ struct SearchView: View {
                     }) {
                         SongRow(song: song)
                     }
-//                    SongRow(song: song)
-                    
-//                    NavigationLink(destination: RoomView()) {
-//                        SongRow(song: song)
-//                    }
                 }
             }
-//            List(getSongs()) { song in
-////                queue.queue(song)
-//                NavigationLink(destination: RoomView()) {
-////                    songs.append(song)
-//                    queue.queue(song)
-//                    SongRow(song: song)
-//                }
-////                ForEach(tracks) {track in
-////                    //                song = Song(id: 0, track.name, track.artist.name, .Spotify)
-////                    SongRow(song: Song(id: 0, track.name, track.artist.name, .Spotify))
-////                }
-//            }
         }
         .navigationBarTitle("Search")
         .resignKeyboardOnDragGesture()
     }
     
-    func getSongs() -> [Song] {
-        var songs: [Song] = []
+    func search(query: String) {
+        var search = "https://api.spotify.com/v1/search/?type=track&market=US&q="
+        search += formatQuery(query: query)
         
-        for track in self.tracks {
-            songs.append(Song(id: track.id, uri: track.uri, track.name, track.artist.name, .Spotify))
+        var request: URLRequest = URLRequest(url: URL(string: search)!)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(authorizationToken!)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("Error while searching: \(error)")
+                return
+            }
+            
+            let parsedResult = try? JSONDecoder().decode(SearchResult.self, from: data!)
+            if let results = parsedResult {
+                self.tracks = results.getSongs()
+            }
         }
+        task.resume()
         
-        return songs
+    }
+    
+    func formatQuery(query: String) -> String {
+        return query.replacingOccurrences(of: " ", with: "%20", options: .literal, range: nil)
     }
 }
 
