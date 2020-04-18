@@ -4,13 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:liveq/pages/search.dart';
-import 'package:liveq/pages/soundcloud.dart' as SCWidget;
-import 'package:liveq/utils/client.dart';
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
-import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/utils.dart';
-import 'package:liveq/utils/services.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 
@@ -320,26 +316,7 @@ class _RoomState extends State<Room> {
           children: <Widget>[
             RaisedButton(onPressed: () => player.resume(), child: Text('Play')),
             RaisedButton(onPressed: () => player.pause(), child: Text('Pause')),
-            RaisedButton(
-                onPressed: () {
-                  Future action = player.next();
-                  action.then((value) {
-                    if (value is String) {
-                      // print('string');
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  SCWidget.SoundCloud(value)));
-                    }
-                  });
-                },
-                child: Text('Next')),
-            Visibility(
-              child: SCWidget.SoundCloud('hi'),
-              visible: false,
-            )
+            RaisedButton(onPressed: () => player.next(), child: Text('Next')),
           ],
         ));
   }

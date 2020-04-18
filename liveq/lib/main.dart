@@ -8,7 +8,6 @@ import 'package:liveq/pages/search.dart';
 // import 'package:liveq/pages/connect_services.dart';
 import 'package:liveq/pages/connect_services_new.dart';
 import 'package:liveq/utils/services.dart';
-import 'package:liveq/pages/soundcloud.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

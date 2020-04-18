@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/material.dart' as material;
@@ -10,7 +9,7 @@ import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 
 import 'package:liveq/utils/song.dart';
-import 'package:liveq/pages/soundcloud.dart' as SCWidget;
+import 'package:url_audio_stream/url_audio_stream.dart';
 
 abstract class Service {
   static const String SOUNDCLOUD = 'SoundCloud';
@@ -34,7 +33,7 @@ abstract class Service {
   //   return Future.value(true);
   // }
 
-  Future play(String uri);
+  Future<void> play(String uri);
   Future<void> resume();
   Future<void> pause();
 
@@ -101,10 +100,13 @@ class SoundCloud extends Service {
   final String name = Service.SOUNDCLOUD;
 
   final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
+  final String playId = 'e38841b15b2059a39f261df195dfb430';
   final String userId = '857371-474509-874152-946359';
   final String iconImagePath = 'assets/images/soundcloud.png';
 
   static final Service _soundcloud = SoundCloud._internal();
+
+  AudioStream stream;
 
   SoundCloud._internal();
 
@@ -123,22 +125,21 @@ class SoundCloud extends Service {
   @override
   Future<void> pause() {
     // TODO: implement pause
-    throw UnimplementedError();
+    stream.pause();
   }
 
   @override
-  Future<String> play(String uri) {
-    // AudioStream stream = AudioStream('https://api-v2.soundcloud.com/media/soundcloud:tracks:37262616/980a4ad2-b8b2-43dc-a4d8-1b58020960ac/stream/hls');
-    // stream.start();
+  Future<void> play(String id) {
+    String uri = 'https://api.soundcloud.com/tracks/$id/stream?client_id=$playId';
     print('wanting to play $uri');
-    return Future.value(uri);
-    // return Future.value(SCWidget.SoundCloud(uri));
+    stream = AudioStream(uri);
+    stream.start();
   }
 
   @override
   Future<void> resume() {
     // TODO: implement resume
-    throw UnimplementedError();
+    stream.resume();
   }
 
   @override
@@ -175,8 +176,12 @@ class SoundCloud extends Service {
           int duration = track['full_duration'];
           Service service = this;
 
-          searchResults.add(
-              Song(id, uri, trackName, artist, imageUri, duration, service));
+          // Check if track is streamable. If not, don't include it in search results
+          var test = await http.get('https://api.soundcloud.com/tracks/$id?client_id=$playId');
+          if (test.statusCode == 200)
+          {
+            searchResults.add(Song(id, uri, trackName, artist, imageUri, duration, service));
+          }
         }
       }
     } else {
@@ -202,20 +207,6 @@ class Spotify extends Service {
   final String redirectUri = 'spotify-ios-quick-start://spotify-login-callback';
 
   SpotifyApi spotifyWebApi;
-
-  // Future<bool> get isConnected async {
-  //   var credentials = await spotifyWebApi.getCredentials();
-  //   bool expired = credentials.isExpired;
-  //   connected = !credentials.isExpired;
-  //   print('EXPIRED? : $expired');
-  //   print('CONNECTED? : $connected');
-  //   // return credentials.isExpired;
-  //   return connected;
-  //   // _credentials.then((value) {
-  //   //   print('EXPIRED? : ${value.isExpired}');
-  //   //   return value.isExpired;
-  //   // });
-  // }
 
   static final Service _spotify = Spotify._internal();
 
