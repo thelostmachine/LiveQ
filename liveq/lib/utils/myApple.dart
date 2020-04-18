@@ -53,24 +53,5 @@ class AppleSong{
 
   }
 
-
-
-
-
-
-}
-
-class SearchResult {
-
-  List<Song> searchSongs;
-
-  void addSong(AppleSong){
-
-    searchSongs.add(AppleSong.toSong());
-
-
-  }
-
-
 }
 

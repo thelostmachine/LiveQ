@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/material.dart' as material;
 
+import 'myApple.dart';
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify/spotify.dart';
@@ -304,6 +307,8 @@ class Apple extends Service {
   final String name = Service.APPLE;
   final String iconImagePath = 'assets\images\Apple_Music_Icon.psd';
 
+  static const APPLE_KEY = 'MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgQBrLQ60S4TlWguRBoXLRmYUL6pqxDt/gtfXHivxH0qCgCgYIKoZIzj0DAQehRANCAARYxJjvueLnqHqHGbAtPsfp9pY6UWnAAEJhojEx6OtaKjSgxDRJdE6nXFsaCzLxf0NWk2wYVF/pvI9pyTFWYi8K';
+
   static final Service _apple = Apple._internal();
 
   Apple._internal();
@@ -311,6 +316,19 @@ class Apple extends Service {
   factory Apple() {
     return _apple;
   }
+
+  Future<dynamic> _fetchJSON(String url) async {
+    final response =
+        await http.get(url, headers: {'Authorization': "Bearer $APPLE_KEY"});
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to fetch data');
+    }
+  }
+
+
+
 
   @override
   Future<void> pause() {
@@ -331,9 +349,20 @@ class Apple extends Service {
     }
   
     @override
-    Future<List<Song>> search(String uri) {
-    // TODO: implement search
-    throw UnimplementedError();
+    Future<List<Song>> search(String query) async {
+   
+    final List<Song> songs = [];
+
+    final url = "https://api.music.apple.com/v1/catalog/us/search?types=songs&limit=15&term=$query";
+    final encoded = Uri.encodeFull(url);
+    final json = await _fetchJSON(encoded);
+
+    final songJSON = json['results']['songs'];
+    if (songJSON != null) {
+      songs.addAll((songJSON['data'] as List).map((a) => AppleSong.fromJson(a).toSong()));
+    }
+
+    return songs;
   }
   
 }
