@@ -1,7 +1,6 @@
 import 'interface.pb.dart';
 import 'interface.pbgrpc.dart';
 import 'song.dart';
-import 'dart:html';
 import 'package:liveq/utils/services.dart' as services;
 import 'package:grpc/grpc_web.dart';
 import 'package:liveq/utils/client_interface.dart' as grpcClient;
@@ -18,9 +17,12 @@ class WebClient implements grpcClient.Client {
   }
 
   Future<String> CreateRoom(String room_name) async {
+    print('CREATING FROM WEB');
     final msg = CreateRequest()
       ..roomName = room_name;
+    print('calling stub');
     final createReply = await stub.createRoom(msg);
+    print('done');
     if(createReply.status.status == 0){
       key = createReply.roomKey;
       id = createReply.hostId;

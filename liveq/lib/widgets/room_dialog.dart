@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/utils/client.dart';
+import 'package:liveq/utils/client_interface.dart';
 
 import 'package:liveq/utils/utils.dart';
 
