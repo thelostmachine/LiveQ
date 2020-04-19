@@ -15,14 +15,14 @@ class CatalogModel with ChangeNotifier {
     loadServices();
   }
 
-  /// Adds [service] to cart.
+  /// Adds [service] to connectedServices.
   void addToConnectedServices(Service service) {
     connectedServices.add(service);
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
 
-  /// Adds [service] to cart.
+  /// Adds [service] to connectedServices.
   void removeFromConnectedServices(Service service) {
     connectedServices.remove(service);
     // This call tells the widgets that are listening to this model to rebuild.
