@@ -9,6 +9,7 @@ import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/widgets/songtile.dart';
+import 'package:liveq/widgets/music_icons.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:liveq/models/catalog.dart';
 
@@ -138,22 +139,23 @@ class _RoomState extends State<Room> {
                         topLeft: Radius.circular(_radius),
                         topRight: Radius.circular(_radius),
                       ),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        stops: [
-                          0.0,
-                          0.7,
-                        ],
-                        colors: [
-                          Color(0xFF47ACE1),
-                          Color(0xFFDF5F9D),
-                        ],
-                      ),
+                      color: Theme.of(context).primaryColor,
+                      // gradient: LinearGradient(
+                      //   begin: Alignment.topLeft,
+                      //   end: Alignment.bottomRight,
+                      //   stops: [
+                      //     0.0,
+                      //     0.7,
+                      //   ],
+                      //   colors: [
+                      //     Color(0xFF47ACE1),
+                      //     Color(0xFFDF5F9D),
+                      //   ],
+                      // ),
                     ),
                     child: (_connectedToServices)
                         ? _musicPlayer(context)
-                        : _connectionStatus(context), // PlayerPanel(),
+                        : _connectionStatus(), // PlayerPanel(),
                   ),
                 ),
               ],
@@ -344,6 +346,76 @@ class _RoomState extends State<Room> {
     );
   }
 
+  Widget _musicPanel() {
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: ListTile(
+          leading: GestureDetector(
+            onTap: () {
+              // if (_currentSong.uri == null) {
+              //   return;
+              // }
+              // if (PlayerState.paused == state) {
+              //   // stream.playMusic(_currentSong);
+              // } else {
+              //   // stream.pauseMusic(_currentSong);
+              // }
+            },
+            // child: Container(
+            //   child: state == PlayerState.playing
+            //       ? PauseIcon(
+            //           color: Colors.white,
+            //         )
+            //       : PlayIcon(
+            //           color: Colors.white,
+            //         ),
+            // ),
+            child: PlayIcon(
+              color: Colors.white,
+            ),
+          ),
+          title: Text(
+            // _currentSong.trackName,
+            'Song',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            // _currentSong.artists,
+            'Artist',
+            style: TextStyle(
+              color: Colors.white,
+              // letterSpacing: 1,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: GestureDetector(
+            onTap: () {
+              // if (player._currentSong.uri == null) {
+              //   return;
+              // }
+              // stream.skipMusic(_currentSong);
+            },
+            child: Container(
+              child: SkipIcon(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   /// The Music Player
   Widget _musicPlayer(BuildContext context) {
     return Container(
@@ -358,7 +430,7 @@ class _RoomState extends State<Room> {
         ));
   }
 
-  Widget _connectionStatus(BuildContext context) {
+  Widget _connectionStatus() {
     // return Container(
     //   height: 80,
     //   child: Center(

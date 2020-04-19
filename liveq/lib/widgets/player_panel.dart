@@ -12,7 +12,7 @@ class PlayerPanel extends StatelessWidget {
     return Container(
       height: double.infinity,
       width: double.infinity,
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.center,
       child: StreamBuilder<MapEntry<PlayerState, Song>>(
         // stream: , // suscribe to playerstate stream
         builder: (BuildContext context,
