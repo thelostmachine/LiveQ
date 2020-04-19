@@ -49,19 +49,18 @@ class _RoomState extends State<Room> {
         player.allowedServices.addAll(
             Provider.of<CatalogModel>(context, listen: false)
                 .connectedServices);
-        player.connectToServices(() {
-          setState(() {
-            _connectedToServices = true;
-          });
-        });
+        // player.connectToServices(() {
+        //   setState(() {
+        //     _connectedToServices = true;
+        //   });
+        // });
       }
     });
 
     // set soundcloud
     // player.connect(SoundCloud());
 
-    timer =
-        Timer.periodic(Duration(milliseconds: 100), (_) => player.loadQueue());
+    timer = Timer.periodic(Duration(milliseconds: 100), (_) => player.loadQueue());
   }
 
   @override

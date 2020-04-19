@@ -94,9 +94,9 @@ Future<void> createRoomDialog(
           FlatButton(
               child: const Text('SUBMIT'),
               onPressed: () async {
-                // String roomName = myController.text;
-                // print('creating $roomName');
-                // String roomId = await client.CreateRoom(roomName);
+                String roomName = myController.text;
+                print('creating $roomName');
+                String roomId = await client.CreateRoom(roomName);
 
                 // print('create room with id $roomId');
 
@@ -113,7 +113,7 @@ Future<void> createRoomDialog(
                   '/room',
                   arguments: RoomArguments(
                       roomName: myController.text,
-                      roomID: 'test_roomId',
+                      roomID: roomId,
                       host: true),
                 );
               })

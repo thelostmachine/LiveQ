@@ -23,9 +23,11 @@ class MobileClient implements grpcClient.Client {
     if(createReply.status.status == 0){
       key = createReply.roomKey;
       id = createReply.hostId;
+      print('ROOM KEY: ${createReply.roomKey}');
       return createReply.roomKey;
     }
     else {
+      print('ERROR CREATING ROOM');
       return 'Error: CreateRoom Failed.';
     }
   }
