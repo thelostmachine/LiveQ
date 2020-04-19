@@ -23,7 +23,7 @@ class Home extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'LiveQ',
-                    style: Theme.of(context).textTheme.headline4.merge(
+                    style: Theme.of(context).textTheme.headline3.merge(
                           TextStyle(fontWeight: FontWeight.bold),
                         ),
                   ),
