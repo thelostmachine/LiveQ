@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'package:liveq/pages/search.dart';
 import 'package:liveq/utils/player.dart';
@@ -9,6 +10,7 @@ import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
+import 'package:liveq/models/catalog.dart';
 
 class Room extends StatefulWidget {
   @override
@@ -43,7 +45,9 @@ class _RoomState extends State<Room> {
 
         // if host then connect to services
         // set player.allowedServices.addAll(Service.connectedServices); // for guest, need to receive services from server
-        player.allowedServices.addAll(Service.connectedServices);
+        player.allowedServices.addAll(
+            Provider.of<CatalogModel>(context, listen: false)
+                .connectedServices);
         player.connectToServices(() {
           setState(() {
             _connectedToServices = true;
@@ -190,64 +194,97 @@ class _RoomState extends State<Room> {
 
   // TODO: DIALOG NOT LOADING
   Future<void> _selectSearchService() async {
-    switch (await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('Select Search Service'),
-            children: <Widget>[
-              (player.searchService != null &&
-                      player.searchService
-                          .isConnected) // player.allowedServices.contains(player.searchService)
-                  ? ListTile(
-                      leading: player.searchService.getImageIcon(),
-                      title: Text(player.searchService.name),
-                    )
-                  : Container(),
-              Divider(),
-              ListView.builder(
+    // switch (
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Select Search Service'),
+          children: <Widget>[
+            (player.searchService != null &&
+                    player.searchService
+                        .isConnected) // player.allowedServices.contains(player.searchService)
+                ? Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        player.searchService.getImageIcon(),
+                        SizedBox(width: 16.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(player.searchService.name,
+                                style: Theme.of(context).textTheme.subtitle1),
+                            Text('Selected',
+                                style: Theme.of(context).textTheme.caption),
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                : Container(),
+            Divider(),
+
+            // TODO: Temporary fix by manually setting width and setting shrinkWrap
+            Container(
+              width: 200,
+              child: ListView.builder(
                 physics: BouncingScrollPhysics(),
-                itemCount: player.connectedServices
-                    .length, // replace connectedServices with allowedServices
-                itemBuilder: (BuildContext context, int index) {
-                  return (player.connectedServices.toList()[index].name !=
+                shrinkWrap: true,
+                // itemCount: player.allowedServices.length,
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return (player.allowedServices.toList()[index].name !=
                               player.searchService.name &&
-                          player.connectedServices
-                                  .toList()[index]
-                                  .isConnected ==
+                          player.allowedServices.toList()[index].isConnected ==
                               true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
-                              player.searchService = player.connectedServices
-                                      .toList()[
-                                  index]; // replace connectedServices with allowedServices
+                              player.searchService =
+                                  player.allowedServices.toList()[index];
                             });
                             Navigator.pop(context,
-                                player.connectedServices.toList()[index].name);
-                          }, // replace connectedServices with allowedServices
-                          child: ListTile(
-                            leading: player.connectedServices
-                                .toList()[index]
-                                .getImageIcon(), // replace connectedServices with allowedServices
-                            title: Text(player.connectedServices
-                                .toList()[index]
-                                .name), // replace connectedServices with allowedServices
+                                player.allowedServices.toList()[index].name);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 24.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                player.allowedServices
+                                    .toList()[index]
+                                    .getImageIcon(),
+                                SizedBox(width: 16.0),
+                                Text(
+                                    player.allowedServices.toList()[index].name,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1),
+                              ],
+                            ),
                           ),
                         )
                       : null;
                 },
               ),
-            ],
-          );
-        })) {
-      case Service.SPOTIFY:
-        // ...
-        break;
-      case Service.SOUNDCLOUD:
-        // ...
-        break;
-    }
+            ),
+          ],
+        );
+      },
+    );
+    //     ) {
+    //   case Service.SPOTIFY:
+    //     // ...
+    //     break;
+    //   case Service.SOUNDCLOUD:
+    //     // ...
+    //     break;
+    // }
   }
 
   Future<void> _roomCodeDialog() async {

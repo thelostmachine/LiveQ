@@ -98,7 +98,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   void setService(Service service) {
     client.AddService(service.name);
     _currentService = service;
-    searchService = service;
+    // searchService = service;
     // isConnected = true;
   }
 

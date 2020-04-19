@@ -41,7 +41,9 @@ class _ConnectServicesState extends State<ConnectServices> {
           padding: EdgeInsets.only(left: 16.0, top: 24.0, right: 16.0),
           child: Text(
             "Select your music services",
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.headline6.merge(
+                  TextStyle(fontWeight: FontWeight.w600),
+                ),
           ),
         ),
         Padding(

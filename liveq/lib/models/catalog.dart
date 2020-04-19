@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:liveq/utils/services.dart';
 
-class CatalogModel extends ChangeNotifier {
+class CatalogModel with ChangeNotifier {
   static const String SOUNDCLOUD = 'SoundCloud';
   static const String SPOTIFY = 'Spotify';
   static const String APPLE = 'Apple Music';
