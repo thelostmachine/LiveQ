@@ -14,13 +14,15 @@ struct SongRow: View {
     
     var body: some View {
         HStack {
+            ImageView(withURL: song.imageUri)
+            
             VStack(alignment: .leading) {
                 Text(song.name)
-                Text(song.artist)
+                Text(Song.getArtistString(song: song))
             }
             
             Spacer()
-            Text(song.service.rawValue)
+            Text(song.getDurationString())
         }
     }
 }

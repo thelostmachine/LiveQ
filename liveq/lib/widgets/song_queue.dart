@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/widgets/songtile.dart';
 
-class Playlist extends StatelessWidget {
-  Playlist({
+class SongQueue extends StatelessWidget {
+  SongQueue({
     Key key,
   }) : super(key: key);
 

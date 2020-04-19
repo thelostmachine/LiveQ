@@ -7,13 +7,13 @@
 //
 
 import SwiftUI
-import SpotifyKit
 import MediaPlayer
 
 struct RoomView: View, PlayerStateDelegate {
     
     @EnvironmentObject var viewRouter: ViewRouter
     @ObservedObject var queue = QueueViewModel()
+//    @Published var songs: [Song] = [Song]()
     
     @State private var authorized = false
     
@@ -36,9 +36,6 @@ struct RoomView: View, PlayerStateDelegate {
     var body: some View {
         NavigationView {
             VStack {
-//                List(songs) { song in
-//                    SongRow(song: song)
-//                }
                 List {
                     ForEach(self.queue.songs) { song in
                         SongRow(song: song)
@@ -59,7 +56,8 @@ struct RoomView: View, PlayerStateDelegate {
                     }
                     Button("Next") {
                         print("next")
-                        self.appRemote?.playerAPI?.play(self.queue.songs.remove(at: 0).uri, callback: nil)
+                        self.nextManual(song: self.getNextSong())
+//                        self.appRemote?.playerAPI?.play(self.queue.songs(at: 0).uri, callback: nil)
                     }
                 }
             }
@@ -81,30 +79,54 @@ struct RoomView: View, PlayerStateDelegate {
                 })
             .resignKeyboardOnDragGesture()
         }
+//        .onReceive(queue.didChange) { songs in
+//            self.songs = songs
+//        }
         .onAppear {
             (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.playerStateDelegate = self
             print("howdy")
             if !self.authorized {
-                spotifyManager.authorize()
+//                spotifyManager.authorize()
                 self.authorized = true
             }
             
+            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                self.queue.setQueue()
+            }
             
+//            let urlstring = "https://api.soundcloud.com/tracks/568524525"
+//            let urlstring = "https://cf-hls-media.sndcdn.com/media/1117203/1276863/Y9iSpv51sEqp.128.mp3"
+//            let url = URL(string: urlstring)
+//            self.downloadFile(url: url!)
             
-//            DispatchQueue.global(qos: .utility).async {
-//                while true {
-//                    if self.queue.songs.count > 0 {
-//                        var songsCopy = self.queue.songs
-////                        print("check")
-//                        if self.playerState.isPaused && self.playerState.playbackPosition == 0 {
-//                            let song = songsCopy.remove(at: 0)
-//                            self.appRemote?.playerAPI?.play(song.uri, callback: nil)
-//                        }
-//                    }
-//                }
-//            }
         }
     }
+    
+//    func downloadFile(url: URL) {
+//        var downloadTask: URLSessionDownloadTask
+//        downloadTask = URLSession.shared.downloadTask(with: url, completionHandler: { (URL, response, error) in
+//            self.play(url: url)
+//        })
+//
+//        downloadTask.resume()
+//    }
+//
+//    func play(url: URL) {
+//        print("playing \(url)")
+//
+//        do {
+//            let player = try AVAudioPlayer(contentsOf: url)
+//            player.prepareToPlay()
+//            player.volume = 1.0
+//            player.play()
+//        } catch let error as NSError {
+//            //self.player = nil
+//            print(error.localizedDescription)
+//        } catch {
+//            print("AVAudioPlayer init failed")
+//        }
+//
+//    }
     
     func next(state: SPTAppRemotePlayerState) {
         print("DELEGATION")
@@ -117,6 +139,22 @@ struct RoomView: View, PlayerStateDelegate {
                 appRemote?.playerAPI?.play(song.uri, callback: nil)
             }
         }
+    }
+    
+    func nextManual(song: Song?) {
+        guard let song = song else { return }
+        
+        appRemote?.playerAPI?.play(song.uri, callback: nil)
+    }
+    
+    func getNextSong() -> Song? {
+        if queue.songs.count > 0 {
+            let nextSong = queue.songs[0]
+            client.deleteSong(song: nextSong)
+            return nextSong
+        }
+        
+        return nil
     }
 }
 

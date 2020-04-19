@@ -16,6 +16,9 @@ class SongTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _duration = Song.parseDuration(_song);
+    if (_song.imageUri == null) {
+      print(_song.trackName);
+    }
     return ListTile(
       leading: FadeInImage.memoryNetwork(
         placeholder: kTransparentImage,

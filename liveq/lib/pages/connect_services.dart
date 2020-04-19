@@ -7,7 +7,6 @@ import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:liveq/utils/player.dart';
 
 class ConnectServices extends StatefulWidget {
-
   final Player player = Player();
 
   @override
@@ -47,12 +46,13 @@ class _ConnectServicesState extends State<ConnectServices> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton.icon(
-                      onPressed: () async {
-                        setState(() {
-                          _loading = true;
-                        });
+                    onPressed: () async {
+                      setState(() {
+                        _loading = true;
+                      });
 
-                        widget.player.potentialServices[0].connect();
+                      // widget.player.potentialServices[0].connect();
+                      widget.player.connect(widget.player.potentialServices[0]);
 
                     setState(() {
                       _loading = false;
@@ -62,7 +62,9 @@ class _ConnectServicesState extends State<ConnectServices> {
                   label: Text('Spotify')
                 ),
                 RaisedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    widget.player.connect(widget.player.potentialServices[1]);
+                  },
                   icon: Icon(MdiIcons.music),
                   label: Text('SoundCloud'),
                 ),

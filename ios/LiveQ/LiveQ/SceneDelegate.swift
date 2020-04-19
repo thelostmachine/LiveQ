@@ -8,15 +8,14 @@
 
 import UIKit
 import SwiftUI
-import SpotifyKit
 
-fileprivate let application = SpotifyManager.SpotifyDeveloperApplication(
-    clientId: "03237b2409b24752a3f0c33262ad2d02",
-    clientSecret: "52560cee72394fc5a049731f2d8f001e",
-    redirectUri: "spotify-ios-quick-start://spotify-login-callback"
-)
+//fileprivate let application = SpotifyManager.SpotifyDeveloperApplication(
+//    clientId: "03237b2409b24752a3f0c33262ad2d02",
+//    clientSecret: "52560cee72394fc5a049731f2d8f001e",
+//    redirectUri: "spotify-ios-quick-start://spotify-login-callback"
+//)
 
-let spotifyManager = SpotifyManager(with: application)
+//let spotifyManager = SpotifyManager(with: application)
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, SPTAppRemoteDelegate, SPTAppRemotePlayerStateDelegate {
     
@@ -60,12 +59,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SPTAppRemoteDelegate, S
             return
         }
         
-        spotifyManager.saveToken(from: url)
+//        spotifyManager.saveToken(from: url)
         
         let parameters = appRemote.authorizationParameters(from: url)
 
         if let access_token = parameters?[SPTAppRemoteAccessTokenKey] {
-            appRemote.connectionParameters.accessToken = access_token
+//            appRemote.connectionParameters.accessToken = access_token
+            authorizationToken = access_token
             self.accessToken = access_token
         } else if let error_description = parameters?[SPTAppRemoteErrorDescriptionKey] {
             print(error_description)
@@ -151,7 +151,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SPTAppRemoteDelegate, S
                 print(error.localizedDescription)
             }
         })
+        authorizationToken = self.appRemote.connectionParameters.accessToken
+        print("set token as \(authorizationToken)")
     }
+    
     func appRemote(_ appRemote: SPTAppRemote, didDisconnectWithError error: Error?) {
         print("disconnected")
     }

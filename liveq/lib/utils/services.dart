@@ -4,75 +4,74 @@ import 'dart:convert' as convert;
 import 'package:flutter/material.dart' as material;
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotify_sdk/spotify_sdk.dart';
+import 'package:spotify_sdk/models/connection_status.dart';
 
 import 'package:liveq/utils/song.dart';
+import 'package:url_audio_stream/url_audio_stream.dart';
 
 abstract class Service {
-
   static const String SOUNDCLOUD = 'SoundCloud';
   static const String SPOTIFY = 'Spotify';
   static const String APPLE = 'Apple Music';
 
-  // final List<String>  
-
   String name;
-  // bool connected;
+  bool isConnected = false;
   // Future<bool> get isConnected;
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
-  static List<Service> connectedServices = List();
+  static Set<Service> connectedServices = {};
 
   String iconImagePath;
 
-  Future<bool> connect() {
-    connectedServices.add(this);
-    return Future.value(true);
-  }
+  Future<bool> connect();
+  // Future<bool> connect() async {
+  //   connectedServices.add(this);
+  //   await saveService();
+  //   isConnected = true;
+  //   return Future.value(true);
+  // }
 
   Future<void> play(String uri);
   Future<void> resume();
   Future<void> pause();
 
-  material.Image getImage() {
-    return material.Image(image: material.AssetImage(iconImagePath));
+  material.Widget getImageIcon() {
+    if (iconImagePath != null) {
+      return material.ImageIcon(material.AssetImage(iconImagePath));
+    } else {
+      return material.Icon(material.Icons.music_note);
+    }
   }
 
   Future<List<Song>> search(String query);
 
-  Future<void> saveService() async {
+  static Future<void> saveServices() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (!connectedServices.contains(this)) {
+    List<String> serviceStrings = List();
+    connectedServices.forEach((s) {
+      serviceStrings.add(s.name);
+    });
 
-      List<String> serviceStrings = List();
-      connectedServices.forEach((s) {
-        serviceStrings.add(s.name);
-      });
-
-      prefs.setStringList('serviceList', serviceStrings);
-    }
+    prefs.setStringList('serviceList', serviceStrings);
   }
 
-  static Future<List<String>> canConnectToPreviousService() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
-    return serviceStrings;
-  }
-
-  static Future<Service> loadServices() async {
+  // WIP
+  static Future<void> loadServices() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
 
-    if (serviceStrings != null) {
+    if (serviceStrings != null && serviceStrings.isNotEmpty) {
       for (String s in serviceStrings) {
         Service service = fromString(s);
-        await service.connect();
+        connectedServices.add(service);
       }
     }
-
-    return (connectedServices.length > 0) ? connectedServices[0] : null;
+    // return (connectedServices.length > 0)
+    //     ? connectedServices.toList()[0]
+    //     : null;
   }
 
   static Service fromString(String s) {
@@ -91,16 +90,23 @@ abstract class Service {
 
     return service;
   }
+
+  static bool canCreateRoom() {
+    return connectedServices.isNotEmpty ? true : false;
+  }
 }
 
 class SoundCloud extends Service {
-
   final String name = Service.SOUNDCLOUD;
 
   final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
+  final String playId = 'e38841b15b2059a39f261df195dfb430';
   final String userId = '857371-474509-874152-946359';
+  final String iconImagePath = 'assets/images/soundcloud.png';
 
   static final Service _soundcloud = SoundCloud._internal();
+
+  AudioStream stream;
 
   SoundCloud._internal();
 
@@ -110,81 +116,78 @@ class SoundCloud extends Service {
 
   @override
   Future<bool> connect() {
-    super.connect();
+    // super.connect();
     // TODO: implement connect
-    throw UnimplementedError();
+    // throw UnimplementedError();
+    return Future.value(false);
   }
 
   @override
   Future<void> pause() {
     // TODO: implement pause
-    throw UnimplementedError();
+    stream.pause();
   }
 
   @override
-  Future<void> play(String uri) {
-    // TODO: implement play
-    throw UnimplementedError();
+  Future<void> play(String id) {
+    String uri = 'https://api.soundcloud.com/tracks/$id/stream?client_id=$playId';
+    print('wanting to play $uri');
+    stream = AudioStream(uri);
+    stream.start();
   }
-  
+
   @override
   Future<void> resume() {
     // TODO: implement resume
-    throw UnimplementedError();
+    stream.resume();
   }
-  
+
   @override
   Future<List<Song>> search(String query) async {
     List<Song> searchResults = List();
-    String search = 'https://api-v2.soundcloud.com/search?q=porter%20robinson&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
-    // String search = 'https://api-v2.soundcloud.com/search/queries?q=';
-    // search += formatSearch(query);
-    // search += '&client_id=$clientId';
-    // search += '&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
-    // search += '&variant_ids=';
-    // search += '&facet=model';
-    // search += '&user_id=$userId';
+    print('here');
+    String search = 'https://api-v2.soundcloud.com/search?q=';
+    search += formatSearch(query);
+    search += '&variant_ids=';
+    search += '&facet=model';
+    search += '&user_id=$userId';
+    search += '&client_id=$clientId';
+    search += '&limit=10';
+    search += '&offset=0';
+    search += '&linked_partitioning=1';
+    search += '&app_version=1586177347';
+    search += '&app_locale=en';
+    search +=
+        '&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
 
-    // search = 'https://api-v2.soundcloud.com/search?q=juice%20wrld&sc_a_id=8518dae7c71781e17004bb10b29a999e555ad4ce&variant_ids=&facet=model&user_id=857371-474509-874152-946359&client_id=YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM&limit=20&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
-
-    var response = await http.get(search, headers: {
-      'Accept': 'application/json'
-    });
+    var response = await http.get(search);
 
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
 
       for (var item in jsonResponse['collection']) {
-        print(item.toString());
+        if (item['kind'] == 'track' && item['artwork_url'] != null) {
+          var track = item;
+          String id = track['id'].toString();
+          String uri = track['uri'];
+          String trackName = track['title'];
+          String artist = track['user']['full_name'];
+          String imageUri = track['artwork_url'];
+          int duration = track['full_duration'];
+          Service service = this;
+
+          // Check if track is streamable. If not, don't include it in search results
+          var test = await http.get('https://api.soundcloud.com/tracks/$id?client_id=$playId');
+          if (test.statusCode == 200)
+          {
+            searchResults.add(Song(id, uri, trackName, artist, imageUri, duration, service));
+          }
+        }
       }
     } else {
       print('ERROR');
       print(response.statusCode);
     }
-
-    // var search = await spotifyWebApi.search
-    //   .get(query)
-    //   .first()
-    //   .catchError((err) => print((err as SpotifyException).message));
-
-    // if (search != null) {
-
-    //   search.forEach((pages) {
-    //     pages.items.forEach((track) async {
-    //       if (track is Track) {
-    //         String id = track.id;
-    //         String uri = track.uri;
-    //         String trackName = track.name;
-    //         String artist = track.artists[0].name;
-    //         String imageUri = track.album.images[1].url;
-    //         Duration durationMilli = track.duration;
-    //         Service service = this;
-
-    //         searchResults.add(Song(id, uri, trackName, artist, imageUri, durationMilli, service));
-    //       }
-    //      });
-    //    });
-    // }
 
     return searchResults;
   }
@@ -192,12 +195,11 @@ class SoundCloud extends Service {
   String formatSearch(String query) {
     return query.replaceAll(' ', '%20');
   }
-  
 }
 
 class Spotify extends Service {
   final String name = Service.SPOTIFY;
-  final String iconImagePath = 'assets\images\Spotify_Icon_RGB_Green.png';
+  final String iconImagePath = 'assets/images/Spotify_Icon_RGB_Green.png';
 
   // Developer tokens. DO NOT CHANGE
   final String clientId = '03237b2409b24752a3f0c33262ad2d02';
@@ -205,20 +207,6 @@ class Spotify extends Service {
   final String redirectUri = 'spotify-ios-quick-start://spotify-login-callback';
 
   SpotifyApi spotifyWebApi;
-
-  // Future<bool> get isConnected async {
-  //   var credentials = await spotifyWebApi.getCredentials();
-  //   bool expired = credentials.isExpired;
-  //   connected = !credentials.isExpired;
-  //   print('EXPIRED? : $expired');
-  //   print('CONNECTED? : $connected');
-  //   // return credentials.isExpired;
-  //   return connected;
-  //   // _credentials.then((value) {
-  //   //   print('EXPIRED? : ${value.isExpired}');
-  //   //   return value.isExpired;
-  //   // });
-  // }
 
   static final Service _spotify = Spotify._internal();
 
@@ -231,7 +219,7 @@ class Spotify extends Service {
   /// Connect to the SpotifySDK and get an [authenticationToken]
   @override
   Future<bool> connect() async {
-    super.connect();
+    // super.connect();
     // Use the spotify package to create credentials. This is only needed for Search
     var credentials = SpotifyApiCredentials(clientId, clientSecret);
     spotifyWebApi = SpotifyApi(credentials);
@@ -242,7 +230,6 @@ class Spotify extends Service {
           clientId: this.clientId, redirectUrl: this.redirectUri);
     }
 
-    await saveService();
     return spotifyWebApi != null;
   }
 
@@ -300,9 +287,8 @@ class Spotify extends Service {
 }
 
 class Apple extends Service {
-
   final String name = Service.APPLE;
-  final String iconImagePath = 'assets\images\Apple_Music_Icon.psd';
+  final String iconImagePath = 'assets/images/Apple_Music_Icon.psd';
 
   static final Service _apple = Apple._internal();
 
@@ -313,6 +299,13 @@ class Apple extends Service {
   }
 
   @override
+  Future<bool> connect() {
+    // super.connect();
+    // TODO: implement connect
+    throw UnimplementedError();
+  }
+
+  @override
   Future<void> pause() {
     // TODO: implement pause
     throw UnimplementedError();
@@ -320,20 +313,19 @@ class Apple extends Service {
 
   @override
   Future<void> play(String uri) {
-      // TODO: implement play
-      throw UnimplementedError();
-    }
-  
-    @override
-    Future<void> resume() {
-      // TODO: implement resume
-      throw UnimplementedError();
-    }
-  
-    @override
-    Future<List<Song>> search(String uri) {
+    // TODO: implement play
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> resume() {
+    // TODO: implement resume
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Song>> search(String uri) {
     // TODO: implement search
     throw UnimplementedError();
   }
-  
 }

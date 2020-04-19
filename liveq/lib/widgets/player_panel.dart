@@ -25,7 +25,7 @@ class PlayerPanel extends StatelessWidget {
           final Song _currentSong = snapshot.data.value;
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ListTile(
               leading: GestureDetector(
                 onTap: () {
@@ -74,9 +74,10 @@ class PlayerPanel extends StatelessWidget {
                   // stream.skipMusic(_currentSong);
                 },
                 child: Container(
-                    child: SkipIcon(
-                  color: Colors.white,
-                )),
+                  child: SkipIcon(
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           );

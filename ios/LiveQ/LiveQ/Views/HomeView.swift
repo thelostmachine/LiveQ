@@ -90,9 +90,12 @@ struct HomeView: View {
         alert.addAction(UIAlertAction(title: "Confirm", style: .default) { _ in
             if creating {
                 self.viewRouter.roomName = alert.textFields?.first?.text ?? "party"
-                self.viewRouter.roomID = self.generateId(from: self.viewRouter.roomName)
+                
+                self.viewRouter.roomID = client.createRoom(name: self.viewRouter.roomName)
             } else {
-                alert.textFields?.first?.text = self.viewRouter.roomID
+                self.viewRouter.roomID = alert.textFields?.first?.text ?? ""
+                
+                self.viewRouter.roomName = client.joinRoom(key: self.viewRouter.roomID)
             }
             
             self.viewRouter.currentPage = .Room

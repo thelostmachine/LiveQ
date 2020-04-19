@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
+import 'package:liveq/utils/services.dart';
 import 'package:liveq/widgets/songtile.dart';
 
 class Search extends StatefulWidget {
@@ -11,14 +12,14 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   List<Song> items = List();
   TextEditingController _editingController = TextEditingController();
-  bool _isConnected;
   Player _player = Player();
 
   @override
   void initState() {
     super.initState();
     // _player.setService(SoundCloud());
-    _isConnected = _player.isConnected;
+    // _player.searchService = SoundCloud();
+    // _isConnected = true;
   }
 
   @override
@@ -65,15 +66,45 @@ class _SearchState extends State<Search> {
             ),
           ),
           body: Container(
-            child: (_isConnected)
+            // _player.allowedServices.contains(_player.searchService) == true - signifies that searchService is connected
+            child: (_player.searchService != null &&
+                    _player.searchService.isConnected ==
+                        true) // potentially need notify_listeners here
                 ? searchWidget(context)
                 : Center(
-                    child: Text(
-                        'Please connect to a streaming service first')), // This might not be necessary because guests shouldn't have to connect.
+                    child: Text('Please connect to a streaming service first',
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ), // This might not be necessary because guests shouldn't have to connect.
           ),
+          floatingActionButton: _getFAB(),
         ),
       ),
     );
+  }
+
+  Widget _getFAB() {
+    // potentially need notify_listeners here
+    // _player.allowedServices.contains(_player.searchService) == true
+    if (_player.searchService != null &&
+        _player.searchService.isConnected == true) {
+      return FloatingActionButton.extended(
+        onPressed: null,
+        // label: const Text('Spotify'),
+        // icon: ImageIcon(
+        //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
+        // ),
+        label: Text(_player.searchService.name),
+        icon: _player.searchService.getImageIcon(),
+        backgroundColor: Theme.of(context).primaryColor,
+      );
+    } else {
+      return FloatingActionButton.extended(
+        onPressed: null,
+        label: Text('No Service'),
+        icon: Icon(Icons.error_outline),
+        backgroundColor: Theme.of(context).primaryColor,
+      );
+    }
   }
 
   Widget searchWidget(BuildContext context) {
@@ -85,33 +116,6 @@ class _SearchState extends State<Search> {
             song: items[index],
             onTap: () => Navigator.of(context).pop(items[index]));
       },
-
-      // return ListView.builder(
-      //   // shrinkWrap: true,
-      //   itemCount: items.length,
-      //   itemBuilder: (context, index) {
-      //     Song track = items[index];
-      //     Image image = Image.network(track.imageUri);
-
-      //     return ListTile(
-      //       title: Text(track.trackName),
-      //       subtitle: Text(track.artists),
-      //       leading: ConstrainedBox(
-      //           constraints: BoxConstraints(
-      //             minWidth: 44,
-      //             minHeight: 44,
-      //             maxWidth: 64,
-      //             maxHeight: 64,
-      //           ),
-      //           child: image),
-      //       trailing: Text(track.service.name),
-      //       onTap: () {
-      //         // Cache the image if it's being added to the queue so we don't have to make another network call
-      //         track.cacheImage(image);
-      //         Navigator.of(context).pop(track);
-      //       },
-      //     );
-      //   },
     );
   }
 
