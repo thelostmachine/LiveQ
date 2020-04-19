@@ -23,14 +23,6 @@ class LiveQClient extends $grpc.Client {
       '/liveq.LiveQ/JoinRoom',
       ($0.KeyRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.JoinReply.fromBuffer(value));
-  static final _$deleteRoom = $grpc.ClientMethod<$0.KeyRequest, $0.Status>(
-      '/liveq.LiveQ/DeleteRoom',
-      ($0.KeyRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.Status.fromBuffer(value));
-  static final _$leaveRoom = $grpc.ClientMethod<$0.LeaveRequest, $0.Status>(
-      '/liveq.LiveQ/LeaveRoom',
-      ($0.LeaveRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.Status.fromBuffer(value));
   static final _$addService = $grpc.ClientMethod<$0.ServiceRequest, $0.Status>(
       '/liveq.LiveQ/AddService',
       ($0.ServiceRequest value) => value.writeToBuffer(),
@@ -66,21 +58,6 @@ class LiveQClient extends $grpc.Client {
   $grpc.ResponseFuture<$0.JoinReply> joinRoom($0.KeyRequest request,
       {$grpc.CallOptions options}) {
     final call = $createCall(_$joinRoom, $async.Stream.fromIterable([request]),
-        options: options);
-    return $grpc.ResponseFuture(call);
-  }
-
-  $grpc.ResponseFuture<$0.Status> deleteRoom($0.KeyRequest request,
-      {$grpc.CallOptions options}) {
-    final call = $createCall(
-        _$deleteRoom, $async.Stream.fromIterable([request]),
-        options: options);
-    return $grpc.ResponseFuture(call);
-  }
-
-  $grpc.ResponseFuture<$0.Status> leaveRoom($0.LeaveRequest request,
-      {$grpc.CallOptions options}) {
-    final call = $createCall(_$leaveRoom, $async.Stream.fromIterable([request]),
         options: options);
     return $grpc.ResponseFuture(call);
   }
@@ -142,20 +119,6 @@ abstract class LiveQServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.KeyRequest.fromBuffer(value),
         ($0.JoinReply value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.KeyRequest, $0.Status>(
-        'DeleteRoom',
-        deleteRoom_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) => $0.KeyRequest.fromBuffer(value),
-        ($0.Status value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.LeaveRequest, $0.Status>(
-        'LeaveRoom',
-        leaveRoom_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) => $0.LeaveRequest.fromBuffer(value),
-        ($0.Status value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.ServiceRequest, $0.Status>(
         'AddService',
         addService_Pre,
@@ -203,16 +166,6 @@ abstract class LiveQServiceBase extends $grpc.Service {
     return joinRoom(call, await request);
   }
 
-  $async.Future<$0.Status> deleteRoom_Pre(
-      $grpc.ServiceCall call, $async.Future<$0.KeyRequest> request) async {
-    return deleteRoom(call, await request);
-  }
-
-  $async.Future<$0.Status> leaveRoom_Pre(
-      $grpc.ServiceCall call, $async.Future<$0.LeaveRequest> request) async {
-    return leaveRoom(call, await request);
-  }
-
   $async.Future<$0.Status> addService_Pre(
       $grpc.ServiceCall call, $async.Future<$0.ServiceRequest> request) async {
     return addService(call, await request);
@@ -242,10 +195,6 @@ abstract class LiveQServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.CreateRequest request);
   $async.Future<$0.JoinReply> joinRoom(
       $grpc.ServiceCall call, $0.KeyRequest request);
-  $async.Future<$0.Status> deleteRoom(
-      $grpc.ServiceCall call, $0.KeyRequest request);
-  $async.Future<$0.Status> leaveRoom(
-      $grpc.ServiceCall call, $0.LeaveRequest request);
   $async.Future<$0.Status> addService(
       $grpc.ServiceCall call, $0.ServiceRequest request);
   $async.Stream<$0.ServiceMsg> getServices(

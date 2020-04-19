@@ -177,47 +177,6 @@ class JoinReply extends $pb.GeneratedMessage {
   void clearGuestId() => clearField(3);
 }
 
-class LeaveRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LeaveRequest', package: const $pb.PackageName('liveq'), createEmptyInstance: create)
-    ..aOS(1, 'roomKey')
-    ..aOS(2, 'id')
-    ..hasRequiredFields = false
-  ;
-
-  LeaveRequest._() : super();
-  factory LeaveRequest() => create();
-  factory LeaveRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory LeaveRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  LeaveRequest clone() => LeaveRequest()..mergeFromMessage(this);
-  LeaveRequest copyWith(void Function(LeaveRequest) updates) => super.copyWith((message) => updates(message as LeaveRequest));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static LeaveRequest create() => LeaveRequest._();
-  LeaveRequest createEmptyInstance() => create();
-  static $pb.PbList<LeaveRequest> createRepeated() => $pb.PbList<LeaveRequest>();
-  @$core.pragma('dart2js:noInline')
-  static LeaveRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LeaveRequest>(create);
-  static LeaveRequest _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get roomKey => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set roomKey($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasRoomKey() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearRoomKey() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.String get id => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set id($core.String v) { $_setString(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasId() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearId() => clearField(2);
-}
-
 class ServiceRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ServiceRequest', package: const $pb.PackageName('liveq'), createEmptyInstance: create)
     ..aOS(1, 'roomKey')
