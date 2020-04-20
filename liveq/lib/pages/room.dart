@@ -60,6 +60,20 @@ class _RoomState extends State<Room> {
           // send updateServices to server with allowedServices as param
         } else {
           // else if guest, wait for services from server to set available services and to set search service
+          client.GetServices().then((_guestServices) {
+            setState(() {
+              for (String s in _guestServices) {
+                _allowedServices.add(
+                    Provider.of<CatalogModel>(context, listen: false)
+                        .fromString(s));
+              }
+              if (_guestServices.isNotEmpty) {
+                _searchService =
+                    Provider.of<CatalogModel>(context, listen: false)
+                        .fromString(_guestServices[0]);
+              }
+            });
+          });
         }
       }
     });
@@ -288,7 +302,7 @@ class _RoomState extends State<Room> {
             child: GestureDetector(
               onTap: () {
                 Clipboard.setData(
-                    ClipboardData(text: 'testing')); // args.roomID
+                    ClipboardData(text: args.roomID)); // args.roomID
                 Scaffold.of(context).showSnackBar(SnackBar(
                     content: const Text(
                         'Copied to Clipboard'))); // NOTE: snackbar not working on web
@@ -298,7 +312,7 @@ class _RoomState extends State<Room> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'abcd1234', // args.roomID
+                    args.roomID, // args.roomID
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   SizedBox(width: 5),
