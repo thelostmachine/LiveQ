@@ -27,14 +27,18 @@ class ApplePlayer {
     initializeDateFormatting();
   }
 
+  void startSong(String uri) async {
+    String path = await flutterSound.startPlayer(uri);
+    await flutterSound.setVolume(1.0);
 
+  }
 
-  _pausePlayer() async {
+  applePausePlayer() async {
     String result = await flutterSound.pausePlayer();
     this._isPlaying = false;
   }
 
-  _resumePlayer() async {
+  appleResumePlayer() async {
     String result = await flutterSound.resumePlayer();
     this._isPlaying = true;
   }

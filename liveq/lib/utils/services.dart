@@ -3,8 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/material.dart' as material;
 
+//bear's imports
 import 'myApple.dart';
 import 'dart:convert';
+import 'ApplePlayer.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
@@ -304,6 +306,8 @@ class Spotify extends Service {
 
 class Apple extends Service {
 
+  ApplePlayer myPlayer;
+  
   final String name = Service.APPLE;
   final String iconImagePath = 'assets\images\Apple_Music_Icon.psd';
 
@@ -332,20 +336,17 @@ class Apple extends Service {
 
   @override
   Future<void> pause() {
-    // TODO: implement pause
-    throw UnimplementedError();
+    myPlayer.applePausePlayer();
   }
 
   @override
   Future<void> play(String uri) {
-      // TODO: implement play
-      throw UnimplementedError();
+      myPlayer.startSong(uri);
     }
   
     @override
     Future<void> resume() {
-      // TODO: implement resume
-      throw UnimplementedError();
+      myPlayer.appleResumePlayer();
     }
   
     @override
