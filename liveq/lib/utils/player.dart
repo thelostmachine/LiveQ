@@ -20,16 +20,6 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   Set<Service> allowedServices =
       {}; // passed in through server data for guest/host?
 
-  /// List of services we can connect to
-  get potentialServices {
-    return Service.potentialServices;
-  }
-
-  /// Set of services we are connected to
-  Set<Service> get connectedServices {
-    return Service.connectedServices;
-  }
-
   List<Song> queue = List();
 
   bool isConnected =

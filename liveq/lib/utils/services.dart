@@ -21,7 +21,6 @@ abstract class Service {
   // Future<bool> get isConnected;
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
-  static Set<Service> connectedServices = {};
 
   String iconImagePath;
 
@@ -47,33 +46,6 @@ abstract class Service {
 
   Future<List<Song>> search(String query);
 
-  static Future<void> saveServices() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    List<String> serviceStrings = List();
-    connectedServices.forEach((s) {
-      serviceStrings.add(s.name);
-    });
-
-    prefs.setStringList('serviceList', serviceStrings);
-  }
-
-  // WIP
-  static Future<void> loadServices() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
-
-    if (serviceStrings != null && serviceStrings.isNotEmpty) {
-      for (String s in serviceStrings) {
-        Service service = fromString(s);
-        connectedServices.add(service);
-      }
-    }
-    // return (connectedServices.length > 0)
-    //     ? connectedServices.toList()[0]
-    //     : null;
-  }
-
   static Service fromString(String s) {
     Service service;
 
@@ -89,10 +61,6 @@ abstract class Service {
     }
 
     return service;
-  }
-
-  static bool canCreateRoom() {
-    return connectedServices.isNotEmpty ? true : false;
   }
 }
 
@@ -130,7 +98,8 @@ class SoundCloud extends Service {
 
   @override
   Future<void> play(String id) {
-    String uri = 'https://api.soundcloud.com/tracks/$id/stream?client_id=$playId';
+    String uri =
+        'https://api.soundcloud.com/tracks/$id/stream?client_id=$playId';
     print('wanting to play $uri');
     stream = AudioStream(uri);
     stream.start();
@@ -177,10 +146,11 @@ class SoundCloud extends Service {
           Service service = this;
 
           // Check if track is streamable. If not, don't include it in search results
-          var test = await http.get('https://api.soundcloud.com/tracks/$id?client_id=$playId');
-          if (test.statusCode == 200)
-          {
-            searchResults.add(Song(id, uri, trackName, artist, imageUri, duration, service));
+          var test = await http
+              .get('https://api.soundcloud.com/tracks/$id?client_id=$playId');
+          if (test.statusCode == 200) {
+            searchResults.add(
+                Song(id, uri, trackName, artist, imageUri, duration, service));
           }
         }
       }

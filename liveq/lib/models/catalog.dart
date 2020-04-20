@@ -53,7 +53,7 @@ class CatalogModel with ChangeNotifier {
 
     if (serviceStrings != null && serviceStrings.isNotEmpty) {
       for (String s in serviceStrings) {
-        Service service = Service.fromString(s);
+        Service service = fromString(s);
         connectedServices.add(service);
       }
     }
@@ -66,7 +66,6 @@ class CatalogModel with ChangeNotifier {
 
   Service fromString(String s) {
     Service service;
-
     switch (s) {
       case SPOTIFY:
         service = Spotify();
@@ -77,7 +76,6 @@ class CatalogModel with ChangeNotifier {
       case APPLE:
         break;
     }
-
     return service;
   }
 }
