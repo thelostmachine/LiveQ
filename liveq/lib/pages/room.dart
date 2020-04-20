@@ -78,6 +78,7 @@ class _RoomState extends State<Room> {
           });
         }
       }
+      print("ALLOWED SERVICES: ${_allowedServices.length}");
     });
 
     // set soundcloud
@@ -235,8 +236,7 @@ class _RoomState extends State<Room> {
           children: <Widget>[
             _searchService != null
                 ? Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+                    padding: EdgeInsets.symmetric(horizontal: 24.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -278,8 +278,7 @@ class _RoomState extends State<Room> {
                                 context, _allowedServices.toList()[index].name);
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 24.0),
+                            padding: EdgeInsets.symmetric(vertical: 4.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -293,7 +292,7 @@ class _RoomState extends State<Room> {
                             ),
                           ),
                         )
-                      : null;
+                      : Container();
                 },
               ),
             ),

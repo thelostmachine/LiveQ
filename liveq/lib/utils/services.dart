@@ -87,8 +87,8 @@ class SoundCloud extends Service {
     // super.connect();
     // TODO: implement connect
     // throw UnimplementedError();
-    // return Future.value(true);
-    return Future.value(false);
+    return Future.value(true);
+    // return Future.value(false);
   }
 
   @override
