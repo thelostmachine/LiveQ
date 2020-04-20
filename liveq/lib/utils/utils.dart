@@ -1,3 +1,7 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:liveq/utils/client_interface.dart';
+
 enum PlayerState {
   playing,
   paused,
@@ -5,9 +9,18 @@ enum PlayerState {
 }
 
 class RoomArguments {
-  final String roomID;
-  final String roomName;
+  String roomID = '';
+  String roomName = '';
   final bool host;
 
-  RoomArguments(this.roomID, this.roomName, this.host);
+  RoomArguments({this.roomID, this.roomName, this.host});
 }
+
+class SearchArguments {
+  String searchService = '';
+  // Service searchService = '';
+
+  SearchArguments({this.searchService});
+}
+
+Client client = Client();

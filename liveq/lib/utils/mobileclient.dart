@@ -1,16 +1,17 @@
-import 'package:grpc/grpc.dart';
 import 'interface.pb.dart';
 import 'interface.pbgrpc.dart';
 import 'song.dart';
+import 'dart:io';
 import 'package:liveq/utils/services.dart' as services;
+import 'package:grpc/grpc.dart';
+import 'package:liveq/utils/client_interface.dart' as grpcClient;
 
-
-class Client {
-  ClientChannel channel;
+class MobileClient implements grpcClient.Client {
   LiveQClient stub;
   String key;
-  
-  Client() {
+  String id;
+  ClientChannel channel;
+  MobileClient() {
     channel = ClientChannel('34.71.85.54', port: 80, options: const ChannelOptions(credentials: ChannelCredentials.insecure()));  
     stub = LiveQClient(channel, options: CallOptions(timeout: Duration(seconds: 30)));
   }
@@ -21,23 +22,47 @@ class Client {
     final createReply = await stub.createRoom(msg);
     if(createReply.status.status == 0){
       key = createReply.roomKey;
+      id = createReply.hostId;
+      print('ROOM KEY: ${createReply.roomKey}');
       return createReply.roomKey;
     }
     else {
+      print('ERROR CREATING ROOM');
       return 'Error: CreateRoom Failed.';
     }
   }
 
   Future<String> JoinRoom(String room_key) async{
-    key = room_key;
+    
     final msg = KeyRequest()
-      ..roomKey = key;
+      ..roomKey = room_key;
     final joinReply = await stub.joinRoom(msg);
     if(joinReply.status.status == 0) {
+      key = room_key;
+      id = joinReply.guestId;
       return joinReply.roomName;
     }
     else {
       return 'Error: JoinRoom Failed.';
+    }
+  }
+
+  void DeleteRoom() async{
+    final msg = KeyRequest()
+      ..roomKey = key;
+    final status = await stub.deleteRoom(msg);
+    if(status.status != 0) {
+      print('Error: DeleteRoom failed.');
+    }
+  }
+
+  void LeaveRoom() async {
+    final msg = LeaveRequest()
+      ..roomKey = key
+      ..id = id;
+    final status = await stub.leaveRoom(msg);
+    if(status.status != 0){
+      print('Error: LeaveRoom failed.');
     }
   }
 
@@ -56,7 +81,7 @@ class Client {
   Future<List<String>> GetServices() async{
     final request = KeyRequest()
       ..roomKey = key;
-    List<String> services;
+    List<String> services = List();
     try {
       await for (var service in stub.getServices(request)) {
         services.add(service.name);
@@ -71,7 +96,7 @@ class Client {
   Future<List<Song>> GetQueue() async {
     final request = KeyRequest()
       ..roomKey = key;
-    List<Song> queue;
+    List<Song> queue = List();
     try {
       await for (var song in stub.getQueue(request)) {
         services.Service serviceObj = services.Service.fromString(song.service);
@@ -123,3 +148,4 @@ class Client {
     }
   }
 }
+grpcClient.Client getClient() => MobileClient();

@@ -16,14 +16,49 @@ struct Song: Identifiable {
     var service: Service
     
     var name: String
-    var artist: String
+    var artists: [Artist]
     
-    init(id: String, uri: String, _ name: String, _ artist: String, _ service: Service) {
+    var imageUri: String
+    var duration: Int
+    
+    init(id: String, uri: String, _ name: String, _ artists: [Artist], imageUri: String = "", duration: Int = 0, _ service: Service) {
         self.id = id
         self.uri = uri
         self.name = name
-        self.artist = artist
+        self.artists = artists
+        self.imageUri = imageUri
+        self.duration = duration
         self.service = service
+    }
+    
+    init(song: Song) {
+        self.id = song.id
+        self.uri = song.uri
+        self.name = song.name
+        self.artists = song.artists
+        self.imageUri = song.imageUri
+        self.duration = song.duration
+        self.service = song.service
+    }
+    
+    static func getArtistString(song: Song) -> String {
+        return song.artists.map { $0.name }.joined(separator: ", ")
+    }
+    
+    func getDurationString() -> String {
+        func twoDigits(_ n: Int) -> String {
+            if (n >= 10) {
+                return "\(n)"
+            }
+            return "0\(n)"
+        }
+        
+        let (m, s) = secondsToMinutesSeconds()
+        return "\(m):\(twoDigits(s))"
+    }
+    
+    func secondsToMinutesSeconds() -> (Int, Int) {
+        return ((duration % 3600) / 60, (duration % 3600) % 60)
     }
 }
 

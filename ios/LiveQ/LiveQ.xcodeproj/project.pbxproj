@@ -3,10 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5335512D2445B718006821DA /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 5335512C2445B718006821DA /* GRPC */; };
+		53BB07752445F64F00AF47B5 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BB07742445F64F00AF47B5 /* ImageLoader.swift */; };
+		53BB07772445F70000AF47B5 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BB07762445F70000AF47B5 /* ImageView.swift */; };
+		53BB077B2446BD6C00AF47B5 /* LiveQ.png in Resources */ = {isa = PBXBuildFile; fileRef = 53BB077A2446BD6C00AF47B5 /* LiveQ.png */; };
+		53BD96FE2444DB9500B0DE6F /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BD96FD2444DB9500B0DE6F /* Client.swift */; };
+		53BD97112445B25700B0DE6F /* interface.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BD970F2445B25700B0DE6F /* interface.pb.swift */; };
+		53BD97122445B25700B0DE6F /* interface.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BD97102445B25700B0DE6F /* interface.grpc.swift */; };
 		53D8CDA924268BEF0078928F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D8CDA824268BEF0078928F /* AppDelegate.swift */; };
 		53D8CDAB24268BEF0078928F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D8CDAA24268BEF0078928F /* SceneDelegate.swift */; };
 		53D8CDAE24268BEF0078928F /* LiveQ.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 53D8CDAC24268BEF0078928F /* LiveQ.xcdatamodeld */; };
@@ -28,6 +35,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		53BB07742445F64F00AF47B5 /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
+		53BB07762445F70000AF47B5 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
+		53BB077A2446BD6C00AF47B5 /* LiveQ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LiveQ.png; path = ../../../../../../Desktop/LiveQ.png; sourceTree = "<group>"; };
+		53BD96FD2444DB9500B0DE6F /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		53BD970F2445B25700B0DE6F /* interface.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = interface.pb.swift; path = ../../../../api/protos/interface.pb.swift; sourceTree = "<group>"; };
+		53BD97102445B25700B0DE6F /* interface.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = interface.grpc.swift; path = ../../../../api/protos/interface.grpc.swift; sourceTree = "<group>"; };
 		53D8CDA524268BEF0078928F /* LiveQ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveQ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53D8CDA824268BEF0078928F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		53D8CDAA24268BEF0078928F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -60,6 +73,7 @@
 			files = (
 				53D8CDD32426BA510078928F /* SpotifyiOS.framework in Frameworks */,
 				D212F0E03DDEBDAFEC404A4E /* Pods_LiveQ.framework in Frameworks */,
+				5335512D2445B718006821DA /* GRPC in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +87,16 @@
 				80B56066CFA02878B252D8C8 /* Pods-LiveQ.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		53BD96FC2444DB7A00B0DE6F /* Server */ = {
+			isa = PBXGroup;
+			children = (
+				53BD97102445B25700B0DE6F /* interface.grpc.swift */,
+				53BD970F2445B25700B0DE6F /* interface.pb.swift */,
+				53BD96FD2444DB9500B0DE6F /* Client.swift */,
+			);
+			path = Server;
 			sourceTree = "<group>";
 		};
 		53D8CD9C24268BEF0078928F = {
@@ -96,6 +120,7 @@
 		53D8CDA724268BEF0078928F /* LiveQ */ = {
 			isa = PBXGroup;
 			children = (
+				53BD96FC2444DB7A00B0DE6F /* Server */,
 				53D8CDCC2426A5140078928F /* Music */,
 				53D8CDC724269A300078928F /* Utils */,
 				53D8CDC4242698D50078928F /* Delegates */,
@@ -103,6 +128,7 @@
 				53D8CDB124268BF10078928F /* Assets.xcassets */,
 				53D8CDB624268BF10078928F /* LaunchScreen.storyboard */,
 				53D8CDB924268BF10078928F /* Info.plist */,
+				53BB077A2446BD6C00AF47B5 /* LiveQ.png */,
 				53D8CDAC24268BEF0078928F /* LiveQ.xcdatamodeld */,
 				53D8CDB324268BF10078928F /* Preview Content */,
 				53D8CDD42426BB760078928F /* LiveQ-Bridging-Header.h */,
@@ -127,6 +153,7 @@
 				53D8CDD52429510B0078928F /* SearchView.swift */,
 				53D8CDCA24269C330078928F /* ServicesView.swift */,
 				53D8CDCF2426A79A0078928F /* SongRow.swift */,
+				53BB07762445F70000AF47B5 /* ImageView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -146,6 +173,7 @@
 				53D8CDBF24268F890078928F /* utils.swift */,
 				53D8CDC824269A440078928F /* ViewRouter.swift */,
 				53D8CDD7242959310078928F /* QueueViewModel.swift */,
+				53BB07742445F64F00AF47B5 /* ImageLoader.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -178,13 +206,15 @@
 				53D8CDA124268BEF0078928F /* Sources */,
 				53D8CDA224268BEF0078928F /* Frameworks */,
 				53D8CDA324268BEF0078928F /* Resources */,
-				57618944C4ED61C29F248566 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = LiveQ;
+			packageProductDependencies = (
+				5335512C2445B718006821DA /* GRPC */,
+			);
 			productName = LiveQ;
 			productReference = 53D8CDA524268BEF0078928F /* LiveQ.app */;
 			productType = "com.apple.product-type.application";
@@ -213,6 +243,9 @@
 				Base,
 			);
 			mainGroup = 53D8CD9C24268BEF0078928F;
+			packageReferences = (
+				5335512B2445B718006821DA /* XCRemoteSwiftPackageReference "grpc-swift" */,
+			);
 			productRefGroup = 53D8CDA624268BEF0078928F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -228,6 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				53D8CDB824268BF10078928F /* LaunchScreen.storyboard in Resources */,
+				53BB077B2446BD6C00AF47B5 /* LiveQ.png in Resources */,
 				53D8CDB524268BF10078928F /* Preview Assets.xcassets in Resources */,
 				53D8CDB224268BF10078928F /* Assets.xcassets in Resources */,
 			);
@@ -258,23 +292,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		57618944C4ED61C29F248566 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-LiveQ/Pods-LiveQ-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-LiveQ/Pods-LiveQ-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LiveQ/Pods-LiveQ-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -287,14 +304,19 @@
 				53D8CDD8242959310078928F /* QueueViewModel.swift in Sources */,
 				53D8CDC624269A020078928F /* ContentView.swift in Sources */,
 				53D8CDA924268BEF0078928F /* AppDelegate.swift in Sources */,
+				53BD96FE2444DB9500B0DE6F /* Client.swift in Sources */,
+				53BB07772445F70000AF47B5 /* ImageView.swift in Sources */,
 				53D8CDD62429510C0078928F /* SearchView.swift in Sources */,
 				53D8CDCE2426A5260078928F /* Song.swift in Sources */,
 				53D8CDC22426960D0078928F /* RoomView.swift in Sources */,
 				53D8CDCB24269C330078928F /* ServicesView.swift in Sources */,
+				53BD97122445B25700B0DE6F /* interface.grpc.swift in Sources */,
 				53D8CDB024268BEF0078928F /* HomeView.swift in Sources */,
 				53D8CDAB24268BEF0078928F /* SceneDelegate.swift in Sources */,
+				53BB07752445F64F00AF47B5 /* ImageLoader.swift in Sources */,
 				53D8CDD02426A79A0078928F /* SongRow.swift in Sources */,
 				53D8CDC924269A440078928F /* ViewRouter.swift in Sources */,
+				53BD97112445B25700B0DE6F /* interface.pb.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,6 +454,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"LiveQ/Preview Content\"";
 				DEVELOPMENT_TEAM = 8CKKHGCA3M;
 				ENABLE_PREVIEWS = YES;
@@ -459,6 +482,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"LiveQ/Preview Content\"";
 				DEVELOPMENT_TEAM = 8CKKHGCA3M;
 				ENABLE_PREVIEWS = YES;
@@ -502,6 +526,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5335512B2445B718006821DA /* XCRemoteSwiftPackageReference "grpc-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/grpc/grpc-swift.git";
+			requirement = {
+				branch = nio;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5335512C2445B718006821DA /* GRPC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5335512B2445B718006821DA /* XCRemoteSwiftPackageReference "grpc-swift" */;
+			productName = GRPC;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		53D8CDAC24268BEF0078928F /* LiveQ.xcdatamodeld */ = {
