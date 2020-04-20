@@ -166,7 +166,7 @@ class _RoomState extends State<Room> {
                     //   ],
                     // ),
                   ),
-                  child: (_player.isConnected)
+                  child: (_connectedToServices)
                       ? _musicPlayer()
                       : _connectionStatus(), // PlayerPanel(),
                 ),
