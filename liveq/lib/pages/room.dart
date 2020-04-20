@@ -30,13 +30,12 @@ class Room extends StatefulWidget {
 
 class _RoomState extends State<Room> {
   RoomArguments args;
-  PlayerModel _player;
   // Flag that shows whether we are connected to the server and server's room
   bool _connectedToServer; // = false
   bool _connectedToServices = false;
   Service _searchService;
   Set<Service> _allowedServices = {};
-  List<Song> queue = List();
+  List<Song> _queue = List();
   Timer timer;
 
   @override
@@ -70,8 +69,7 @@ class _RoomState extends State<Room> {
     // set soundcloud
     // player.connect(SoundCloud());
 
-    timer =
-        Timer.periodic(Duration(milliseconds: 100), (_) => _player.loadQueue());
+    timer = Timer.periodic(Duration(milliseconds: 100), (_) => loadQueue());
   }
 
   @override
@@ -84,49 +82,46 @@ class _RoomState extends State<Room> {
   @override
   Widget build(BuildContext context) {
     // final RoomArguments args = ModalRoute.of(context).settings.arguments;
-    return Consumer<PlayerModel>(builder: (context, player, child) {
-      _player = player;
-      return WillPopScope(
-        onWillPop: () => _onWillPop(),
-        child: Scaffold(
-          appBar: AppBar(
-            // connectedToServer == true
-            title: (args != null && args.roomName != null)
-                ? Text(args.roomName)
-                : const Text(''),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                // connectedToServer == true
-                onPressed: () => _searchSong(),
-              ),
+    return WillPopScope(
+      onWillPop: () => _onWillPop(),
+      child: Scaffold(
+        appBar: AppBar(
+          // connectedToServer == true
+          title: (args != null && args.roomName != null)
+              ? Text(args.roomName)
+              : const Text(''),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
               // connectedToServer == true
-              _searchService != null
-                  ? IconButton(
-                      icon: _searchService.getImageIcon(),
-                      onPressed: _allowedServices.length > 1
-                          ? () => _selectSearchService(player)
-                          : null,
-                    )
-                  : IconButton(
-                      icon: Icon(Icons.music_note),
-                      onPressed: _allowedServices.isNotEmpty
-                          ? () => _selectSearchService(player)
-                          : null,
-                    ),
-              IconButton(
-                icon: Icon(Icons.share),
-                // connectedToServer == true
-                onPressed: (args != null && args.roomID != null)
-                    ? () => _roomCodeDialog()
-                    : null,
-              ),
-            ],
-          ),
-          body: _roomBody(),
+              onPressed: () => _searchSong(),
+            ),
+            // connectedToServer == true
+            _searchService != null
+                ? IconButton(
+                    icon: _searchService.getImageIcon(),
+                    onPressed: _allowedServices.length > 1
+                        ? () => _selectSearchService()
+                        : null,
+                  )
+                : IconButton(
+                    icon: Icon(Icons.music_note),
+                    onPressed: _allowedServices.isNotEmpty
+                        ? () => _selectSearchService()
+                        : null,
+                  ),
+            IconButton(
+              icon: Icon(Icons.share),
+              // connectedToServer == true
+              onPressed: (args != null && args.roomID != null)
+                  ? () => _roomCodeDialog()
+                  : null,
+            ),
+          ],
         ),
-      );
-    });
+        body: _roomBody(),
+      ),
+    );
   }
 
   Widget _roomBody() {
@@ -202,7 +197,7 @@ class _RoomState extends State<Room> {
   }
 
   // TODO: DIALOG NOT LOADING
-  Future<void> _selectSearchService(PlayerModel player) async {
+  Future<void> _selectSearchService() async {
     // switch (
     await showDialog<void>(
       context: context,
@@ -333,14 +328,15 @@ class _RoomState extends State<Room> {
   Widget _queueListView() {
     return ListView.builder(
       physics: BouncingScrollPhysics(),
-      itemCount: _player.queue.length,
+      itemCount: _queue.length,
       itemBuilder: (context, index) {
-        return SongTile(song: _player.queue[index]);
+        return SongTile(song: _queue[index]);
       },
     );
   }
 
   Widget _musicPanel() {
+    // Consumer<PlayerModel>(builder: (context, player, child) {},);
     return Container(
       height: double.infinity,
       width: double.infinity,
@@ -412,18 +408,23 @@ class _RoomState extends State<Room> {
 
   /// The Music Player
   Widget _musicPlayer() {
-    return Container(
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-                onPressed: () => _player.resume(), child: Text('Play')),
-            RaisedButton(
-                onPressed: () => _player.pause(), child: Text('Pause')),
-            RaisedButton(onPressed: () => _player.next(), child: Text('Next')),
-          ],
-        ));
+    Consumer<PlayerModel>(
+      builder: (context, player, child) {
+        return Container(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                    onPressed: () => player.resume(), child: Text('Play')),
+                RaisedButton(
+                    onPressed: () => player.pause(), child: Text('Pause')),
+                RaisedButton(
+                    onPressed: () => player.next(), child: Text('Next')),
+              ],
+            ));
+      },
+    );
   }
 
   Widget _connectionStatus() {
@@ -464,7 +465,10 @@ class _RoomState extends State<Room> {
     for (Service s in _allowedServices) {
       bool serviceConnected = await s.connect();
       if (serviceConnected) {
-        s.isConnected = true;
+        setState(() {
+          s.isConnected = true;
+          // client.AddService(s.name);
+        });
       } else {
         // if service cannot connect - remove from allowedServices
         setState(() {
@@ -472,15 +476,22 @@ class _RoomState extends State<Room> {
         });
       }
     }
-
     if (_allowedServices.isNotEmpty) {
       setState(() {
         Provider.of<PlayerModel>(context, listen: false)
-            .setService(_allowedServices.toList()[0]);
+            .setCurrentService(_allowedServices.toList()[0]);
         // may need to set searchService in room for host/guest
         _searchService = _allowedServices.toList()[0];
         _connectedToServices = true;
       });
     }
+  }
+
+  loadQueue() async {
+    client.GetQueue().then((q) {
+      if (q != null) {
+        _queue = q;
+      }
+    });
   }
 }

@@ -14,25 +14,12 @@ enum ModelProperties {
 class PlayerModel with ChangeNotifier {
   Song _currentSong;
   Service _currentService;
-  Service searchService;
-
-  // Set of services allowed in the room
-  Set<Service> allowedServices =
-      {}; // passed in through server data for guest/host?
 
   List<Song> queue = List();
 
   bool isConnected =
       false; // Set true when all services in allowedServices are connected
   PlayerState state = PlayerState.stopped;
-
-  // static final Player _player = Player._internal();
-
-  // Player._internal();
-
-  // factory Player() {
-  //   return _player;
-  // }
 
   void addSong(Song song) {
     client.AddSong(song);
@@ -45,16 +32,7 @@ class PlayerModel with ChangeNotifier {
     return next;
   }
 
-  loadQueue() async {
-    client.GetQueue().then((q) {
-      if (q != null) {
-        queue = q;
-        notifyListeners();
-      }
-    });
-  }
-
-  Future play(Song song) async {
+  void play(Song song) async {
     if (song != null) {
       _currentSong = song;
       _currentService = song.service;
@@ -63,9 +41,8 @@ class PlayerModel with ChangeNotifier {
       if (_currentService is SoundCloud) {
         uri = song.id;
       }
+      _currentSong.service.play(uri);
       state = PlayerState.playing;
-
-      return _currentSong.service.play(uri);
     } else {
       resume();
     }
@@ -88,11 +65,11 @@ class PlayerModel with ChangeNotifier {
     return state;
   }
 
-  void setService(Service service) {
-    client.AddService(service.name);
+  void setCurrentService(Service service) {
+    // client.AddService(service.name);
     _currentService = service;
-    // searchService = service;
     // isConnected = true;
+    notifyListeners();
   }
 
   void next() async {
@@ -106,26 +83,17 @@ class PlayerModel with ChangeNotifier {
 
       _currentSong = nextSong;
       _currentService = _currentSong.service;
-      // play(_currentSong);
+      play(_currentSong);
       state = PlayerState.playing;
-      return play(_currentSong);
+      // return play(_currentSong);
     }
-
-    return null;
+    notifyListeners();
+    // return null;
   }
 
   // Calls when song is finished playing
   void onComplete() {
     next();
-  }
-
-  void connect(Service service) async {
-    service.connect();
-    setService(service);
-  }
-
-  Future<List<Song>> search(String query) async {
-    print('searching with ${searchService.name}');
-    return searchService.search(query);
+    notifyListeners();
   }
 }
