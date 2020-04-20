@@ -177,9 +177,4 @@ class PlayerModel with ChangeNotifier {
     allowedServices.clear();
     notifyListeners();
   }
-
-  void playerConnected() {
-    isConnected = true;
-    notifyListeners();
-  }
 }

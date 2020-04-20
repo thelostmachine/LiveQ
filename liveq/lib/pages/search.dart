@@ -87,29 +87,30 @@ class _SearchState extends State<Search> {
   }
 
   Widget _getFAB() {
-    // potentially need notify_listeners here
     // _player.allowedServices.contains(_player.searchService) == true
-    return Consumer<PlayerModel>(builder: (context, player, child) {
-      print('${player.searchService.name}');
-      return (player.searchService != null &&
-              player.searchService.isConnected == true)
-          ? FloatingActionButton.extended(
-              onPressed: null,
-              // label: const Text('Spotify'),
-              // icon: ImageIcon(
-              //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
-              // ),
-              label: Text(player.searchService.name),
-              icon: player.searchService.getImageIcon(),
-              backgroundColor: Theme.of(context).disabledColor,
-            )
-          : FloatingActionButton.extended(
-              onPressed: null,
-              label: Text('No Service'),
-              icon: Icon(Icons.error_outline),
-              backgroundColor: Theme.of(context).disabledColor,
-            );
-    });
+    return Consumer<PlayerModel>(
+      builder: (context, player, child) {
+        print('${player.searchService.name}');
+        return (player.searchService != null &&
+                player.searchService.isConnected == true)
+            ? FloatingActionButton.extended(
+                onPressed: null,
+                // label: const Text('Spotify'),
+                // icon: ImageIcon(
+                //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
+                // ),
+                label: Text(player.searchService.name),
+                icon: player.searchService.getImageIcon(),
+                backgroundColor: Theme.of(context).disabledColor,
+              )
+            : FloatingActionButton.extended(
+                onPressed: null,
+                label: Text('No Service'),
+                icon: Icon(Icons.error_outline),
+                backgroundColor: Theme.of(context).disabledColor,
+              );
+      },
+    );
   }
 
   Widget searchWidget(BuildContext context) {

@@ -31,7 +31,6 @@ class Room extends StatefulWidget {
 
 class _RoomState extends State<Room> {
   RoomArguments args;
-  List<String> _availableServices;
   PlayerModel _player;
   // Flag that shows whether we are connected to the server and server's room
   bool _connectedToServer; // = false
@@ -67,15 +66,14 @@ class _RoomState extends State<Room> {
             _connectedToServices = true;
           });
         });
-        print(_connectedToServices);
       }
     });
 
     // set soundcloud
     // player.connect(SoundCloud());
 
-    // timer =
-    //     Timer.periodic(Duration(milliseconds: 100), (_) => _player.loadQueue());
+    timer =
+        Timer.periodic(Duration(milliseconds: 100), (_) => _player.loadQueue());
   }
 
   @override
@@ -307,7 +305,7 @@ class _RoomState extends State<Room> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: _player.isConnected ? Text('Room Code') : Text('Room NO'),
+          title: const Text('Room Code'),
           content: SingleChildScrollView(
             child: GestureDetector(
               onTap: () {
@@ -335,7 +333,6 @@ class _RoomState extends State<Room> {
             FlatButton(
               child: const Text('OK'),
               onPressed: () {
-                _player.playerConnected();
                 Navigator.of(context).pop();
               },
             ),
@@ -442,20 +439,6 @@ class _RoomState extends State<Room> {
   }
 
   Widget _connectionStatus() {
-    // return Container(
-    //   height: 80,
-    //   child: Center(
-    //     child: Text(
-    //       (_availableServices != null)
-    //           ? 'Connecting to ${listServices()}'
-    //           : 'Connect a Streaming Service to enable the Music Player',
-    //       style: TextStyle(
-    //         color: Colors.white,
-    //       ),
-    //     ),
-    //   ),
-    // );
-
     return Container(
       height: 80,
       child: Center(
@@ -476,10 +459,6 @@ class _RoomState extends State<Room> {
 
   String listServices() {
     String services = '';
-    // for (int i = 0; i < _availableServices.length; i++) {
-    //   services += _availableServices[i] +
-    //       ((i < _availableServices.length - 1) ? ', ' : '');
-    // }
 
     for (var s in _player.allowedServices.toList()) {
       if (!s.isConnected) {
