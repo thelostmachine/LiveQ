@@ -49,26 +49,26 @@ class _RoomState extends State<Room> {
 
       if (args != null) {
         // Set args.roomName and args.roomID received from server - set in dialog
-        // initialize and subscribe to server stream of songs in queue
 
         // if host then connect to services
-        // set _player.allowedServices.addAll(Service.connectedServices); // for guest, need to receive services from server
-        setState(() {
-          _allowedServices.addAll(
-              Provider.of<CatalogModel>(context, listen: false)
-                  .connectedServices);
-        });
-
-        connectToServices();
-        // send updateServices to server
-
-        // else if guest, wait for services from server to set available services and to set search service
+        if (args.host) {
+          setState(() {
+            _allowedServices.addAll(
+                Provider.of<CatalogModel>(context, listen: false)
+                    .connectedServices);
+          });
+          connectToServices();
+          // send updateServices to server
+        } else {
+          // else if guest, wait for services from server to set available services and to set search service
+        }
       }
     });
 
     // set soundcloud
     // player.connect(SoundCloud());
 
+    // initialize and subscribe to server stream of songs in queue
     timer = Timer.periodic(Duration(milliseconds: 100), (_) => loadQueue());
   }
 
@@ -352,9 +352,9 @@ class _RoomState extends State<Room> {
                     return;
                   }
                   if (PlayerState.paused == player.state) {
-                    // stream.playMusic(_currentSong);
+                    player.play(player.currentSong);
                   } else {
-                    // stream.pauseMusic(_currentSong);
+                    player.pause();
                   }
                 },
                 child: Container(
@@ -391,7 +391,7 @@ class _RoomState extends State<Room> {
                       player.currentSong.uri == null) {
                     return;
                   }
-                  // stream.skipMusic(_currentSong);
+                  player.next();
                 },
                 child: Container(
                   child: SkipIcon(
