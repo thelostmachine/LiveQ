@@ -1,15 +1,15 @@
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import 'package:flutter/material.dart' as material;
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 
-import 'package:liveq/utils/song.dart';
 import 'package:url_audio_stream/url_audio_stream.dart';
+
+import 'package:liveq/utils/song.dart';
 
 abstract class Service {
   static const String SOUNDCLOUD = 'SoundCloud';

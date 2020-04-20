@@ -4,7 +4,6 @@ import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 import 'package:liveq/widgets/link_text.dart';
-import 'package:liveq/utils/services.dart';
 import 'package:liveq/models/catalog.dart';
 
 class ConnectServices extends StatefulWidget {

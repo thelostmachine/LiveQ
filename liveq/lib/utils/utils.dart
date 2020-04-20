@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import 'package:liveq/utils/client_interface.dart';
 
 enum PlayerState {

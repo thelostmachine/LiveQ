@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 // import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
-import 'package:liveq/utils/song.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:liveq/widgets/music_icons.dart';
 import 'package:liveq/models/catalog.dart';
