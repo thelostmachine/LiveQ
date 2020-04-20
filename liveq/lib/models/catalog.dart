@@ -58,9 +58,6 @@ class CatalogModel with ChangeNotifier {
       }
     }
     notifyListeners();
-    // return (connectedServices.length > 0)
-    //     ? connectedServices.toList()[0]
-    //     : null;
   }
 
   bool canCreateRoom() {

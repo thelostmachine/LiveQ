@@ -4,26 +4,15 @@ import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/utils/song.dart';
 
-import 'package:property_change_notifier/property_change_notifier.dart';
-
-enum ModelProperties {
-  queue,
-  soundcloudTrack,
-}
-
 class PlayerModel with ChangeNotifier {
-  Song _currentSong;
-  Service _currentService;
+  Song currentSong;
+  Service currentService;
 
   List<Song> queue = List();
 
   bool isConnected =
       false; // Set true when all services in allowedServices are connected
   PlayerState state = PlayerState.stopped;
-
-  void addSong(Song song) {
-    client.AddSong(song);
-  }
 
   Song getNextSong() {
     Song next = queue[0];
@@ -34,14 +23,14 @@ class PlayerModel with ChangeNotifier {
 
   void play(Song song) async {
     if (song != null) {
-      _currentSong = song;
-      _currentService = song.service;
+      currentSong = song;
+      currentService = song.service;
 
-      String uri = _currentSong.uri;
-      if (_currentService is SoundCloud) {
+      String uri = currentSong.uri;
+      if (currentService is SoundCloud) {
         uri = song.id;
       }
-      _currentSong.service.play(uri);
+      currentSong.service.play(uri);
       state = PlayerState.playing;
     } else {
       resume();
@@ -50,24 +39,20 @@ class PlayerModel with ChangeNotifier {
   }
 
   void resume() {
-    _currentService.resume();
+    currentService.resume();
     state = PlayerState.playing;
     notifyListeners();
   }
 
   void pause() {
-    _currentService.pause();
+    currentService.pause();
     state = PlayerState.paused;
     notifyListeners();
   }
 
-  PlayerState getPlayerState() {
-    return state;
-  }
-
   void setCurrentService(Service service) {
     // client.AddService(service.name);
-    _currentService = service;
+    currentService = service;
     // isConnected = true;
     notifyListeners();
   }
@@ -77,13 +62,13 @@ class PlayerModel with ChangeNotifier {
       Song nextSong = getNextSong();
 
       // Stop playing the current song on the current service if we're switching Services
-      if (_currentService != nextSong.service) {
+      if (currentService != nextSong.service) {
         pause();
       }
 
-      _currentSong = nextSong;
-      _currentService = _currentSong.service;
-      play(_currentSong);
+      currentSong = nextSong;
+      currentService = currentSong.service;
+      play(currentSong);
       state = PlayerState.playing;
       // return play(_currentSong);
     }

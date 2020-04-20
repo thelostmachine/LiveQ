@@ -192,7 +192,7 @@ class _RoomState extends State<Room> {
     final result = await Navigator.pushNamed(context, '/search');
 
     if (result != null) {
-      _player.addSong(result);
+      client.AddSong(result);
     }
   }
 
@@ -336,73 +336,73 @@ class _RoomState extends State<Room> {
   }
 
   Widget _musicPanel() {
-    // Consumer<PlayerModel>(builder: (context, player, child) {},);
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: ListTile(
-          leading: GestureDetector(
-            onTap: () {
-              // if (_currentSong.uri == null) {
-              //   return;
-              // }
-              // if (PlayerState.paused == state) {
-              //   // stream.playMusic(_currentSong);
-              // } else {
-              //   // stream.pauseMusic(_currentSong);
-              // }
-            },
-            // child: Container(
-            //   child: state == PlayerState.playing
-            //       ? PauseIcon(
-            //           color: Colors.white,
-            //         )
-            //       : PlayIcon(
-            //           color: Colors.white,
-            //         ),
-            // ),
-            child: PlayIcon(
-              color: Colors.white,
-            ),
-          ),
-          title: Text(
-            // _currentSong.trackName,
-            'Song',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text(
-            // _currentSong.artists,
-            'Artist',
-            style: TextStyle(
-              color: Colors.white,
-              // letterSpacing: 1,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: GestureDetector(
-            onTap: () {
-              // if (_player._currentSong.uri == null) {
-              //   return;
-              // }
-              // stream.skipMusic(_currentSong);
-            },
-            child: Container(
-              child: SkipIcon(
-                color: Colors.white,
+    Consumer<PlayerModel>(
+      builder: (context, player, child) {
+        return Container(
+          height: double.infinity,
+          width: double.infinity,
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListTile(
+              leading: GestureDetector(
+                onTap: () {
+                  if (player.currentSong == null ||
+                      player.currentSong.uri == null) {
+                    return;
+                  }
+                  if (PlayerState.paused == player.state) {
+                    // stream.playMusic(_currentSong);
+                  } else {
+                    // stream.pauseMusic(_currentSong);
+                  }
+                },
+                child: Container(
+                  child: player.state == PlayerState.playing
+                      ? PauseIcon(
+                          color: Colors.white,
+                        )
+                      : PlayIcon(
+                          color: Colors.white,
+                        ),
+                ),
+              ),
+              title: Text(
+                player.currentSong.trackName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                player.currentSong.artists,
+                style: TextStyle(
+                  color: Colors.white,
+                  // letterSpacing: 1,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: GestureDetector(
+                onTap: () {
+                  if (player.currentSong == null ||
+                      player.currentSong.uri == null) {
+                    return;
+                  }
+                  // stream.skipMusic(_currentSong);
+                },
+                child: Container(
+                  child: SkipIcon(
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
