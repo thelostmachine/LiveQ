@@ -57,15 +57,17 @@ class _RoomState extends State<Room> {
 
         // if host then connect to services
         // set _player.allowedServices.addAll(Service.connectedServices); // for guest, need to receive services from server
-        Provider.of<PlayerModel>(context).addAllToAllowedServices(
-            Provider.of<CatalogModel>(context, listen: false)
-                .connectedServices);
+        Provider.of<PlayerModel>(context, listen: false)
+            .addAllToAllowedServices(
+                Provider.of<CatalogModel>(context, listen: false)
+                    .connectedServices);
 
-        Provider.of<PlayerModel>(context).connectToServices(() {
+        Provider.of<PlayerModel>(context, listen: false).connectToServices(() {
           setState(() {
             _connectedToServices = true;
           });
         });
+        print(_connectedToServices);
       }
     });
 
@@ -198,8 +200,7 @@ class _RoomState extends State<Room> {
   }
 
   void _searchSong() async {
-    final result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Search()));
+    final result = await Navigator.pushNamed(context, '/search');
 
     if (result != null) {
       _player.addSong(result);
