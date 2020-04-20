@@ -15,7 +15,6 @@ class PlayerModel with ChangeNotifier {
   Song getNextSong() {
     Song next = queue[0];
     client.DeleteSong(next);
-
     return next;
   }
 
@@ -77,6 +76,15 @@ class PlayerModel with ChangeNotifier {
   // Calls when song is finished playing
   void onComplete() {
     next();
+    notifyListeners();
+  }
+
+  void loadQueue() async {
+    client.GetQueue().then((q) {
+      if (q != null) {
+        queue = q;
+      }
+    });
     notifyListeners();
   }
 }

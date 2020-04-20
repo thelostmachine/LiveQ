@@ -35,7 +35,7 @@ class _RoomState extends State<Room> {
   bool _connectedToServices = false;
   Service _searchService;
   Set<Service> _allowedServices = {};
-  List<Song> _queue = List();
+  // List<Song> _queue = List();
   Timer timer;
 
   @override
@@ -69,7 +69,9 @@ class _RoomState extends State<Room> {
     // player.connect(SoundCloud());
 
     // initialize and subscribe to server stream of songs in queue
-    timer = Timer.periodic(Duration(milliseconds: 100), (_) => loadQueue());
+    // timer = Timer.periodic(Duration(milliseconds: 100), (_) => loadQueue());
+    timer = Timer.periodic(Duration(milliseconds: 100),
+        (_) => Provider.of<PlayerModel>(context, listen: false).loadQueue());
   }
 
   @override
@@ -320,14 +322,25 @@ class _RoomState extends State<Room> {
   }
 
   Widget _queueListView() {
-    return ListView.builder(
-      physics: BouncingScrollPhysics(),
-      itemCount: _queue.length,
-      itemBuilder: (context, index) {
-        return SongTile(song: _queue[index]);
-      },
-    );
+    return Consumer<PlayerModel>(builder: (context, player, child) {
+      return ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: player.queue.length,
+        itemBuilder: (context, index) {
+          return SongTile(song: player.queue[index]);
+        },
+      );
+    });
   }
+  // Widget _queueListView() {
+  //   return ListView.builder(
+  //     physics: BouncingScrollPhysics(),
+  //     itemCount: _queue.length,
+  //     itemBuilder: (context, index) {
+  //       return SongTile(song: _queue[index]);
+  //     },
+  //   );
+  // }
 
   Widget _musicPanel() {
     return Consumer<PlayerModel>(
@@ -491,11 +504,13 @@ class _RoomState extends State<Room> {
     }
   }
 
-  loadQueue() async {
-    client.GetQueue().then((q) {
-      if (q != null) {
-        _queue = q;
-      }
-    });
-  }
+  // loadQueue() async {
+  //   client.GetQueue().then((q) {
+  //     if (q != null) {
+  //       setState(() {
+  //         _queue = q;
+  //       });
+  //     }
+  //   });
+  // }
 }
