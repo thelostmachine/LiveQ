@@ -11,7 +11,7 @@ enum ModelProperties {
   soundcloudTrack,
 }
 
-class Player with ChangeNotifier {
+class PlayerModel with ChangeNotifier {
   Song _currentSong;
   Service _currentService;
   Service searchService;
@@ -69,16 +69,19 @@ class Player with ChangeNotifier {
     } else {
       resume();
     }
+    notifyListeners();
   }
 
   void resume() {
     _currentService.resume();
     state = PlayerState.playing;
+    notifyListeners();
   }
 
   void pause() {
     _currentService.pause();
     state = PlayerState.paused;
+    notifyListeners();
   }
 
   PlayerState getPlayerState() {
@@ -133,7 +136,7 @@ class Player with ChangeNotifier {
         s.isConnected = true;
       } else {
         // if service cannot connect - remove from allowedServices
-        allowedServices.remove(s); // need setState?
+        removeFromAllowedServices(s); // need setState?
       }
     }
 
@@ -172,6 +175,11 @@ class Player with ChangeNotifier {
   /// Removes all services from the set of connected services.
   void removeAllFromAllowedServices() {
     allowedServices.clear();
+    notifyListeners();
+  }
+
+  void playerConnected() {
+    isConnected = true;
     notifyListeners();
   }
 }

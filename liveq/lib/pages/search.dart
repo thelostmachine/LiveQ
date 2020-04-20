@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/utils/player.dart';
+import 'package:provider/provider.dart';
+// import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/widgets/songtile.dart';
+import 'package:liveq/models/player_new.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -12,7 +14,6 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   List<Song> items = List();
   TextEditingController _editingController = TextEditingController();
-  Player _player = Player();
 
   @override
   void initState() {
@@ -65,17 +66,20 @@ class _SearchState extends State<Search> {
               ),
             ),
           ),
-          body: Container(
-            // _player.allowedServices.contains(_player.searchService) == true - signifies that searchService is connected
-            child: (_player.searchService != null &&
-                    _player.searchService.isConnected ==
-                        true) // potentially need notify_listeners here
-                ? searchWidget(context)
-                : Center(
-                    child: Text('Please connect to a streaming service first',
-                        style: Theme.of(context).textTheme.bodyText1),
-                  ), // This might not be necessary because guests shouldn't have to connect.
-          ),
+          // body: Container(
+          //   // _player.allowedServices.contains(_player.searchService) == true - signifies that searchService is connected
+          //   child: Consumer<PlayerModel>(builder: (context, player, child) {
+          //     return (player.searchService != null &&
+          //             player.searchService.isConnected ==
+          //                 true) // potentially need notify_listeners here
+          //         ? searchWidget(context)
+          //         : Center(
+          //             child: Text('Please connect to a streaming service first',
+          //                 style: Theme.of(context).textTheme.bodyText1),
+          //           ); // This might not be necessary because guests shouldn't have to connect.;
+          //   }),
+          // ),
+          body: Text('test'),
           floatingActionButton: _getFAB(),
         ),
       ),
@@ -85,26 +89,27 @@ class _SearchState extends State<Search> {
   Widget _getFAB() {
     // potentially need notify_listeners here
     // _player.allowedServices.contains(_player.searchService) == true
-    if (_player.searchService != null &&
-        _player.searchService.isConnected == true) {
-      return FloatingActionButton.extended(
-        onPressed: null,
-        // label: const Text('Spotify'),
-        // icon: ImageIcon(
-        //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
-        // ),
-        label: Text(_player.searchService.name),
-        icon: _player.searchService.getImageIcon(),
-        backgroundColor: Theme.of(context).disabledColor,
-      );
-    } else {
-      return FloatingActionButton.extended(
-        onPressed: null,
-        label: Text('No Service'),
-        icon: Icon(Icons.error_outline),
-        backgroundColor: Theme.of(context).disabledColor,
-      );
-    }
+    return Consumer<PlayerModel>(builder: (context, player, child) {
+      print('${player.searchService.name}');
+      return (player.searchService != null &&
+              player.searchService.isConnected == true)
+          ? FloatingActionButton.extended(
+              onPressed: null,
+              // label: const Text('Spotify'),
+              // icon: ImageIcon(
+              //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
+              // ),
+              label: Text(player.searchService.name),
+              icon: player.searchService.getImageIcon(),
+              backgroundColor: Theme.of(context).disabledColor,
+            )
+          : FloatingActionButton.extended(
+              onPressed: null,
+              label: Text('No Service'),
+              icon: Icon(Icons.error_outline),
+              backgroundColor: Theme.of(context).disabledColor,
+            );
+    });
   }
 
   Widget searchWidget(BuildContext context) {
@@ -122,7 +127,8 @@ class _SearchState extends State<Search> {
   /// Searches a [query] using the [Service] specified
   void search(String query) async {
     List<Song> dummySongs = List();
-    dummySongs.addAll(await _player.search(query));
+    dummySongs.addAll(
+        await Provider.of<PlayerModel>(context, listen: false).search(query));
 
     if (query.isNotEmpty) {
       List<Song> searchResults = List();
