@@ -18,29 +18,47 @@ class RoomDB:
         self.rooms[new_room.room_key] = new_room
         if new_room.room_key in self.rooms.keys():
             return [new_room.room_key, str(new_room.host_id)]
-        else
+        else:
             return ['-1', '0']
     
     def JoinRoom(self, key):
         if key in self.rooms.keys():
             return [self.rooms[key].name, str(self.rooms[key].AddGuest())]
-        else
+        else:
             return ['-1', '0']
     
+    def DelRoom(self, key):
+        if key in self.rooms.keys():
+            del self.roooms[key]
+            return 0
+        return -1
+
+    def RemoveFromRoom(self, key, id):
+        if key in self.rooms.keys():
+            for i in range(len(self.rooms[key].guest_ids)):
+                if uuid.UUID(id) == self.rooms[key].guest_ids[i]:
+                    del self.rooms[key].guest_ids[i]
+                    return 0
+        return -1
+        
     def AddServiceToRoom(self, key, service):
-        if key in self.rooms.key():
+        if key in self.rooms.keys():
             self.rooms[key].AddService(service)
             return 0
-        else
+        else:
             return -1
 
     def AddSongToRoom(self, key, song):
         if key in self.rooms.keys():
             self.rooms[key].AddSongToQ(song)
+            return 0
+        return -1
     
     def DeleteSongFromRoom(self, key, song):
         if key in self.rooms.keys():
             self.rooms[key].DelSongQ(song)
+            return 0
+        return -1
 
 class Room:
     def __init__(self, name, key):
@@ -63,8 +81,8 @@ class Room:
         self.q.append(song)
     
     def DelSongQ(self, song):
-        for item in self.q:
-            if item == song :
-                del item
+        for i in range(len(self.q)):
+            if self.q[i] == song :
+               del self.q[i]
 
   

@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='liveq',
   syntax='proto3',
   serialized_options=b'\n\005LiveQB\nLiveQProtoP\001',
-  serialized_pb=b'\n\x0finterface.proto\x12\x05liveq\"\"\n\rCreateRequest\x12\x11\n\troom_name\x18\x01 \x01(\t\"O\n\x0b\x43reateReply\x12\x1d\n\x06status\x18\x01 \x01(\x0b\x32\r.liveq.Status\x12\x10\n\x08room_key\x18\x02 \x01(\t\x12\x0f\n\x07host_id\x18\x03 \x01(\t\"\x1e\n\nKeyRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\"O\n\tJoinReply\x12\x1d\n\x06status\x18\x01 \x01(\x0b\x32\r.liveq.Status\x12\x11\n\troom_name\x18\x02 \x01(\t\x12\x10\n\x08guest_id\x18\x03 \x01(\t\"F\n\x0eServiceRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\x12\"\n\x07service\x18\x02 \x01(\x0b\x32\x11.liveq.ServiceMsg\"\x18\n\x06Status\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1a\n\nServiceMsg\x12\x0c\n\x04name\x18\x01 \x01(\t\"{\n\x07SongMsg\x12\x0f\n\x07song_id\x18\x01 \x01(\t\x12\x0b\n\x03uri\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x0e\n\x06\x61rtist\x18\x04 \x01(\t\x12\x11\n\timage_uri\x18\x05 \x01(\t\x12\x10\n\x08\x64uration\x18\x06 \x01(\x05\x12\x0f\n\x07service\x18\x07 \x01(\t\"=\n\x0bSongRequest\x12\x1c\n\x04song\x18\x01 \x01(\x0b\x32\x0e.liveq.SongMsg\x12\x10\n\x08room_key\x18\x02 \x01(\t2\xf9\x02\n\x05LiveQ\x12\x38\n\nCreateRoom\x12\x14.liveq.CreateRequest\x1a\x12.liveq.CreateReply\"\x00\x12\x31\n\x08JoinRoom\x12\x11.liveq.KeyRequest\x1a\x10.liveq.JoinReply\"\x00\x12\x34\n\nAddService\x12\x15.liveq.ServiceRequest\x1a\r.liveq.Status\"\x00\x12\x37\n\x0bGetServices\x12\x11.liveq.KeyRequest\x1a\x11.liveq.ServiceMsg\"\x00\x30\x01\x12\x31\n\x08GetQueue\x12\x11.liveq.KeyRequest\x1a\x0e.liveq.SongMsg\"\x00\x30\x01\x12.\n\x07\x41\x64\x64Song\x12\x12.liveq.SongRequest\x1a\r.liveq.Status\"\x00\x12\x31\n\nDeleteSong\x12\x12.liveq.SongRequest\x1a\r.liveq.Status\"\x00\x42\x15\n\x05LiveQB\nLiveQProtoP\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0finterface.proto\x12\x05liveq\"\"\n\rCreateRequest\x12\x11\n\troom_name\x18\x01 \x01(\t\"O\n\x0b\x43reateReply\x12\x1d\n\x06status\x18\x01 \x01(\x0b\x32\r.liveq.Status\x12\x10\n\x08room_key\x18\x02 \x01(\t\x12\x0f\n\x07host_id\x18\x03 \x01(\t\"\x1e\n\nKeyRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\"O\n\tJoinReply\x12\x1d\n\x06status\x18\x01 \x01(\x0b\x32\r.liveq.Status\x12\x11\n\troom_name\x18\x02 \x01(\t\x12\x10\n\x08guest_id\x18\x03 \x01(\t\",\n\x0cLeaveRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\"F\n\x0eServiceRequest\x12\x10\n\x08room_key\x18\x01 \x01(\t\x12\"\n\x07service\x18\x02 \x01(\x0b\x32\x11.liveq.ServiceMsg\"\x18\n\x06Status\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1a\n\nServiceMsg\x12\x0c\n\x04name\x18\x01 \x01(\t\"{\n\x07SongMsg\x12\x0f\n\x07song_id\x18\x01 \x01(\t\x12\x0b\n\x03uri\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x0e\n\x06\x61rtist\x18\x04 \x01(\t\x12\x11\n\timage_uri\x18\x05 \x01(\t\x12\x10\n\x08\x64uration\x18\x06 \x01(\x05\x12\x0f\n\x07service\x18\x07 \x01(\t\"=\n\x0bSongRequest\x12\x1c\n\x04song\x18\x01 \x01(\x0b\x32\x0e.liveq.SongMsg\x12\x10\n\x08room_key\x18\x02 \x01(\t2\xde\x03\n\x05LiveQ\x12\x38\n\nCreateRoom\x12\x14.liveq.CreateRequest\x1a\x12.liveq.CreateReply\"\x00\x12\x31\n\x08JoinRoom\x12\x11.liveq.KeyRequest\x1a\x10.liveq.JoinReply\"\x00\x12\x30\n\nDeleteRoom\x12\x11.liveq.KeyRequest\x1a\r.liveq.Status\"\x00\x12\x31\n\tLeaveRoom\x12\x13.liveq.LeaveRequest\x1a\r.liveq.Status\"\x00\x12\x34\n\nAddService\x12\x15.liveq.ServiceRequest\x1a\r.liveq.Status\"\x00\x12\x37\n\x0bGetServices\x12\x11.liveq.KeyRequest\x1a\x11.liveq.ServiceMsg\"\x00\x30\x01\x12\x31\n\x08GetQueue\x12\x11.liveq.KeyRequest\x1a\x0e.liveq.SongMsg\"\x00\x30\x01\x12.\n\x07\x41\x64\x64Song\x12\x12.liveq.SongRequest\x1a\r.liveq.Status\"\x00\x12\x31\n\nDeleteSong\x12\x12.liveq.SongRequest\x1a\r.liveq.Status\"\x00\x42\x15\n\x05LiveQB\nLiveQProtoP\x01\x62\x06proto3'
 )
 
 
@@ -176,6 +176,44 @@ _JOINREPLY = _descriptor.Descriptor(
 )
 
 
+_LEAVEREQUEST = _descriptor.Descriptor(
+  name='LeaveRequest',
+  full_name='liveq.LeaveRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='room_key', full_name='liveq.LeaveRequest.room_key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='id', full_name='liveq.LeaveRequest.id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=256,
+  serialized_end=300,
+)
+
+
 _SERVICEREQUEST = _descriptor.Descriptor(
   name='ServiceRequest',
   full_name='liveq.ServiceRequest',
@@ -209,8 +247,8 @@ _SERVICEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=256,
-  serialized_end=326,
+  serialized_start=302,
+  serialized_end=372,
 )
 
 
@@ -240,8 +278,8 @@ _STATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=328,
-  serialized_end=352,
+  serialized_start=374,
+  serialized_end=398,
 )
 
 
@@ -271,8 +309,8 @@ _SERVICEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=354,
-  serialized_end=380,
+  serialized_start=400,
+  serialized_end=426,
 )
 
 
@@ -344,8 +382,8 @@ _SONGMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=382,
-  serialized_end=505,
+  serialized_start=428,
+  serialized_end=551,
 )
 
 
@@ -382,8 +420,8 @@ _SONGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=507,
-  serialized_end=568,
+  serialized_start=553,
+  serialized_end=614,
 )
 
 _CREATEREPLY.fields_by_name['status'].message_type = _STATUS
@@ -394,6 +432,7 @@ DESCRIPTOR.message_types_by_name['CreateRequest'] = _CREATEREQUEST
 DESCRIPTOR.message_types_by_name['CreateReply'] = _CREATEREPLY
 DESCRIPTOR.message_types_by_name['KeyRequest'] = _KEYREQUEST
 DESCRIPTOR.message_types_by_name['JoinReply'] = _JOINREPLY
+DESCRIPTOR.message_types_by_name['LeaveRequest'] = _LEAVEREQUEST
 DESCRIPTOR.message_types_by_name['ServiceRequest'] = _SERVICEREQUEST
 DESCRIPTOR.message_types_by_name['Status'] = _STATUS
 DESCRIPTOR.message_types_by_name['ServiceMsg'] = _SERVICEMSG
@@ -428,6 +467,13 @@ JoinReply = _reflection.GeneratedProtocolMessageType('JoinReply', (_message.Mess
   # @@protoc_insertion_point(class_scope:liveq.JoinReply)
   })
 _sym_db.RegisterMessage(JoinReply)
+
+LeaveRequest = _reflection.GeneratedProtocolMessageType('LeaveRequest', (_message.Message,), {
+  'DESCRIPTOR' : _LEAVEREQUEST,
+  '__module__' : 'interface_pb2'
+  # @@protoc_insertion_point(class_scope:liveq.LeaveRequest)
+  })
+_sym_db.RegisterMessage(LeaveRequest)
 
 ServiceRequest = _reflection.GeneratedProtocolMessageType('ServiceRequest', (_message.Message,), {
   'DESCRIPTOR' : _SERVICEREQUEST,
@@ -473,8 +519,8 @@ _LIVEQ = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=571,
-  serialized_end=948,
+  serialized_start=617,
+  serialized_end=1095,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateRoom',
@@ -495,9 +541,27 @@ _LIVEQ = _descriptor.ServiceDescriptor(
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
+    name='DeleteRoom',
+    full_name='liveq.LiveQ.DeleteRoom',
+    index=2,
+    containing_service=None,
+    input_type=_KEYREQUEST,
+    output_type=_STATUS,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='LeaveRoom',
+    full_name='liveq.LiveQ.LeaveRoom',
+    index=3,
+    containing_service=None,
+    input_type=_LEAVEREQUEST,
+    output_type=_STATUS,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
     name='AddService',
     full_name='liveq.LiveQ.AddService',
-    index=2,
+    index=4,
     containing_service=None,
     input_type=_SERVICEREQUEST,
     output_type=_STATUS,
@@ -506,7 +570,7 @@ _LIVEQ = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetServices',
     full_name='liveq.LiveQ.GetServices',
-    index=3,
+    index=5,
     containing_service=None,
     input_type=_KEYREQUEST,
     output_type=_SERVICEMSG,
@@ -515,7 +579,7 @@ _LIVEQ = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetQueue',
     full_name='liveq.LiveQ.GetQueue',
-    index=4,
+    index=6,
     containing_service=None,
     input_type=_KEYREQUEST,
     output_type=_SONGMSG,
@@ -524,7 +588,7 @@ _LIVEQ = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='AddSong',
     full_name='liveq.LiveQ.AddSong',
-    index=5,
+    index=7,
     containing_service=None,
     input_type=_SONGREQUEST,
     output_type=_STATUS,
@@ -533,7 +597,7 @@ _LIVEQ = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DeleteSong',
     full_name='liveq.LiveQ.DeleteSong',
-    index=6,
+    index=8,
     containing_service=None,
     input_type=_SONGREQUEST,
     output_type=_STATUS,

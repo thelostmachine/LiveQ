@@ -1,16 +1,17 @@
-import 'package:grpc/grpc.dart';
 import 'interface.pb.dart';
 import 'interface.pbgrpc.dart';
 import 'song.dart';
+import 'dart:io';
 import 'package:liveq/utils/services.dart' as services;
+import 'package:grpc/grpc.dart';
+import 'package:liveq/utils/client_interface.dart' as grpcClient;
 
-
-class Client {
-  ClientChannel channel;
+class MobileClient implements grpcClient.Client {
   LiveQClient stub;
   String key;
-  
-  Client() {
+  String id;
+  ClientChannel channel;
+  MobileClient() {
     channel = ClientChannel('34.71.85.54', port: 80, options: const ChannelOptions(credentials: ChannelCredentials.insecure()));  
     stub = LiveQClient(channel, options: CallOptions(timeout: Duration(seconds: 30)));
   }
@@ -21,6 +22,7 @@ class Client {
     final createReply = await stub.createRoom(msg);
     if(createReply.status.status == 0){
       key = createReply.roomKey;
+      id = createReply.hostId;
       return createReply.roomKey;
     }
     else {
@@ -29,15 +31,36 @@ class Client {
   }
 
   Future<String> JoinRoom(String room_key) async{
-    key = room_key;
+    
     final msg = KeyRequest()
-      ..roomKey = key;
+      ..roomKey = room_key;
     final joinReply = await stub.joinRoom(msg);
     if(joinReply.status.status == 0) {
+      key = room_key;
+      id = joinReply.guestId;
       return joinReply.roomName;
     }
     else {
       return 'Error: JoinRoom Failed.';
+    }
+  }
+
+  void DeleteRoom() async{
+    final msg = KeyRequest()
+      ..roomKey = key;
+    final status = await stub.deleteRoom(msg);
+    if(status.status != 0) {
+      print('Error: DeleteRoom failed.');
+    }
+  }
+
+  void LeaveRoom() async {
+    final msg = LeaveRequest()
+      ..roomKey = key
+      ..id = id;
+    final status = await stub.leaveRoom(msg);
+    if(status.status != 0){
+      print('Error: LeaveRoom failed.');
     }
   }
 
@@ -123,3 +146,4 @@ class Client {
     }
   }
 }
+grpcClient.Client getClient() => MobileClient();
