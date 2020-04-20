@@ -189,7 +189,8 @@ class _RoomState extends State<Room> {
   }
 
   void _searchSong() async {
-    final result = await Navigator.pushNamed(context, '/search');
+    final result = await Navigator.pushNamed(context, '/search',
+        arguments: SearchArguments(searchService: _searchService.name));
 
     if (result != null) {
       client.AddSong(result);
@@ -335,8 +336,8 @@ class _RoomState extends State<Room> {
     );
   }
 
-  Widget _musicPanel() {
-    Consumer<PlayerModel>(
+  Widget _musicPanel(BuildContext context) {
+    return Consumer<PlayerModel>(
       builder: (context, player, child) {
         return Container(
           height: double.infinity,
@@ -408,7 +409,7 @@ class _RoomState extends State<Room> {
 
   /// The Music Player
   Widget _musicPlayer() {
-    Consumer<PlayerModel>(
+    return Consumer<PlayerModel>(
       builder: (context, player, child) {
         return Container(
             height: 50,
