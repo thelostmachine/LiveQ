@@ -463,14 +463,38 @@ class _RoomState extends State<Room> {
       child: Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: Text(
-            (_allowedServices.isNotEmpty)
-                ? 'Connecting to ${listServices()}' //TODO: Add circular progress indicator in connecting display and extra condition to check if connecting failed
-                : 'Connect a Streaming Service to Enable the Music Player', //Failed to Connect to Streaming Services
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
+          //TODO: Add circular progress indicator in connecting display and extra condition to check if connecting failed
+          child: (_allowedServices.isNotEmpty)
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 16.0,
+                      width: 16.0,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          strokeWidth: 2.5,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16.0),
+                    Text(
+                      'Connecting to ${listServices()}',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                )
+              : const Text(
+                  'Connect a Streaming Service to Enable the Music Player',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
         ),
       ),
     );

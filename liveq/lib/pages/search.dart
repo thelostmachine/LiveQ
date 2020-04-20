@@ -26,8 +26,10 @@ class _SearchState extends State<Search> {
       setState(() {
         args = ModalRoute.of(context).settings.arguments;
       });
-      _searchService = Provider.of<CatalogModel>(context, listen: false)
-          .fromString(args.searchService);
+      if (args != null && args.searchService != null) {
+        _searchService = Provider.of<CatalogModel>(context, listen: false)
+            .fromString(args.searchService);
+      }
     });
     // _player.setService(SoundCloud());
     // _player.searchService = SoundCloud();
