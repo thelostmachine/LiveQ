@@ -3,8 +3,9 @@ import 'package:provider/provider.dart';
 // import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/song.dart';
 import 'package:liveq/utils/services.dart';
+import 'package:liveq/utils/utils.dart';
 import 'package:liveq/widgets/songtile.dart';
-import 'package:liveq/models/player_new.dart';
+import 'package:liveq/models/catalog.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -14,10 +15,20 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   List<Song> items = List();
   TextEditingController _editingController = TextEditingController();
+  SearchArguments args;
+  Service _searchService;
 
   @override
   void initState() {
     super.initState();
+    // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        args = ModalRoute.of(context).settings.arguments;
+      });
+      _searchService = Provider.of<CatalogModel>(context, listen: false)
+          .fromString(args.searchService);
+    });
     // _player.setService(SoundCloud());
     // _player.searchService = SoundCloud();
     // _isConnected = true;
@@ -66,20 +77,14 @@ class _SearchState extends State<Search> {
               ),
             ),
           ),
-          // body: Container(
-          //   // _player.allowedServices.contains(_player.searchService) == true - signifies that searchService is connected
-          //   child: Consumer<PlayerModel>(builder: (context, player, child) {
-          //     return (player.searchService != null &&
-          //             player.searchService.isConnected ==
-          //                 true) // potentially need notify_listeners here
-          //         ? searchWidget(context)
-          //         : Center(
-          //             child: Text('Please connect to a streaming service first',
-          //                 style: Theme.of(context).textTheme.bodyText1),
-          //           ); // This might not be necessary because guests shouldn't have to connect.;
-          //   }),
-          // ),
-          body: Text('test'),
+          body: Container(
+            child: _searchService != null
+                ? searchWidget(context)
+                : Center(
+                    child: Text('Please connect to a streaming service first',
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ), // This might not be necessary because guests shouldn't have to connect.
+          ),
           floatingActionButton: _getFAB(),
         ),
       ),
@@ -87,30 +92,23 @@ class _SearchState extends State<Search> {
   }
 
   Widget _getFAB() {
-    // _player.allowedServices.contains(_player.searchService) == true
-    return Consumer<PlayerModel>(
-      builder: (context, player, child) {
-        print('${player.searchService.name}');
-        return (player.searchService != null &&
-                player.searchService.isConnected == true)
-            ? FloatingActionButton.extended(
-                onPressed: null,
-                // label: const Text('Spotify'),
-                // icon: ImageIcon(
-                //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
-                // ),
-                label: Text(player.searchService.name),
-                icon: player.searchService.getImageIcon(),
-                backgroundColor: Theme.of(context).disabledColor,
-              )
-            : FloatingActionButton.extended(
-                onPressed: null,
-                label: Text('No Service'),
-                icon: Icon(Icons.error_outline),
-                backgroundColor: Theme.of(context).disabledColor,
-              );
-      },
-    );
+    return _searchService != null
+        ? FloatingActionButton.extended(
+            onPressed: null,
+            // label: const Text('Spotify'),
+            // icon: ImageIcon(
+            //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
+            // ),
+            label: Text(_searchService.name),
+            icon: _searchService.getImageIcon(),
+            backgroundColor: Theme.of(context).disabledColor,
+          )
+        : FloatingActionButton.extended(
+            onPressed: null,
+            label: Text('No Service'),
+            icon: Icon(Icons.error_outline),
+            backgroundColor: Theme.of(context).disabledColor,
+          );
   }
 
   Widget searchWidget(BuildContext context) {
@@ -128,8 +126,7 @@ class _SearchState extends State<Search> {
   /// Searches a [query] using the [Service] specified
   void search(String query) async {
     List<Song> dummySongs = List();
-    dummySongs.addAll(
-        await Provider.of<PlayerModel>(context, listen: false).search(query));
+    dummySongs.addAll(await _searchService.search(query));
 
     if (query.isNotEmpty) {
       List<Song> searchResults = List();

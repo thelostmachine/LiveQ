@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:liveq/pages/search.dart';
 // import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
+import 'package:liveq/utils/song.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:liveq/widgets/music_icons.dart';
-import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:liveq/models/catalog.dart';
 import 'package:liveq/models/player_new.dart';
 
@@ -35,6 +34,9 @@ class _RoomState extends State<Room> {
   // Flag that shows whether we are connected to the server and server's room
   bool _connectedToServer; // = false
   bool _connectedToServices = false;
+  Service _searchService;
+  Set<Service> _allowedServices = {};
+  List<Song> queue = List();
   Timer timer;
 
   @override
@@ -47,25 +49,21 @@ class _RoomState extends State<Room> {
       });
 
       if (args != null) {
-        // if host send createRoom; else send joinRoom
-        // If received response from server, set connectedToServer=true - FutureBuilder success
-        // On response failure, show 'failed to connect to server room' error message - FutureBuilder failure
-        // Set args.roomName and args.roomID received from server
-
+        // Set args.roomName and args.roomID received from server - set in dialog
         // initialize and subscribe to server stream of songs in queue
 
         // if host then connect to services
         // set _player.allowedServices.addAll(Service.connectedServices); // for guest, need to receive services from server
-        Provider.of<PlayerModel>(context, listen: false)
-            .addAllToAllowedServices(
-                Provider.of<CatalogModel>(context, listen: false)
-                    .connectedServices);
-
-        Provider.of<PlayerModel>(context, listen: false).connectToServices(() {
-          setState(() {
-            _connectedToServices = true;
-          });
+        setState(() {
+          _allowedServices.addAll(
+              Provider.of<CatalogModel>(context, listen: false)
+                  .connectedServices);
         });
+
+        connectToServices();
+        // send updateServices to server
+
+        // else if guest, wait for services from server to set available services and to set search service
       }
     });
 
@@ -103,18 +101,16 @@ class _RoomState extends State<Room> {
                 onPressed: () => _searchSong(),
               ),
               // connectedToServer == true
-              (player.searchService != null &&
-                      player.searchService.isConnected ==
-                          true) // player.allowedServices.contains(player.searchService)
+              _searchService != null
                   ? IconButton(
-                      icon: player.searchService.getImageIcon(),
-                      onPressed: player.allowedServices.length > 1
+                      icon: _searchService.getImageIcon(),
+                      onPressed: _allowedServices.length > 1
                           ? () => _selectSearchService(player)
                           : null,
                     )
                   : IconButton(
                       icon: Icon(Icons.music_note),
-                      onPressed: player.allowedServices.isNotEmpty
+                      onPressed: _allowedServices.isNotEmpty
                           ? () => _selectSearchService(player)
                           : null,
                     ),
@@ -214,9 +210,7 @@ class _RoomState extends State<Room> {
         return SimpleDialog(
           title: const Text('Select Search Service'),
           children: <Widget>[
-            (player.searchService != null &&
-                    player.searchService
-                        .isConnected) // player.allowedServices.contains(player.searchService)
+            _searchService != null
                 ? Container(
                     padding:
                         EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
@@ -224,12 +218,12 @@ class _RoomState extends State<Room> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        player.searchService.getImageIcon(),
+                        _searchService.getImageIcon(),
                         SizedBox(width: 16.0),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(player.searchService.name,
+                            Text(_searchService.name,
                                 style: Theme.of(context).textTheme.subtitle1),
                             Text('Selected',
                                 style: Theme.of(context).textTheme.caption),
@@ -247,21 +241,18 @@ class _RoomState extends State<Room> {
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
-                // itemCount: player.allowedServices.length,
-                itemCount: 5,
+                itemCount: _allowedServices.length,
                 itemBuilder: (context, index) {
-                  return (player.allowedServices.toList()[index].name !=
-                              player.searchService.name &&
-                          player.allowedServices.toList()[index].isConnected ==
-                              true)
+                  return (_allowedServices.toList()[index].name !=
+                              _searchService.name &&
+                          _allowedServices.toList()[index].isConnected == true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
-                              player.searchService =
-                                  player.allowedServices.toList()[index];
+                              _searchService = _allowedServices.toList()[index];
                             });
-                            Navigator.pop(context,
-                                player.allowedServices.toList()[index].name);
+                            Navigator.pop(
+                                context, _allowedServices.toList()[index].name);
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(
@@ -270,12 +261,9 @@ class _RoomState extends State<Room> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                player.allowedServices
-                                    .toList()[index]
-                                    .getImageIcon(),
+                                _allowedServices.toList()[index].getImageIcon(),
                                 SizedBox(width: 16.0),
-                                Text(
-                                    player.allowedServices.toList()[index].name,
+                                Text(_allowedServices.toList()[index].name,
                                     style:
                                         Theme.of(context).textTheme.subtitle1),
                               ],
@@ -445,7 +433,7 @@ class _RoomState extends State<Room> {
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Text(
-            (_player.allowedServices.isNotEmpty)
+            (_allowedServices.isNotEmpty)
                 ? 'Connecting to ${listServices()}' //TODO: Add circular progress indicator in connecting display
                 : 'Connect a Streaming Service to Enable the Music Player', //Failed to Connect to Streaming Services
             style: TextStyle(
@@ -460,7 +448,7 @@ class _RoomState extends State<Room> {
   String listServices() {
     String services = '';
 
-    for (var s in _player.allowedServices.toList()) {
+    for (var s in _allowedServices.toList()) {
       if (!s.isConnected) {
         services += '${s.name}, ';
       }
@@ -470,5 +458,29 @@ class _RoomState extends State<Room> {
           services.replaceRange(services.length - 2, services.length, '');
     }
     return services;
+  }
+
+  void connectToServices() async {
+    for (Service s in _allowedServices) {
+      bool serviceConnected = await s.connect();
+      if (serviceConnected) {
+        s.isConnected = true;
+      } else {
+        // if service cannot connect - remove from allowedServices
+        setState(() {
+          _allowedServices.remove(s);
+        });
+      }
+    }
+
+    if (_allowedServices.isNotEmpty) {
+      setState(() {
+        Provider.of<PlayerModel>(context, listen: false)
+            .setService(_allowedServices.toList()[0]);
+        // may need to set searchService in room for host/guest
+        _searchService = _allowedServices.toList()[0];
+        _connectedToServices = true;
+      });
+    }
   }
 }
