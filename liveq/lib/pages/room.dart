@@ -58,7 +58,7 @@ class _RoomState extends State<Room> {
                     .connectedServices);
           });
           connectToServices();
-          // send updateServices to server
+          // send updateServices to server with allowedServices as param
         } else {
           // else if guest, wait for services from server to set available services and to set search service
         }
@@ -133,35 +133,37 @@ class _RoomState extends State<Room> {
               Expanded(
                 child: _queueListView(),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(_radius),
-                      topRight: Radius.circular(_radius),
-                    ),
-                    color: Theme.of(context).primaryColor,
-                    // gradient: LinearGradient(
-                    //   begin: Alignment.topLeft,
-                    //   end: Alignment.bottomRight,
-                    //   stops: [
-                    //     0.0,
-                    //     0.7,
-                    //   ],
-                    //   colors: [
-                    //     Color(0xFF47ACE1),
-                    //     Color(0xFFDF5F9D),
-                    //   ],
-                    // ),
-                  ),
-                  child: (_connectedToServices)
-                      ? _musicPanel()
-                      : _connectionStatus(), // PlayerPanel(),
-                ),
-              ),
+              args.host == true
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(_radius),
+                            topRight: Radius.circular(_radius),
+                          ),
+                          color: Theme.of(context).primaryColor,
+                          // gradient: LinearGradient(
+                          //   begin: Alignment.topLeft,
+                          //   end: Alignment.bottomRight,
+                          //   stops: [
+                          //     0.0,
+                          //     0.7,
+                          //   ],
+                          //   colors: [
+                          //     Color(0xFF47ACE1),
+                          //     Color(0xFFDF5F9D),
+                          //   ],
+                          // ),
+                        ),
+                        child: (_connectedToServices)
+                            ? _musicPanel()
+                            : _connectionStatus(), // PlayerPanel(),
+                      ),
+                    )
+                  : Container(),
             ],
           )
         : Container();
@@ -437,7 +439,7 @@ class _RoomState extends State<Room> {
           padding: EdgeInsets.all(16.0),
           child: Text(
             (_allowedServices.isNotEmpty)
-                ? 'Connecting to ${listServices()}' //TODO: Add circular progress indicator in connecting display
+                ? 'Connecting to ${listServices()}' //TODO: Add circular progress indicator in connecting display and extra condition to check if connecting failed
                 : 'Connect a Streaming Service to Enable the Music Player', //Failed to Connect to Streaming Services
             style: TextStyle(
               color: Colors.white,

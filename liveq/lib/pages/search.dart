@@ -79,10 +79,11 @@ class _SearchState extends State<Search> {
           body: Container(
             child: _searchService != null
                 ? searchWidget(context)
-                : Center(
-                    child: Text('Please connect to a streaming service first',
-                        style: Theme.of(context).textTheme.bodyText1),
-                  ), // This might not be necessary because guests shouldn't have to connect.
+                // : Center(
+                //     child: Text('Please connect to a streaming service first',
+                //         style: Theme.of(context).textTheme.bodyText1),
+                //   ), // This might not be necessary because guests shouldn't have to connect.
+                : Container(),
           ),
           floatingActionButton: _getFAB(),
         ),

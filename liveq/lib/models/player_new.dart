@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/utils/client.dart';
+import 'package:liveq/utils/client_interface.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/utils/song.dart';
@@ -10,8 +10,6 @@ class PlayerModel with ChangeNotifier {
 
   List<Song> queue = List();
 
-  bool isConnected =
-      false; // Set true when all services in allowedServices are connected
   PlayerState state = PlayerState.stopped;
 
   Song getNextSong() {
