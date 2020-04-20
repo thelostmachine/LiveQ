@@ -32,6 +32,7 @@ class _RoomState extends State<Room> {
   // Flag that shows whether we are connected to the server and server's room
   bool _connectedToServer; // = false
   bool _connectedToServices = false;
+  Future<bool> _connectedToAllServices;
   Service _searchService;
   Set<Service> _allowedServices = {};
   // List<Song> _queue = List();
@@ -56,7 +57,7 @@ class _RoomState extends State<Room> {
                 Provider.of<CatalogModel>(context, listen: false)
                     .connectedServices);
           });
-          connectToServices();
+          _connectedToAllServices = connectToServices();
           // send updateServices to server with allowedServices as param
         } else {
           // else if guest, wait for services from server to set available services and to set search service
@@ -72,6 +73,7 @@ class _RoomState extends State<Room> {
                     Provider.of<CatalogModel>(context, listen: false)
                         .fromString(_guestServices[0]);
               }
+              _connectedToServices = true;
             });
           });
         }
@@ -91,6 +93,10 @@ class _RoomState extends State<Room> {
   void dispose() {
     // Disconnect from services
     timer.cancel();
+    if (args != null && args.host) {
+      client.DeleteRoom();
+    }
+
     super.dispose();
   }
 
@@ -121,7 +127,8 @@ class _RoomState extends State<Room> {
                   )
                 : IconButton(
                     icon: Icon(Icons.music_note),
-                    onPressed: _allowedServices.isNotEmpty
+                    onPressed: (_allowedServices.isNotEmpty &&
+                            _connectedToServices == true)
                         ? () => _selectSearchService()
                         : null,
                   ),
@@ -173,9 +180,21 @@ class _RoomState extends State<Room> {
                           //   ],
                           // ),
                         ),
-                        child: (_connectedToServices)
-                            ? _musicPanel()
-                            : _connectionStatus(), // PlayerPanel(),
+                        child: FutureBuilder<bool>(
+                          future: _connectedToAllServices,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<bool> snapshot) {
+                            if (snapshot.hasData) {
+                              return (_connectedToServices)
+                                  ? _musicPanel()
+                                  : _errorMessages(true); // PlayerPanel(),
+                            } else if (snapshot.hasError) {
+                              return _errorMessages(false);
+                            } else {
+                              return _connectionStatus();
+                            }
+                          },
+                        ),
                       ),
                     )
                   : Container(),
@@ -246,7 +265,7 @@ class _RoomState extends State<Room> {
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: _allowedServices.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (BuildContext context, int index) {
                   return (_allowedServices.toList()[index].name !=
                               _searchService.name &&
                           _allowedServices.toList()[index].isConnected == true)
@@ -450,7 +469,9 @@ class _RoomState extends State<Room> {
 
   void _searchSong() async {
     final result = await Navigator.pushNamed(context, '/search',
-        arguments: SearchArguments(searchService: _searchService.name));
+        arguments: SearchArguments(
+            searchService:
+                _searchService != null ? _searchService.name : null));
 
     if (result != null) {
       client.AddSong(result);
@@ -480,7 +501,7 @@ class _RoomState extends State<Room> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 16.0),
+                    SizedBox(width: 12.0),
                     Text(
                       'Connecting to ${listServices()}',
                       style: TextStyle(
@@ -490,11 +511,46 @@ class _RoomState extends State<Room> {
                   ],
                 )
               : const Text(
-                  'Connect a Streaming Service to Enable the Music Player',
+                  'Connect to a Streaming Service to Enable the Music Player',
                   style: TextStyle(
                     color: Colors.white,
                   ),
                 ),
+        ),
+      ),
+    );
+  }
+
+  Widget _errorMessages(bool _connected) {
+    return Container(
+      height: 80,
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.error_outline,
+                color: Colors.white,
+              ),
+              SizedBox(width: 8.0),
+              _connected == true
+                  ? const Text(
+                      'Failed to connect to any streaming service',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text(
+                      'Failed with unknown error',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+            ],
+          ),
         ),
       ),
     );
@@ -515,7 +571,8 @@ class _RoomState extends State<Room> {
     return services;
   }
 
-  void connectToServices() async {
+  Future<bool> connectToServices() async {
+    bool connectedtoAll = true;
     for (Service s in _allowedServices) {
       bool serviceConnected = await s.connect();
       if (serviceConnected) {
@@ -528,6 +585,7 @@ class _RoomState extends State<Room> {
         setState(() {
           _allowedServices.remove(s);
         });
+        connectedtoAll = false;
       }
     }
     if (_allowedServices.isNotEmpty) {
@@ -539,6 +597,8 @@ class _RoomState extends State<Room> {
         _connectedToServices = true;
       });
     }
+    print('DONE CONNECTING');
+    return connectedtoAll;
   }
 
   // loadQueue() async {
