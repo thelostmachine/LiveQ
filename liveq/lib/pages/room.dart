@@ -158,7 +158,7 @@ class _RoomState extends State<Room> {
                     // ),
                   ),
                   child: (_connectedToServices)
-                      ? _musicPlayer()
+                      ? _musicPanel()
                       : _connectionStatus(), // PlayerPanel(),
                 ),
               ),
@@ -186,15 +186,6 @@ class _RoomState extends State<Room> {
           ),
         )) ??
         false;
-  }
-
-  void _searchSong() async {
-    final result = await Navigator.pushNamed(context, '/search',
-        arguments: SearchArguments(searchService: _searchService.name));
-
-    if (result != null) {
-      client.AddSong(result);
-    }
   }
 
   // TODO: DIALOG NOT LOADING
@@ -336,7 +327,7 @@ class _RoomState extends State<Room> {
     );
   }
 
-  Widget _musicPanel(BuildContext context) {
+  Widget _musicPanel() {
     return Consumer<PlayerModel>(
       builder: (context, player, child) {
         return Container(
@@ -352,14 +343,15 @@ class _RoomState extends State<Room> {
                       player.currentSong.uri == null) {
                     return;
                   }
-                  if (PlayerState.paused == player.state) {
+                  if (PlayerState.paused == player.state ||
+                      PlayerState.stopped == player.state) {
                     player.play(player.currentSong);
                   } else {
                     player.pause();
                   }
                 },
                 child: Container(
-                  child: player.state == PlayerState.playing
+                  child: (player.state == PlayerState.playing)
                       ? PauseIcon(
                           color: Colors.white,
                         )
@@ -369,7 +361,7 @@ class _RoomState extends State<Room> {
                 ),
               ),
               title: Text(
-                player.currentSong.trackName,
+                player.currentSong != null ? player.currentSong.trackName : '',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -378,7 +370,7 @@ class _RoomState extends State<Room> {
                 overflow: TextOverflow.ellipsis,
               ),
               subtitle: Text(
-                player.currentSong.artists,
+                player.currentSong != null ? player.currentSong.artists : '',
                 style: TextStyle(
                   color: Colors.white,
                   // letterSpacing: 1,
@@ -426,6 +418,15 @@ class _RoomState extends State<Room> {
             ));
       },
     );
+  }
+
+  void _searchSong() async {
+    final result = await Navigator.pushNamed(context, '/search',
+        arguments: SearchArguments(searchService: _searchService.name));
+
+    if (result != null) {
+      client.AddSong(result);
+    }
   }
 
   Widget _connectionStatus() {
