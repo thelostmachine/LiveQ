@@ -54,6 +54,7 @@ Future<void> joinRoomDialog(
                 //         roomName: roomName, roomID: roomId, host: false),
                 //   );
                 // }
+                client.key = 'test_roomId';
                 Navigator.pop(context);
                 Navigator.pushNamed(
                   context,
@@ -107,6 +108,7 @@ Future<void> createRoomDialog(
                 //   arguments: RoomArguments(
                 //       roomName: roomName, roomID: roomId, host: true),
                 // );
+                client.key = 'test_roomId';
                 Navigator.pop(context);
                 Navigator.pushNamed(
                   context,

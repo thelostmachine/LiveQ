@@ -38,7 +38,7 @@ void main() {
         initialRoute: '/home',
         routes: {
           '/home': (context) => Home(),
-          '/room': (context) => Room(),
+          '/room': (context) => RoomProvider(),
           '/search': (context) => Search(),
           '/connect_services': (context) => ConnectServices(),
           // '/sound': (context) => SoundCloud(),

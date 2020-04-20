@@ -65,16 +65,24 @@ class _ConnectServicesState extends State<ConnectServices> {
                     Divider(), // TODO: Figure out why dividers are not showing
                 itemBuilder: (BuildContext context, int index) {
                   return CheckboxListTile(
-                    title: Text(Service.potentialServices[index].name),
-                    value: catalog.connectedServices
-                        .contains(Service.potentialServices[index]),
+                    title: Text(
+                        Provider.of<CatalogModel>(context, listen: false)
+                            .potentialServices[index]
+                            .name),
+                    value: catalog.connectedServices.contains(
+                        Provider.of<CatalogModel>(context, listen: false)
+                            .potentialServices[index]),
                     onChanged: (bool value) {
                       setState(() {
                         value
                             ? catalog.addToConnectedServices(
-                                Service.potentialServices[index])
+                                Provider.of<CatalogModel>(context,
+                                        listen: false)
+                                    .potentialServices[index])
                             : catalog.removeFromConnectedServices(
-                                Service.potentialServices[index]);
+                                Provider.of<CatalogModel>(context,
+                                        listen: false)
+                                    .potentialServices[index]);
                       });
                     },
                     secondary: catalog.potentialServices[index].getImageIcon(),

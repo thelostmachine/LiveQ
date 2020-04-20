@@ -15,4 +15,11 @@ class RoomArguments {
   RoomArguments({this.roomID, this.roomName, this.host});
 }
 
+class SearchArguments {
+  String searchService = '';
+  // Service searchService = '';
+
+  SearchArguments({this.searchService});
+}
+
 Client client = Client();
