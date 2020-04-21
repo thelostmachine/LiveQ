@@ -17,10 +17,10 @@ Future<void> joinRoomDialog(
               labelText: 'Room Code',
               hintText: "eg. abcd1234",
               icon: Icon(Icons.vpn_key),
-              errorText: (myController.text.length != 8 &&
-                      myController.text.isNotEmpty)
-                  ? 'Room code should have exactly 8 characters'
-                  : null,
+              // errorText: (myController.text.length != 8 &&
+              //         myController.text.isNotEmpty)
+              //     ? 'Room code should have exactly 8 characters'
+              //     : null,
             ),
           ),
         ),
