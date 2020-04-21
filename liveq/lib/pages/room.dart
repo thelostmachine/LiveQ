@@ -376,14 +376,29 @@ class _RoomState extends State<Room> {
       );
     });
   }
+
   // Widget _queueListView() {
   //   return ListView.builder(
-  //     physics: BouncingScrollPhysics(),
-  //     itemCount: _queue.length,
-  //     itemBuilder: (context, index) {
-  //       return SongTile(song: _queue[index]);
-  //     },
-  //   );
+  //       physics: BouncingScrollPhysics(),
+  //       itemCount: _queue.length,
+  //       itemBuilder: (context, index) {
+  //         return args.host == true
+  //             ? Dismissible(
+  //                 key: ObjectKey(_queue[index]),
+  //                 onDismissed: (direction) {
+  //                   setState(() {
+  //                     client.DeleteSong(_queue[index]);
+  //                     // _queue.removeAt(index);
+  //                   });
+  //                   Scaffold.of(context)
+  //                       .showSnackBar(SnackBar(content: Text("Song removed")));
+  //                 },
+  //                 background: Container(color: Theme.of(context).primaryColor),
+  //                 child: SongTile(song: _queue[index]),
+  //               )
+  //             : SongTile(song: _queue[index]);
+  //       },
+  //     );
   // }
 
   Widget _musicPanel() {
@@ -547,7 +562,7 @@ class _RoomState extends State<Room> {
                 Icons.error_outline,
                 color: Colors.white,
               ),
-              SizedBox(width: 8.0),
+              SizedBox(width: 12.0),
               _connected == true
                   ? const Text(
                       'Failed to connect to any streaming service',

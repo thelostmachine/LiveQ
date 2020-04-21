@@ -10,11 +10,18 @@ Future<void> joinRoomDialog(
       return AlertDialog(
         // title: Text('Enter Room Code'),
         content: SingleChildScrollView(
-          child: TextField(
+          child: TextFormField(
             autofocus: true,
             controller: myController,
             decoration: InputDecoration(
-                labelText: 'Room Code', hintText: "eg. abcd1234"),
+              labelText: 'Room Code',
+              hintText: "eg. abcd1234",
+              icon: Icon(Icons.vpn_key),
+              errorText: (myController.text.length != 8 &&
+                      myController.text.isNotEmpty)
+                  ? 'Code should have exactly 8 characters'
+                  : null,
+            ),
           ),
         ),
         actions: <Widget>[
@@ -24,48 +31,59 @@ Future<void> joinRoomDialog(
                 Navigator.pop(context);
               }),
           FlatButton(
-              child: const Text('SUBMIT'),
-              onPressed: () async {
-                // String roomId = myController.text;
-                // String roomName = await client.JoinRoom(roomId);
-                // print('joining room $roomName');
+            child: const Text('SUBMIT'),
+            onPressed: () async {
+              // String roomId = myController.text;
+              // String roomName = await client.JoinRoom(roomId);
+              // print('joining room $roomName');
 
-                // if (roomName.startsWith('Error')) {
-                //   showDialog(
-                //       context: context,
-                //       // barrierDismissible: false,
-                //       builder: (BuildContext context) {
-                //         return AlertDialog(
-                //           title: Text('Unable to join Room. Incorrect Key'),
-                //           actions: <Widget>[
-                //             FlatButton(
-                //               child: Text('Ok'),
-                //               onPressed: () => Navigator.of(context).pop(),
-                //             )
-                //           ],
-                //         );
-                //       });
-                // } else {
-                //   Navigator.pop(context);
-                //   Navigator.pushNamed(
-                //     context,
-                //     '/room',
-                //     arguments: RoomArguments(
-                //         roomName: roomName, roomID: roomId, host: false),
-                //   );
-                // }
-                client.key = 'test_roomId';
-                Navigator.pop(context);
-                Navigator.pushNamed(
-                  context,
-                  '/room',
-                  arguments: RoomArguments(
-                    roomName: 'test_roomName',
-                    roomID: myController.text,
-                    host: false,
-                  ),
-                );
-              })
+              // if (roomName.startsWith('Error')) {
+              // showDialog(
+              //     context: context,
+              //     builder: (BuildContext context) {
+              //       return AlertDialog(
+              //         content: Padding(
+              //           padding: EdgeInsets.symmetric(horizontal: 24.0),
+              //           child: Row(
+              //             mainAxisAlignment: MainAxisAlignment.start,
+              //             crossAxisAlignment: CrossAxisAlignment.center,
+              //             children: <Widget>[
+              //               Icon(Icons.error),
+              //               SizedBox(width: 12.0),
+              //               const Text('Unable to join a room. Invalid key.'),
+              //             ],
+              //           ),
+              //         ),
+              //         actions: <Widget>[
+              //           FlatButton(
+              //             child: Text('Ok'),
+              //             onPressed: () => Navigator.of(context).pop(),
+              //           )
+              //         ],
+              //       );
+              //     });
+              // } else {
+              //   Navigator.pop(context);
+              //   Navigator.pushNamed(
+              //     context,
+              //     '/room',
+              //     arguments: RoomArguments(
+              //         roomName: roomName, roomID: roomId, host: false),
+              //   );
+              // }
+              client.key = 'test_roomId';
+              Navigator.pop(context);
+              Navigator.pushNamed(
+                context,
+                '/room',
+                arguments: RoomArguments(
+                  roomName: 'test_roomName',
+                  roomID: myController.text,
+                  host: false,
+                ),
+              );
+            },
+          )
         ],
       );
     },
@@ -80,11 +98,14 @@ Future<void> createRoomDialog(
       return AlertDialog(
         // title: Text('Enter Room Name'),
         content: SingleChildScrollView(
-          child: TextField(
+          child: TextFormField(
             autofocus: true,
             controller: myController,
             decoration: InputDecoration(
-                labelText: 'Room Name', hintText: "eg. John's Room"),
+              labelText: 'Room Name',
+              hintText: "eg. John's Room",
+              icon: Icon(Icons.person),
+            ),
           ),
         ),
         actions: <Widget>[
