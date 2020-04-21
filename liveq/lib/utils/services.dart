@@ -273,7 +273,7 @@ class Apple extends Service {
   final String name = Service.APPLE;
   final String iconImagePath = 'assets/images/Apple_Music_Icon.psd';
 
-  static const APPLE_KEY = 'MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgQBrLQ60S4TlWguRBoXLRmYUL6pqxDt/gtfXHivxH0qCgCgYIKoZIzj0DAQehRANCAARYxJjvueLnqHqHGbAtPsfp9pY6UWnAAEJhojEx6OtaKjSgxDRJdE6nXFsaCzLxf0NWk2wYVF/pvI9pyTFWYi8K';
+  static const APPLE_KEY = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA5UFEzSzI5NDMifQ.eyJpc3MiOiI4Q0tLSEdDQTNNIiwiaWF0IjoxNTg3NDQzNTYxLCJleHAiOjE1ODc0ODY3NjF9.7N6Fjrud_wfbC8ktGTo8ItIfQ7-IuRC1CEiuSvqXUpnbymrm85KHYqMxuG1QO5vwAmBNQsCegJu2-cC4WInCqA';
 
   static final Service _apple = Apple._internal();
 
