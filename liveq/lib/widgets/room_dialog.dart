@@ -45,11 +45,11 @@ Future<void> joinRoomDialog(
               //         content: Padding(
               //           padding: EdgeInsets.symmetric(horizontal: 24.0),
               //           child: Row(
-              //             mainAxisAlignment: MainAxisAlignment.start,
+              //             mainAxisAlignment: MainAxisAlignment.center,
               //             crossAxisAlignment: CrossAxisAlignment.center,
               //             children: <Widget>[
               //               Icon(Icons.error),
-              //               SizedBox(width: 12.0),
+              //               SizedBox(width: 8.0),
               //               const Text('Unable to join a room. Invalid key.'),
               //             ],
               //           ),

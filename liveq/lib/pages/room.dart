@@ -332,7 +332,7 @@ class _RoomState extends State<Room> {
                     args.roomID, // args.roomID
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
-                  SizedBox(width: 5),
+                  SizedBox(width: 4),
                   Icon(Icons.content_copy),
                 ],
               ),
@@ -562,7 +562,7 @@ class _RoomState extends State<Room> {
                 Icons.error_outline,
                 color: Colors.white,
               ),
-              SizedBox(width: 12.0),
+              SizedBox(width: 8.0),
               _connected == true
                   ? const Text(
                       'Failed to connect to any streaming service',
