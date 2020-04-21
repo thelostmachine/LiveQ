@@ -78,7 +78,6 @@ class _RoomState extends State<Room> {
           });
         }
       }
-      print("ALLOWED SERVICES: ${_allowedServices.length}");
     });
 
     // set soundcloud
@@ -262,7 +261,7 @@ class _RoomState extends State<Room> {
             Container(
               width: 200,
               child: ListView.builder(
-                physics: BouncingScrollPhysics(),
+                // physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: _allowedServices.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -358,7 +357,21 @@ class _RoomState extends State<Room> {
         physics: BouncingScrollPhysics(),
         itemCount: player.queue.length,
         itemBuilder: (context, index) {
-          return SongTile(song: player.queue[index]);
+          return args.host == true
+              ? Dismissible(
+                  key: ObjectKey(player.queue[index]),
+                  onDismissed: (direction) {
+                    setState(() {
+                      client.DeleteSong(player.queue[index]);
+                      // player.queue.removeAt(index);
+                    });
+                    Scaffold.of(context)
+                        .showSnackBar(SnackBar(content: Text("Song removed")));
+                  },
+                  background: Container(color: Theme.of(context).primaryColor),
+                  child: SongTile(song: player.queue[index]),
+                )
+              : SongTile(song: player.queue[index]);
         },
       );
     });
@@ -577,6 +590,7 @@ class _RoomState extends State<Room> {
       if (serviceConnected) {
         setState(() {
           s.isConnected = true;
+
           // client.AddService(s.name);
         });
       } else {
