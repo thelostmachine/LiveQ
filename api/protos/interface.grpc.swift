@@ -31,6 +31,8 @@ import SwiftProtobuf
 internal protocol Liveq_LiveQClientProtocol {
   func createRoom(_ request: Liveq_CreateRequest, callOptions: CallOptions?) -> UnaryCall<Liveq_CreateRequest, Liveq_CreateReply>
   func joinRoom(_ request: Liveq_KeyRequest, callOptions: CallOptions?) -> UnaryCall<Liveq_KeyRequest, Liveq_JoinReply>
+  func deleteRoom(_ request: Liveq_KeyRequest, callOptions: CallOptions?) -> UnaryCall<Liveq_KeyRequest, Liveq_Status>
+  func leaveRoom(_ request: Liveq_LeaveRequest, callOptions: CallOptions?) -> UnaryCall<Liveq_LeaveRequest, Liveq_Status>
   func addService(_ request: Liveq_ServiceRequest, callOptions: CallOptions?) -> UnaryCall<Liveq_ServiceRequest, Liveq_Status>
   func getServices(_ request: Liveq_KeyRequest, callOptions: CallOptions?, handler: @escaping (Liveq_ServiceMsg) -> Void) -> ServerStreamingCall<Liveq_KeyRequest, Liveq_ServiceMsg>
   func getQueue(_ request: Liveq_KeyRequest, callOptions: CallOptions?, handler: @escaping (Liveq_SongMsg) -> Void) -> ServerStreamingCall<Liveq_KeyRequest, Liveq_SongMsg>
@@ -72,6 +74,30 @@ internal final class Liveq_LiveQClient: GRPCClient, Liveq_LiveQClientProtocol {
   /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
   internal func joinRoom(_ request: Liveq_KeyRequest, callOptions: CallOptions? = nil) -> UnaryCall<Liveq_KeyRequest, Liveq_JoinReply> {
     return self.makeUnaryCall(path: "/liveq.LiveQ/JoinRoom",
+                              request: request,
+                              callOptions: callOptions ?? self.defaultCallOptions)
+  }
+
+  /// Unary call to DeleteRoom
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to DeleteRoom.
+  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func deleteRoom(_ request: Liveq_KeyRequest, callOptions: CallOptions? = nil) -> UnaryCall<Liveq_KeyRequest, Liveq_Status> {
+    return self.makeUnaryCall(path: "/liveq.LiveQ/DeleteRoom",
+                              request: request,
+                              callOptions: callOptions ?? self.defaultCallOptions)
+  }
+
+  /// Unary call to LeaveRoom
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to LeaveRoom.
+  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func leaveRoom(_ request: Liveq_LeaveRequest, callOptions: CallOptions? = nil) -> UnaryCall<Liveq_LeaveRequest, Liveq_Status> {
+    return self.makeUnaryCall(path: "/liveq.LiveQ/LeaveRoom",
                               request: request,
                               callOptions: callOptions ?? self.defaultCallOptions)
   }
@@ -146,6 +172,8 @@ internal final class Liveq_LiveQClient: GRPCClient, Liveq_LiveQClientProtocol {
 internal protocol Liveq_LiveQProvider: CallHandlerProvider {
   func createRoom(request: Liveq_CreateRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Liveq_CreateReply>
   func joinRoom(request: Liveq_KeyRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Liveq_JoinReply>
+  func deleteRoom(request: Liveq_KeyRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Liveq_Status>
+  func leaveRoom(request: Liveq_LeaveRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Liveq_Status>
   func addService(request: Liveq_ServiceRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Liveq_Status>
   func getServices(request: Liveq_KeyRequest, context: StreamingResponseCallContext<Liveq_ServiceMsg>) -> EventLoopFuture<GRPCStatus>
   func getQueue(request: Liveq_KeyRequest, context: StreamingResponseCallContext<Liveq_SongMsg>) -> EventLoopFuture<GRPCStatus>
@@ -171,6 +199,20 @@ extension Liveq_LiveQProvider {
       return UnaryCallHandler(callHandlerContext: callHandlerContext) { context in
         return { request in
           self.joinRoom(request: request, context: context)
+        }
+      }
+
+    case "DeleteRoom":
+      return UnaryCallHandler(callHandlerContext: callHandlerContext) { context in
+        return { request in
+          self.deleteRoom(request: request, context: context)
+        }
+      }
+
+    case "LeaveRoom":
+      return UnaryCallHandler(callHandlerContext: callHandlerContext) { context in
+        return { request in
+          self.leaveRoom(request: request, context: context)
         }
       }
 
@@ -220,8 +262,9 @@ extension Liveq_CreateRequest: GRPCProtobufPayload {}
 extension Liveq_CreateReply: GRPCProtobufPayload {}
 extension Liveq_KeyRequest: GRPCProtobufPayload {}
 extension Liveq_JoinReply: GRPCProtobufPayload {}
-extension Liveq_ServiceRequest: GRPCProtobufPayload {}
 extension Liveq_Status: GRPCProtobufPayload {}
+extension Liveq_LeaveRequest: GRPCProtobufPayload {}
+extension Liveq_ServiceRequest: GRPCProtobufPayload {}
 extension Liveq_ServiceMsg: GRPCProtobufPayload {}
 extension Liveq_SongMsg: GRPCProtobufPayload {}
 extension Liveq_SongRequest: GRPCProtobufPayload {}

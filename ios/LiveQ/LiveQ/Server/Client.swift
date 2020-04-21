@@ -17,7 +17,7 @@ class Client: NSObject {
 //    var stub: Liveq_LiveQService?
     
     let host = "34.71.85.54"
-    let port = 80
+    let port = 9090
     let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     let options = CallOptions(timeout: .seconds(rounding: 30))
     
@@ -71,13 +71,13 @@ class Client: NSObject {
     
     func addSong(song: Song) {
         let songMsg = Liveq_SongMsg.with {
-            $0.songID = song.id
+            $0.songID = String(song.id)
             $0.uri = song.uri
             $0.name = song.name
             $0.artist = song.artists[0].name
             $0.imageUri = song.imageUri
             $0.duration = Int32(song.duration)
-            $0.service = song.service.rawValue
+            $0.service = song.service.name
         }
         
         let addReq = Liveq_SongRequest.with {
@@ -96,13 +96,13 @@ class Client: NSObject {
     
     func deleteSong(song: Song) {
         let songMsg = Liveq_SongMsg.with {
-            $0.songID = song.id
+            $0.songID = String(song.id)
             $0.uri = song.uri
             $0.name = song.name
             $0.artist = song.artists[0].name
             $0.imageUri = song.imageUri
             $0.duration = Int32(song.duration)
-            $0.service = song.service.rawValue
+            $0.service = song.service.name
         }
         
         let delReq = Liveq_SongRequest.with {
@@ -115,7 +115,7 @@ class Client: NSObject {
         do {
             let response = try reply.response.wait()
         } catch {
-            print("failed to delete song \(song.name)")
+            print("failed to delete song \(song.name): \(error)")
         }
     }
     
@@ -127,7 +127,9 @@ class Client: NSObject {
         
         let reply = stub.getQueue(request) { song in
 //            print("received \(song.name)")
-            let qSong: Song = Song(id: song.songID, uri: song.uri, song.name, [Artist.init(name: song.artist)], imageUri: song.imageUri, duration: Int(song.duration), Service.init(rawValue: song.service)!)
+            let qSong: Song = Song(id: song.songID, uri: song.uri, song.name, [Artist.init(name: song.artist)], imageUri: song.imageUri, duration: Int(song.duration), fromString(song.service))
+//                                   Service.fromString(song.service.name))
+                //Service.init(rawValue: song.service)!)
             queue.append(qSong)
         }
         

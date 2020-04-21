@@ -8,8 +8,8 @@
 
 import Foundation
 
-struct Song: Identifiable {
-    
+struct Song: Identifiable, Equatable {
+//    var ID = UUID()
     var id: String
     var uri: String
     
@@ -59,6 +59,29 @@ struct Song: Identifiable {
     
     func secondsToMinutesSeconds() -> (Int, Int) {
         return ((duration % 3600) / 60, (duration % 3600) % 60)
+    }
+    
+    public var description: String {
+        return """
+        id: \(id)
+        uri: \(uri)
+        name: \(name)
+        artists: \(artists[0].name)
+        imageUri: \(imageUri)
+        duration: \(duration)
+        service: \(service.name)
+        """
+    }
+    
+    static func == (lhs: Song, rhs: Song) -> Bool {
+        return
+            lhs.id == rhs.id &&
+            lhs.uri == rhs.uri &&
+            lhs.name == rhs.name &&
+            lhs.imageUri == rhs.imageUri &&
+            lhs.duration == rhs.duration &&
+            lhs.service.name == rhs.service.name
+        
     }
 }
 

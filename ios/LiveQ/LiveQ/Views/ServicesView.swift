@@ -12,8 +12,12 @@ struct ServicesView: View {
     
     @EnvironmentObject var viewRouter: ViewRouter
     
+    var services: [Service] = [Spotify.instance, SoundCloud.instance]
+    
     var body: some View {
-        Text("Hello, Services!")
+        List(self.services, id: \.name.hashValue) { service in
+            ServiceCell(service: service)
+        }
     }
 }
 

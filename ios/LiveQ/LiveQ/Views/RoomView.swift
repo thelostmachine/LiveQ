@@ -9,25 +9,28 @@
 import SwiftUI
 import MediaPlayer
 
-struct RoomView: View, PlayerStateDelegate {
+struct RoomView: View {
     
     @EnvironmentObject var viewRouter: ViewRouter
-    @ObservedObject var queue = QueueViewModel()
+//    @ObservedObject var queue = QueueViewModel()
 //    @Published var songs: [Song] = [Song]()
+    @ObservedObject var player: Player = Player.instance
     
     @State private var authorized = false
     
-    private var appRemote: SPTAppRemote? {
-        get {
-            return (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.appRemote
-        }
-    }
+//    let player: Player = Player()
     
-    private var playerState: SPTAppRemotePlayerState {
-        get {
-            return (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)!.playerState
-        }
-    }
+//    private var appRemote: SPTAppRemote? {
+//        get {
+//            return (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.appRemote
+//        }
+//    }
+//
+//    private var playerState: SPTAppRemotePlayerState {
+//        get {
+//            return (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)!.playerState
+//        }
+//    }
     
     init() {
         UINavigationBar.appearance().largeTitleTextAttributes = [.font : UIFont(name: "Georgia", size: 20)!]
@@ -37,7 +40,7 @@ struct RoomView: View, PlayerStateDelegate {
         NavigationView {
             VStack {
                 List {
-                    ForEach(self.queue.songs) { song in
+                    ForEach(self.player.queue) { song in
                         SongRow(song: song)
                     }
                 }
@@ -45,18 +48,24 @@ struct RoomView: View, PlayerStateDelegate {
                 HStack {
                     Button("Play") {
                         print("play")
-                        for song in self.queue.songs {
-                            print(song.name)
+                        if self.player.currentState == .Stopped {
+                            self.player.next()
+//                            self.player.play(song: self.getNextSong())
+                        } else {
+                            self.player.resume()
                         }
-                        self.appRemote?.playerAPI?.resume(nil)
+//                        self.appRemote?.playerAPI?.resume(nil)
                     }
                     Button("Pause") {
                         print("pause")
-                        self.appRemote?.playerAPI?.pause(nil)
+                        self.player.pause()
+//                        self.appRemote?.playerAPI?.pause(nil)
                     }
                     Button("Next") {
                         print("next")
-                        self.nextManual(song: self.getNextSong())
+//                        self.nextManual(song: self.getNextSong())
+//                        self.player.play(song: self.getNextSong())
+                        self.player.next()
 //                        self.appRemote?.playerAPI?.play(self.queue.songs(at: 0).uri, callback: nil)
                     }
                 }
@@ -68,36 +77,76 @@ struct RoomView: View, PlayerStateDelegate {
                         self.viewRouter.currentPage = .Home
                 },
                 trailing:
-                NavigationLink(destination: SearchView(queue: self.queue)) {
-                        Text("Search")
+                HStack {
+                    NavigationLink(destination: ServicesView()) {
+                        Text("Connect")
+                    }
+                    Spacer(minLength: 30)
+                    NavigationLink(destination: SearchView()) {
+                        Image(systemName: "magnifyingglass")
+                    }
+//                        Text("Search")}
+                }
+                
                     
 //                    Button("Search") {
 //                        NavigationLink(destination: SearchView()) {
 //                            print("search")
 //                        }
 //                        self.viewRouter.currentPage = .Search
-                })
+                )
             .resignKeyboardOnDragGesture()
         }
 //        .onReceive(queue.didChange) { songs in
 //            self.songs = songs
 //        }
         .onAppear {
-            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.playerStateDelegate = self
+//            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.playerStateDelegate = self
             print("howdy")
             if !self.authorized {
 //                spotifyManager.authorize()
                 self.authorized = true
             }
             
-            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                self.queue.setQueue()
+            DispatchQueue.global(qos: .background).async {
+                Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                    self.player.loadQueue()
+                }
+                RunLoop.current.run()
             }
             
-//            let urlstring = "https://api.soundcloud.com/tracks/568524525"
-//            let urlstring = "https://cf-hls-media.sndcdn.com/media/1117203/1276863/Y9iSpv51sEqp.128.mp3"
-//            let url = URL(string: urlstring)
-//            self.downloadFile(url: url!)
+            do {
+                try AVAudioSession.sharedInstance()
+                                      .setCategory(AVAudioSession.Category.playback)
+                print("AVAudioSession Category Playback OK")
+                do {
+                    try AVAudioSession.sharedInstance().setActive(true)
+                    print("AVAudioSession is Active")
+                } catch let error as NSError {
+                    print(error.localizedDescription)
+                }
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
+            
+            let commandCenter = MPRemoteCommandCenter.shared()
+            commandCenter.nextTrackCommand.isEnabled = true
+            commandCenter.nextTrackCommand.addTarget(handler: {_ in
+                self.player.next()
+                return .success
+            })
+            
+            commandCenter.playCommand.isEnabled = true
+            commandCenter.playCommand.addTarget(handler: { _ in
+                self.player.resume()
+                return .success
+            })
+            
+            commandCenter.pauseCommand.isEnabled = true
+            commandCenter.pauseCommand.addTarget(handler: { _ in
+                self.player.pause()
+                return .success
+            })
             
         }
     }
@@ -128,34 +177,34 @@ struct RoomView: View, PlayerStateDelegate {
 //
 //    }
     
-    func next(state: SPTAppRemotePlayerState) {
-        print("DELEGATION")
-        print(queue.songs.count)
-        if queue.songs.count > 0 {
-            print(state.isPaused)
-            print(state.playbackPosition)
-            if state.isPaused && state.playbackPosition == 0 {
-                let song = queue.songs.remove(at: 0)
-                appRemote?.playerAPI?.play(song.uri, callback: nil)
-            }
-        }
-    }
+//    func next(state: SPTAppRemotePlayerState) {
+//        print("DELEGATION")
+//        print(queue.songs.count)
+//        if queue.songs.count > 0 {
+//            print(state.isPaused)
+//            print(state.playbackPosition)
+//            if state.isPaused && state.playbackPosition == 0 {
+//                let song = queue.songs.remove(at: 0)
+//                appRemote?.playerAPI?.play(song.uri, callback: nil)
+//            }
+//        }
+//    }
     
-    func nextManual(song: Song?) {
-        guard let song = song else { return }
-        
-        appRemote?.playerAPI?.play(song.uri, callback: nil)
-    }
+//    func nextManual(song: Song?) {
+//        guard let song = song else { return }
+//
+//        appRemote?.playerAPI?.play(song.uri, callback: nil)
+//    }
     
-    func getNextSong() -> Song? {
-        if queue.songs.count > 0 {
-            let nextSong = queue.songs[0]
-            client.deleteSong(song: nextSong)
-            return nextSong
-        }
-        
-        return nil
-    }
+//    func getNextSong() -> Song? {
+//        if queue.songs.count > 0 {
+//            let nextSong = queue.songs[0]
+//            client.deleteSong(song: nextSong)
+//            return nextSong
+//        }
+//
+//        return nil
+//    }
 }
 
 struct RoomView_Previews: PreviewProvider {

@@ -10,6 +10,8 @@ PODS:
     - Flutter
   - spotify_sdk (0.0.1):
     - Flutter
+  - url_audio_stream (0.0.1):
+    - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
@@ -20,6 +22,7 @@ DEPENDENCIES:
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
   - spotify_sdk (from `.symlinks/plugins/spotify_sdk/ios`)
+  - url_audio_stream (from `.symlinks/plugins/url_audio_stream/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 EXTERNAL SOURCES:
@@ -35,6 +38,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_web/ios"
   spotify_sdk:
     :path: ".symlinks/plugins/spotify_sdk/ios"
+  url_audio_stream:
+    :path: ".symlinks/plugins/url_audio_stream/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
@@ -45,6 +50,7 @@ SPEC CHECKSUMS:
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   spotify_sdk: 6370b847093f4478a2fef3f5053d7f0c665d2b30
+  url_audio_stream: 95de9333eec36a084fc94b00dfd9563d9a916cfe
   webview_flutter: bec7599de6bfbe8008a739aa3ebd7b364ea9d0cd
 
 PODFILE CHECKSUM: 3dbe063e9c90a5d7c9e4e76e70a821b9e2c1d271

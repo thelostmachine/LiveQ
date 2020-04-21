@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5309D7B5244DA2FD00785CC2 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5309D7B4244DA2FD00785CC2 /* Player.swift */; };
+		5309D7B7244DACCC00785CC2 /* ServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5309D7B6244DACCC00785CC2 /* ServiceCell.swift */; };
+		5309D7B9244DBB6B00785CC2 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5309D7B8244DBB6B00785CC2 /* LoadingView.swift */; };
 		5335512D2445B718006821DA /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 5335512C2445B718006821DA /* GRPC */; };
+		533FE57B244D0D150037F090 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533FE57A244D0D150037F090 /* Services.swift */; };
 		53BB07752445F64F00AF47B5 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BB07742445F64F00AF47B5 /* ImageLoader.swift */; };
 		53BB07772445F70000AF47B5 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BB07762445F70000AF47B5 /* ImageView.swift */; };
 		53BB077B2446BD6C00AF47B5 /* LiveQ.png in Resources */ = {isa = PBXBuildFile; fileRef = 53BB077A2446BD6C00AF47B5 /* LiveQ.png */; };
@@ -35,6 +39,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5309D7B4244DA2FD00785CC2 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		5309D7B6244DACCC00785CC2 /* ServiceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCell.swift; sourceTree = "<group>"; };
+		5309D7B8244DBB6B00785CC2 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		533FE57A244D0D150037F090 /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
 		53BB07742445F64F00AF47B5 /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		53BB07762445F70000AF47B5 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		53BB077A2446BD6C00AF47B5 /* LiveQ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LiveQ.png; path = ../../../../../../Desktop/LiveQ.png; sourceTree = "<group>"; };
@@ -151,9 +159,11 @@
 				53D8CDAF24268BEF0078928F /* HomeView.swift */,
 				53D8CDC12426960D0078928F /* RoomView.swift */,
 				53D8CDD52429510B0078928F /* SearchView.swift */,
-				53D8CDCA24269C330078928F /* ServicesView.swift */,
 				53D8CDCF2426A79A0078928F /* SongRow.swift */,
 				53BB07762445F70000AF47B5 /* ImageView.swift */,
+				53D8CDCA24269C330078928F /* ServicesView.swift */,
+				5309D7B6244DACCC00785CC2 /* ServiceCell.swift */,
+				5309D7B8244DBB6B00785CC2 /* LoadingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -174,6 +184,8 @@
 				53D8CDC824269A440078928F /* ViewRouter.swift */,
 				53D8CDD7242959310078928F /* QueueViewModel.swift */,
 				53BB07742445F64F00AF47B5 /* ImageLoader.swift */,
+				533FE57A244D0D150037F090 /* Services.swift */,
+				5309D7B4244DA2FD00785CC2 /* Player.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -302,16 +314,20 @@
 				53D8CDC024268F890078928F /* utils.swift in Sources */,
 				53D8CDAE24268BEF0078928F /* LiveQ.xcdatamodeld in Sources */,
 				53D8CDD8242959310078928F /* QueueViewModel.swift in Sources */,
+				5309D7B9244DBB6B00785CC2 /* LoadingView.swift in Sources */,
+				5309D7B7244DACCC00785CC2 /* ServiceCell.swift in Sources */,
 				53D8CDC624269A020078928F /* ContentView.swift in Sources */,
 				53D8CDA924268BEF0078928F /* AppDelegate.swift in Sources */,
 				53BD96FE2444DB9500B0DE6F /* Client.swift in Sources */,
 				53BB07772445F70000AF47B5 /* ImageView.swift in Sources */,
 				53D8CDD62429510C0078928F /* SearchView.swift in Sources */,
+				5309D7B5244DA2FD00785CC2 /* Player.swift in Sources */,
 				53D8CDCE2426A5260078928F /* Song.swift in Sources */,
 				53D8CDC22426960D0078928F /* RoomView.swift in Sources */,
 				53D8CDCB24269C330078928F /* ServicesView.swift in Sources */,
 				53BD97122445B25700B0DE6F /* interface.grpc.swift in Sources */,
 				53D8CDB024268BEF0078928F /* HomeView.swift in Sources */,
+				533FE57B244D0D150037F090 /* Services.swift in Sources */,
 				53D8CDAB24268BEF0078928F /* SceneDelegate.swift in Sources */,
 				53BB07752445F64F00AF47B5 /* ImageLoader.swift in Sources */,
 				53D8CDD02426A79A0078928F /* SongRow.swift in Sources */,

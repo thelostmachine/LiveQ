@@ -119,7 +119,7 @@ class SoundCloud extends Service {
     // super.connect();
     // TODO: implement connect
     // throw UnimplementedError();
-    return Future.value(false);
+    return Future.value(true);
   }
 
   @override
@@ -157,8 +157,7 @@ class SoundCloud extends Service {
     search += '&linked_partitioning=1';
     search += '&app_version=1586177347';
     search += '&app_locale=en';
-    search +=
-        '&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
+    search += '&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
 
     var response = await http.get(search);
 

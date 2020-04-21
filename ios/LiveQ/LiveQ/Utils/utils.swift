@@ -18,7 +18,19 @@ import SwiftUI
 
 let client = Client()
 
-var authorizationToken: String?
+//var authorizationToken: String?
+
+struct SCSearch: Decodable {
+    let tracks: SCTrack
+}
+
+struct SCTrack: Decodable {
+    let collection: [String]
+}
+
+//struct SCItems: Decodable {
+//    let title: String
+//}
 
 struct SearchResult: Decodable {
     let tracks: Track
@@ -27,7 +39,7 @@ struct SearchResult: Decodable {
         var songs = [Song]()
         
         for item in tracks.items {
-            let song = Song(id: item.id, uri: item.uri, item.name, item.artists, imageUri: item.album.images[1].url, duration: item.duration / 1000, .Spotify)
+            let song = Song(id: item.id, uri: item.uri, item.name, item.artists, imageUri: item.album.images[1].url, duration: item.duration / 1000, Spotify.instance)
             songs.append(song)
         }
         
@@ -93,8 +105,19 @@ enum Page {
     case Home, Room, Service, Search
 }
 
-enum Service: String {
-    case Spotify, SoundCloud
+//enum Service: String {
+//    case Spotify, SoundCloud
+//}
+
+func fromString(_ service: String) -> Service {
+    switch service {
+    case "SoundCloud":
+        return SoundCloud.instance
+    case "Spotify":
+        return Spotify.instance
+    default:
+        return SoundCloud.instance
+    }
 }
 
 extension UIApplication {
