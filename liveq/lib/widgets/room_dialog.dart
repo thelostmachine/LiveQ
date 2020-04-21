@@ -19,7 +19,7 @@ Future<void> joinRoomDialog(
               icon: Icon(Icons.vpn_key),
               errorText: (myController.text.length != 8 &&
                       myController.text.isNotEmpty)
-                  ? 'Code should have exactly 8 characters'
+                  ? 'Room code should have exactly 8 characters'
                   : null,
             ),
           ),
@@ -48,7 +48,7 @@ Future<void> joinRoomDialog(
               //             mainAxisAlignment: MainAxisAlignment.center,
               //             crossAxisAlignment: CrossAxisAlignment.center,
               //             children: <Widget>[
-              //               Icon(Icons.error),
+              //               Icon(Icons.error, size: 20.0,),
               //               SizedBox(width: 8.0),
               //               const Text('Unable to join a room. Invalid key.'),
               //             ],

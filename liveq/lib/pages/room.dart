@@ -149,7 +149,6 @@ class _RoomState extends State<Room> {
   Widget _roomBody() {
     final double _radius = 25.0;
     return args != null
-        // TODO: Add FutureBuilder to display status of connecting to server
         ? Column(
             children: <Widget>[
               Expanded(
@@ -186,8 +185,8 @@ class _RoomState extends State<Room> {
                               AsyncSnapshot<bool> snapshot) {
                             if (snapshot.hasData) {
                               return (_connectedToServices)
-                                  ? _musicPanel()
-                                  : _errorMessages(true); // PlayerPanel(),
+                                  ? _musicPanel() // PlayerPanel()
+                                  : _errorMessages(true);
                             } else if (snapshot.hasError) {
                               return _errorMessages(false);
                             } else {
@@ -326,14 +325,17 @@ class _RoomState extends State<Room> {
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Text(
                     args.roomID, // args.roomID
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   SizedBox(width: 4),
-                  Icon(Icons.content_copy),
+                  Icon(
+                    Icons.content_copy,
+                    // size: 24.0,
+                  ),
                 ],
               ),
             ),
@@ -538,7 +540,7 @@ class _RoomState extends State<Room> {
                   ],
                 )
               : const Text(
-                  'Connect to a Streaming Service to Enable the Music Player',
+                  'Connect to a streaming service to enable the music player',
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -561,6 +563,7 @@ class _RoomState extends State<Room> {
               Icon(
                 Icons.error_outline,
                 color: Colors.white,
+                size: 20.0,
               ),
               SizedBox(width: 8.0),
               _connected == true
@@ -600,12 +603,13 @@ class _RoomState extends State<Room> {
 
   Future<bool> connectToServices() async {
     bool connectedtoAll = true;
-    for (Service s in _allowedServices) {
+    List<Service> _connectingServices = List();
+    _connectingServices.addAll(_allowedServices);
+    for (Service s in _connectingServices) {
       bool serviceConnected = await s.connect();
       if (serviceConnected) {
         setState(() {
           s.isConnected = true;
-
           // client.AddService(s.name);
         });
       } else {
@@ -616,6 +620,11 @@ class _RoomState extends State<Room> {
         connectedtoAll = false;
       }
     }
+
+    // setState(() {
+    //   _allowedServices.removeAll(_removeableServices);
+    // });
+
     if (_allowedServices.isNotEmpty) {
       setState(() {
         Provider.of<PlayerModel>(context, listen: false)
@@ -625,7 +634,6 @@ class _RoomState extends State<Room> {
         _connectedToServices = true;
       });
     }
-    print('DONE CONNECTING');
     return connectedtoAll;
   }
 
