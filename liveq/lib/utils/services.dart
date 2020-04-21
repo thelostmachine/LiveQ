@@ -83,7 +83,7 @@ class SoundCloud extends Service {
   }
 
   @override
-  Future<bool> connect() {
+  Future<bool> connect() async {
     // super.connect();
     // TODO: implement connect
     // throw UnimplementedError();
@@ -92,13 +92,13 @@ class SoundCloud extends Service {
   }
 
   @override
-  Future<void> pause() {
+  Future<void> pause() async {
     // TODO: implement pause
     stream.pause();
   }
 
   @override
-  Future<void> play(String id) {
+  Future<void> play(String id) async {
     String uri =
         'https://api.soundcloud.com/tracks/$id/stream?client_id=$playId';
     print('wanting to play $uri');
@@ -270,32 +270,32 @@ class Apple extends Service {
   }
 
   @override
-  Future<bool> connect() {
+  Future<bool> connect() async {
     // super.connect();
     // TODO: implement connect
     throw UnimplementedError();
   }
 
   @override
-  Future<void> pause() {
+  Future<void> pause() async {
     // TODO: implement pause
     throw UnimplementedError();
   }
 
   @override
-  Future<void> play(String uri) {
+  Future<void> play(String uri) async {
     // TODO: implement play
     throw UnimplementedError();
   }
 
   @override
-  Future<void> resume() {
+  Future<void> resume() async {
     // TODO: implement resume
     throw UnimplementedError();
   }
 
   @override
-  Future<List<Song>> search(String uri) {
+  Future<List<Song>> search(String uri) async {
     // TODO: implement search
     throw UnimplementedError();
   }

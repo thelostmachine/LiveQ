@@ -128,19 +128,13 @@ class _SearchState extends State<Search> {
 
   /// Searches a [query] using the [Service] specified
   void search(String query) async {
-    List<Song> dummySongs = List();
-    dummySongs.addAll(await _searchService.search(query));
+    List<Song> _searchResults = List();
+    _searchResults.addAll(await _searchService.search(query));
 
     if (query.isNotEmpty) {
-      List<Song> searchResults = List();
-
-      dummySongs.forEach((s) {
-        searchResults.add(s);
-      });
-
       setState(() {
         items.clear();
-        items.addAll(searchResults);
+        items.addAll(_searchResults);
       });
     } else {
       setState(() {

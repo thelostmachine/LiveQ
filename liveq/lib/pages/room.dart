@@ -223,7 +223,6 @@ class _RoomState extends State<Room> {
         false;
   }
 
-  // TODO: DIALOG NOT LOADING
   Future<void> _selectSearchService() async {
     // switch (
     await showDialog<void>(
@@ -513,7 +512,6 @@ class _RoomState extends State<Room> {
       child: Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          //TODO: Add circular progress indicator in connecting display and extra condition to check if connecting failed
           child: (_allowedServices.isNotEmpty)
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'package:liveq/utils/song.dart';
-import 'package:liveq/utils/utils.dart';
 
 class SongTile extends StatelessWidget {
   final Song _song;
