@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:liveq/utils/client_interface.dart';
 
-enum ThisPlayerState {
+enum RoomPlayerState {
   playing,
   paused,
   stopped,

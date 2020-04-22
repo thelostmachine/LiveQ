@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/utils/player.dart';
 
 // import 'package:liveq/utils/client_interface.dart';
 import 'package:liveq/utils/services.dart';
@@ -13,7 +12,7 @@ class PlayerModel with ChangeNotifier {
 
   List<Song> queue = List();
 
-  ThisPlayerState state = ThisPlayerState.stopped;
+  RoomPlayerState state = RoomPlayerState.stopped;
 
   Song getNextSong() {
     Song next = queue[0];
@@ -32,7 +31,7 @@ class PlayerModel with ChangeNotifier {
           uri = song.id;
         }
         currentService.play(uri, this);
-        state = ThisPlayerState.playing;
+        state = RoomPlayerState.playing;
       } else {
         resume();
       }
@@ -42,13 +41,13 @@ class PlayerModel with ChangeNotifier {
 
   void resume() {
     currentService.resume();
-    state = ThisPlayerState.playing;
+    state = RoomPlayerState.playing;
     notifyListeners();
   }
 
   void pause() {
     currentService.pause();
-    state = ThisPlayerState.paused;
+    state = RoomPlayerState.paused;
     notifyListeners();
   }
 
@@ -71,7 +70,7 @@ class PlayerModel with ChangeNotifier {
       currentSong = nextSong;
       currentService = currentSong.service;
       play(currentSong);
-      state = ThisPlayerState.playing;
+      state = RoomPlayerState.playing;
       // return play(_currentSong);
     }
     notifyListeners();

@@ -10,7 +10,7 @@ import 'package:liveq/utils/utils.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:liveq/widgets/music_icons.dart';
 import 'package:liveq/models/catalog.dart';
-import 'package:liveq/models/player_new.dart';
+import 'package:liveq/models/player.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
@@ -441,16 +441,16 @@ class _RoomState extends State<Room> {
                       player.currentSong.uri == null) {
                     return;
                   }
-                  if (ThisPlayerState.paused == player.state) {
+                  if (RoomPlayerState.paused == player.state) {
                     player.play(player.currentSong);
-                  } else if (ThisPlayerState.stopped == player.state) {
+                  } else if (RoomPlayerState.stopped == player.state) {
                     player.next();
                   } else {
                     player.pause();
                   }
                 },
                 child: Container(
-                  child: (player.state == ThisPlayerState.playing)
+                  child: (player.state == RoomPlayerState.playing)
                       ? PauseIcon(
                           color: Colors.white,
                         )

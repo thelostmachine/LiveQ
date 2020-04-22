@@ -4,7 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
-import 'package:liveq/models/player_new.dart';
+import 'package:liveq/models/player.dart';
 import 'dart:convert' as convert;
 import 'package:liveq/utils/utils.dart';
 
