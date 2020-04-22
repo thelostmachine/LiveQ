@@ -25,3 +25,5 @@ class SearchArguments {
 }
 
 Client client = Client();
+
+bool isHost = false;

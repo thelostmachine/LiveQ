@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:liveq/utils/player.dart' as Player;
+import 'package:liveq/utils/utils.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
@@ -205,7 +206,7 @@ class Spotify extends Service {
     spotifyWebApi = SpotifyApi(credentials);
 
     // Use the spotify_sdk package if on mobile to allow playing
-    if (!kIsWeb) {
+    if (!kIsWeb && !isHost) {
       await SpotifySdk.connectToSpotifyRemote(
           clientId: this.clientId, redirectUrl: this.redirectUri);
     }

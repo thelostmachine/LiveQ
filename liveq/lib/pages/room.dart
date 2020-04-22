@@ -74,6 +74,9 @@ class _RoomState extends State<Room> {
                     Provider.of<CatalogModel>(context, listen: false)
                         .fromString(_guestServices[0]);
               }
+              for (Service s in _allowedServices) {
+                s.connect();
+              }
               _connectedToServices = true;
             });
           });
