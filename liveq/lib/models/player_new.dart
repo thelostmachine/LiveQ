@@ -9,6 +9,7 @@ import 'package:liveq/utils/song.dart';
 class PlayerModel with ChangeNotifier {
   Song currentSong;
   Service currentService;
+  bool songComplete = false;
 
   List<Song> queue = List();
 
@@ -30,7 +31,7 @@ class PlayerModel with ChangeNotifier {
         if (currentService is SoundCloud) {
           uri = song.id;
         }
-        currentService.play(uri, next);
+        currentService.play(uri, onComplete);
         state = PlayerState.playing;
       } else {
         resume();
@@ -79,7 +80,7 @@ class PlayerModel with ChangeNotifier {
 
   // Calls when song is finished playing
   void onComplete() {
-    next();
+    songComplete = true;
     notifyListeners();
   }
 

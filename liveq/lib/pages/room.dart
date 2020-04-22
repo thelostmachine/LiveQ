@@ -411,6 +411,12 @@ class _RoomState extends State<Room> {
   Widget _musicPanel() {
     return Consumer<PlayerModel>(
       builder: (context, player, child) {
+        if (player.songComplete == true) {
+          setState(() {
+            player.songComplete = false;
+            player.next();
+          });
+        }
         return Container(
           height: double.infinity,
           width: double.infinity,
