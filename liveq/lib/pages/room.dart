@@ -496,10 +496,14 @@ class _RoomState extends State<Room> {
   }
 
   void _searchSong() async {
+    List<String> _availableServices = List();
+    if (_connectedToServices) {
+      _availableServices.addAll(_allowedServices.map((s) => s.name).toList());
+    }
     final result = await Navigator.pushNamed(context, '/search',
         arguments: SearchArguments(
-            searchService:
-                _searchService != null ? _searchService.name : null));
+            searchService: _searchService != null ? _searchService.name : null,
+            allowedServices: _availableServices));
 
     if (result != null) {
       client.AddSong(result);

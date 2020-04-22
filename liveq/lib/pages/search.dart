@@ -17,6 +17,7 @@ class _SearchState extends State<Search> {
   TextEditingController _editingController = TextEditingController();
   SearchArguments args;
   Service _searchService;
+  Set<Service> _allowedServices = {};
 
   @override
   void initState() {
@@ -29,6 +30,12 @@ class _SearchState extends State<Search> {
       if (args != null && args.searchService != null) {
         _searchService = Provider.of<CatalogModel>(context, listen: false)
             .fromString(args.searchService);
+      }
+      if (args != null && args.allowedServices != null) {
+        _allowedServices.addAll(args.allowedServices
+            .map((s) =>
+                Provider.of<CatalogModel>(context, listen: false).fromString(s))
+            .toList());
       }
     });
     // _player.setService(SoundCloud());
@@ -97,14 +104,16 @@ class _SearchState extends State<Search> {
   Widget _getFAB() {
     return _searchService != null
         ? FloatingActionButton.extended(
-            onPressed: null,
+            onPressed: _allowedServices.length <= 1
+                ? null
+                : () => _selectSearchService(),
+            label: Text(_searchService.name),
+            icon: _searchService.getImageIcon(),
+            backgroundColor: Theme.of(context).disabledColor,
             // label: const Text('Spotify'),
             // icon: ImageIcon(
             //   AssetImage('assets/images/Spotify_Icon_RGB_Green.png'),
             // ),
-            label: Text(_searchService.name),
-            icon: _searchService.getImageIcon(),
-            backgroundColor: Theme.of(context).disabledColor,
           )
         : FloatingActionButton.extended(
             onPressed: null,
@@ -112,6 +121,92 @@ class _SearchState extends State<Search> {
             icon: Icon(Icons.error_outline),
             backgroundColor: Theme.of(context).disabledColor,
           );
+  }
+
+  Future<void> _selectSearchService() async {
+    // switch (
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Select Search Service'),
+          children: <Widget>[
+            _searchService != null
+                ? Container(
+                    padding: EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        _searchService.getImageIcon(),
+                        SizedBox(width: 16.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(_searchService.name,
+                                style: Theme.of(context).textTheme.subtitle1),
+                            Text('Selected',
+                                style: Theme.of(context).textTheme.caption),
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                : Container(),
+            Divider(),
+
+            // TODO: Temporary fix by manually setting width and setting shrinkWrap
+            Container(
+              width: 200,
+              child: ListView.builder(
+                // physics: BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: _allowedServices.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return (_allowedServices.toList()[index].name !=
+                              _searchService.name &&
+                          _allowedServices.toList()[index].isConnected == true)
+                      ? SimpleDialogOption(
+                          onPressed: () {
+                            setState(() {
+                              _searchService = _allowedServices.toList()[index];
+                              items.clear();
+                              _editingController.clear();
+                            });
+                            Navigator.pop(
+                                context, _allowedServices.toList()[index].name);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 4.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                _allowedServices.toList()[index].getImageIcon(),
+                                SizedBox(width: 16.0),
+                                Text(_allowedServices.toList()[index].name,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Container();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    //     ) {
+    //   case Service.SPOTIFY:
+    //     // ...
+    //     break;
+    //   case Service.SOUNDCLOUD:
+    //     // ...
+    //     break;
+    // }
   }
 
   Widget searchWidget(BuildContext context) {

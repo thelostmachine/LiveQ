@@ -114,8 +114,8 @@ class SoundCloud extends Service {
 
   @override
   Future<List<Song>> search(String query) async {
+    print("START SEARCHING SOUNDCLOUD");
     List<Song> searchResults = List();
-    print('here');
     String search = 'https://api-v2.soundcloud.com/search?q=';
     search += formatSearch(query);
     search += '&variant_ids=';
@@ -145,6 +145,7 @@ class SoundCloud extends Service {
           String imageUri = track['artwork_url'];
           int duration = track['full_duration'];
           Service service = this;
+          print("SOUNDCLOUD TRACKNAME: $trackName");
 
           // Check if track is streamable. If not, don't include it in search results
           var test = await http
@@ -159,7 +160,7 @@ class SoundCloud extends Service {
       print('ERROR');
       print(response.statusCode);
     }
-
+    print("DONE SEARCHING SOUNDCLOUD");
     return searchResults;
   }
 
