@@ -93,11 +93,15 @@ class _RoomState extends State<Room> {
   @override
   void dispose() {
     // Disconnect from services
-    timer.cancel();
-    if (args != null && args.host) {
-      client.DeleteRoom();
-    }
 
+    timer.cancel();
+    if (args != null) {
+      if (args.host) {
+        client.DeleteRoom();
+      } else {
+        client.LeaveRoom();
+      }
+    }
     super.dispose();
   }
 

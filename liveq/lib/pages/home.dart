@@ -10,8 +10,6 @@ class Home extends StatelessWidget {
   final myController1 = TextEditingController();
   final myController2 = TextEditingController();
 
-  final Player player = Player();
-
   Home({Key key}) : super(key: key);
 
   @override
