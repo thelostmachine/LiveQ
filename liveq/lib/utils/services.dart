@@ -1,16 +1,15 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
+import 'package:liveq/models/player_new.dart';
 import 'dart:convert' as convert;
-import 'package:liveq/utils/player.dart' as Player;
 import 'package:liveq/utils/utils.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
-import 'package:spotify_sdk/models/connection_status.dart';
-
-import 'package:url_audio_stream/url_audio_stream.dart';
 
 import 'package:liveq/utils/song.dart';
 
@@ -37,7 +36,7 @@ abstract class Service {
   //   return Future.value(true);
   // }
 
-  Future<void> play(String uri, VoidCallback callback);
+  Future<void> play(String uri, PlayerModel player);
   Future<void> resume();
   Future<void> pause();
 
@@ -105,29 +104,18 @@ class SoundCloud extends Service {
   }
 
   @override
-  Future<void> play(String id, VoidCallback callback) async {
+  Future<void> play(String id, PlayerModel playerApi) async {
     String uri =
         'https://api.soundcloud.com/tracks/$id/stream?client_id=$clientId';
-    print('wanting to play $uri');
-    // stream = AudioStream(uri);
-    // stream.start();
-    // player = AudioPlayer();
     AudioPlayer.logEnabled = true;
     int result = await player.play(uri);
     if (result == 1) {
-      print("SUCCESS");
-      // player.setReleaseMode(ReleaseMode.STOP);
       player.onPlayerCompletion.listen((event) {
-        print("DONE");
-        // Player.Player().next();
-        print("called next");
-
+        playerApi.next();
       });
     } else {
       print("FAIL");
     }
-
-    
   }
 
   @override
@@ -206,7 +194,7 @@ class Spotify extends Service {
     spotifyWebApi = SpotifyApi(credentials);
 
     // Use the spotify_sdk package if on mobile to allow playing
-    if (!kIsWeb && !isHost) {
+    if (!kIsWeb && isHost) {
       await SpotifySdk.connectToSpotifyRemote(
           clientId: this.clientId, redirectUrl: this.redirectUri);
     }
@@ -222,8 +210,13 @@ class Spotify extends Service {
 
   /// Play a [Song] given a [uri]
   @override
-  Future<void> play(String uri, VoidCallback callback) async {
+  Future<void> play(String uri, PlayerModel player) async {
     await SpotifySdk.play(spotifyUri: uri);
+    SpotifySdk.subscribePlayerContext().listen((playerContext) {
+      if (playerContext.uri.contains('station')) {
+        player.next();
+      } 
+    });
   }
 
   /// Resume the [Song] playing right now

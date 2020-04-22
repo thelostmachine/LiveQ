@@ -11,6 +11,8 @@ import 'package:liveq/widgets/songtile.dart';
 import 'package:liveq/widgets/music_icons.dart';
 import 'package:liveq/models/catalog.dart';
 import 'package:liveq/models/player_new.dart';
+import 'package:spotify_sdk/models/player_state.dart';
+import 'package:spotify_sdk/spotify_sdk.dart';
 
 class RoomProvider extends StatelessWidget {
   @override
@@ -48,6 +50,7 @@ class _RoomState extends State<Room> {
       });
 
       if (args != null) {
+        isHost = true;
         // Set args.roomName and args.roomID received from server - set in dialog
 
         // if host then connect to services
@@ -60,6 +63,7 @@ class _RoomState extends State<Room> {
           _connectedToAllServices = connectToServices();
           // send updateServices to server with allowedServices as param
         } else {
+          isHost = false;
           // else if guest, wait for services from server to set available services and to set search service
           client.GetServices().then((_guestServices) {
             setState(() {
@@ -218,7 +222,11 @@ class _RoomState extends State<Room> {
                 child: const Text('NO'),
               ),
               FlatButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () {
+                  client.LeaveRoom();
+                  
+                  Navigator.of(context).pop(true);
+                },
                 child: const Text('YES'),
               ),
             ],
@@ -423,11 +431,11 @@ class _RoomState extends State<Room> {
             child: ListTile(
               leading: GestureDetector(
                 onTap: () {
-                  if (player.state == PlayerState.stopped) {
+                  if (player.state == ThisPlayerState.stopped) {
                     print("was stopped");
                     player.next();
                   }
-                  else if (player.state == PlayerState.playing) {
+                  else if (player.state == ThisPlayerState.playing) {
                     player.pause();
                   }
                   else {
@@ -445,7 +453,7 @@ class _RoomState extends State<Room> {
                   // }
                 },
                 child: Container(
-                  child: (player.state == PlayerState.playing)
+                  child: (player.state == ThisPlayerState.playing)
                       ? PauseIcon(
                           color: Colors.white,
                         )
@@ -631,7 +639,7 @@ class _RoomState extends State<Room> {
       if (serviceConnected) {
         setState(() {
           s.isConnected = true;
-          // client.AddService(s.name);
+          client.AddService(s.name);
         });
       } else {
         // if service cannot connect - remove from allowedServices

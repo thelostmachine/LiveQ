@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/utils/player.dart';
 import 'package:provider/provider.dart';
 
 import 'package:liveq/widgets/next_button.dart';
@@ -9,8 +8,6 @@ import 'package:liveq/models/catalog.dart';
 class Home extends StatelessWidget {
   final myController1 = TextEditingController();
   final myController2 = TextEditingController();
-
-  final Player player = Player();
 
   Home({Key key}) : super(key: key);
 

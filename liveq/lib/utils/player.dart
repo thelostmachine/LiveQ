@@ -25,7 +25,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   bool isConnected =
       false; // Set true when all services in allowedServices are connected
-  PlayerState state = PlayerState.stopped;
+  ThisPlayerState state = ThisPlayerState.stopped;
 
   static final Player _player = Player._internal();
 
@@ -56,6 +56,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   Future play(Song song) async {
+    print(song == null);
     if (song != null) {
       _currentSong = song;
       _currentService = song.service;
@@ -64,9 +65,10 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       if (_currentService is SoundCloud) {
         uri = song.id;
       }
-      state = PlayerState.playing;
+      state = ThisPlayerState.playing;
+      print('hello1');
 
-      return _currentSong.service.play(uri, next);
+      // _currentSong.service.play(uri, this);
     } else {
       resume();
     }
@@ -74,19 +76,20 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
 
   void resume() {
     _currentService.resume();
-    state = PlayerState.playing;
+    state = ThisPlayerState.playing;
   }
 
   void pause() {
     _currentService.pause();
-    state = PlayerState.paused;
+    state = ThisPlayerState.paused;
   }
 
-  PlayerState getPlayerState() {
+  ThisPlayerState getPlayerState() {
     return state;
   }
 
   void setService(Service service) {
+    print('adding');
     client.AddService(service.name);
     _currentService = service;
     // searchService = service;
@@ -108,7 +111,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       _currentSong = nextSong;
       _currentService = _currentSong.service;
       // play(_currentSong);
-      state = PlayerState.playing;
+      state = ThisPlayerState.playing;
       return play(_currentSong);
     }
 

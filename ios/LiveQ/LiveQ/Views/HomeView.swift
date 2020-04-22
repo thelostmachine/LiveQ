@@ -59,19 +59,6 @@ struct HomeView: View {
         }
     }
     
-    private func generateId(from roomName: String) -> String {
-        let minCode = 2176782336
-        
-        var result: Int = 23;
-        result = 37 * result + roomName.hashValue
-        
-        if result < minCode {
-            result += minCode
-        }
-        
-        return String(result, radix: 36)
-    }
-    
     private func alert(creating: Bool) {
         let title: String = creating ? "Creating Room" : "Joining Room"
         let message: String = creating ? "Enter Room Name" : "Enter Room ID"
@@ -92,19 +79,32 @@ struct HomeView: View {
                 self.viewRouter.roomName = alert.textFields?.first?.text ?? "party"
                 
                 self.viewRouter.roomID = client.createRoom(name: self.viewRouter.roomName)
+                self.viewRouter.isHost = true
             } else {
                 self.viewRouter.roomID = alert.textFields?.first?.text ?? ""
                 
                 self.viewRouter.roomName = client.joinRoom(key: self.viewRouter.roomID)
+                self.viewRouter.isHost = false
             }
             
-            if !self.viewRouter.roomName.isEmpty && !self.viewRouter.roomID.isEmpty {
-                self.viewRouter.currentPage = .Room
+            if self.viewRouter.roomName.isEmpty || self.viewRouter.roomName == "-1" || self.viewRouter.roomID.isEmpty {
+                self.incorrectAlert(wrongName: self.viewRouter.roomName.isEmpty)
+                self.viewRouter.roomName = ""
+                self.viewRouter.roomID = ""
             } else {
-                print("something is empty")
+                self.viewRouter.currentPage = .Room
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in })
+        
+        showAlert(alert: alert)
+    }
+    
+    private func incorrectAlert(wrongName: Bool) {
+        let title: String = wrongName ? "Invalid Room Name" : "Incorrect Room ID"
+        let message: String = wrongName ? "Please enter a Room Name" : "Please enter the correct ID"
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
         
         showAlert(alert: alert)
     }

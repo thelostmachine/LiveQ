@@ -12,7 +12,7 @@ class PlayerModel with ChangeNotifier {
 
   List<Song> queue = List();
 
-  PlayerState state = PlayerState.stopped;
+  ThisPlayerState state = ThisPlayerState.stopped;
 
   Song getNextSong() {
     Song next = queue[0];
@@ -29,8 +29,8 @@ class PlayerModel with ChangeNotifier {
       if (currentService is SoundCloud) {
         uri = song.id;
       }
-      currentSong.service.play(uri, Player().next);
-      state = PlayerState.playing;
+      currentSong.service.play(uri, this);
+      state = ThisPlayerState.playing;
     } else {
       resume();
     }
@@ -39,13 +39,13 @@ class PlayerModel with ChangeNotifier {
 
   void resume() {
     currentService.resume();
-    state = PlayerState.playing;
+    state = ThisPlayerState.playing;
     notifyListeners();
   }
 
   void pause() {
     currentService.pause();
-    state = PlayerState.paused;
+    state = ThisPlayerState.paused;
     notifyListeners();
   }
 
@@ -68,7 +68,7 @@ class PlayerModel with ChangeNotifier {
       currentSong = nextSong;
       currentService = currentSong.service;
       play(currentSong);
-      state = PlayerState.playing;
+      state = ThisPlayerState.playing;
       // return play(_currentSong);
     }
     notifyListeners();

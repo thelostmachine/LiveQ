@@ -164,8 +164,8 @@ class _SearchState extends State<Search> {
                 itemCount: _allowedServices.length,
                 itemBuilder: (BuildContext context, int index) {
                   return (_allowedServices.toList()[index].name !=
-                              _searchService.name &&
-                          _allowedServices.toList()[index].isConnected == true)
+                              _searchService.name) // &&
+                          // _allowedServices.toList()[index].isConnected == true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {

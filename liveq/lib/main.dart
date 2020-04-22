@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:provider/provider.dart';
 
 import 'package:liveq/pages/home.dart';
 import 'package:liveq/pages/room.dart';
 import 'package:liveq/pages/search.dart';
-// import 'package:liveq/pages/connect_services.dart';
 import 'package:liveq/pages/connect_services_new.dart';
 import 'package:liveq/models/catalog.dart';
 
@@ -40,7 +37,6 @@ void main() {
           '/room': (context) => RoomProvider(),
           '/search': (context) => Search(),
           '/connect_services': (context) => ConnectServices(),
-          // '/sound': (context) => SoundCloud(),
         },
       ),
     ),

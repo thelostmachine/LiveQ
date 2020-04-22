@@ -13,15 +13,15 @@ class PlayerPanel extends StatelessWidget {
       height: double.infinity,
       width: double.infinity,
       alignment: Alignment.center,
-      child: StreamBuilder<MapEntry<PlayerState, Song>>(
+      child: StreamBuilder<MapEntry<ThisPlayerState, Song>>(
         // stream: , // subscribe to playerstate stream
         builder: (BuildContext context,
-            AsyncSnapshot<MapEntry<PlayerState, Song>> snapshot) {
+            AsyncSnapshot<MapEntry<ThisPlayerState, Song>> snapshot) {
           if (!snapshot.hasData) {
             return Container();
           }
 
-          final PlayerState _state = snapshot.data.key;
+          final ThisPlayerState _state = snapshot.data.key;
           final Song _currentSong = snapshot.data.value;
 
           return Padding(
@@ -32,14 +32,14 @@ class PlayerPanel extends StatelessWidget {
                   if (_currentSong.uri == null) {
                     return;
                   }
-                  if (PlayerState.paused == _state) {
+                  if (ThisPlayerState.paused == _state) {
                     // stream.playMusic(_currentSong);
                   } else {
                     // stream.pauseMusic(_currentSong);
                   }
                 },
                 child: Container(
-                  child: _state == PlayerState.playing
+                  child: _state == ThisPlayerState.playing
                       ? PauseIcon(
                           color: Colors.white,
                         )

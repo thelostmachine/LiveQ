@@ -24,7 +24,9 @@ class Player: NSObject, ObservableObject, SPTAppRemotePlayerStateDelegate {
     var currentService: Service?
     @Published var searchService: Service?
     @Published var allowedServices = [Service]()
+    @Published var connectedServices = [Service]()
     @Published var queue = [Song]()
+    @Published var isHost: Bool = false
     var currentState: PlayerState = .Stopped
     
     func play(song: Song?) {

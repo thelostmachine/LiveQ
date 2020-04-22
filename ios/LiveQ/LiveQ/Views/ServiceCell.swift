@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ServiceCell: View {
     var service: Service
+    var player: Player = Player.instance
     @State var isSelected: Bool = false
     // TODO persist the 
     
@@ -30,6 +31,9 @@ struct ServiceCell: View {
                 print(self.isSelected)
                 if self.isSelected {
                     self.service.connect()
+                    client.addService(self.service)
+                    self.player.connectedServices.append(self.service)
+                    self.player.allowedServices.append(self.service)
                 }
             }
         }
