@@ -15,7 +15,8 @@ struct SearchView: View {
     @EnvironmentObject var viewRouter: ViewRouter
 //    @ObservedObject var queue: QueueViewModel
     
-    @State private var searchText = "21 freestyle GXXD"
+//    @State private var searchText = "21 freestyle GXXD"
+    @State private var searchText = "I still love you feels mix"
     @State private var showCancelButton: Bool = false
     @State var tracks: [Song] = []
     @State var searching: Bool = false

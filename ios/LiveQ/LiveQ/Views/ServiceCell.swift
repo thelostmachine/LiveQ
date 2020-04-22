@@ -9,7 +9,9 @@
 import SwiftUI
 
 struct ServiceCell: View {
-    @State var service: Service
+    var service: Service
+    @State var isSelected: Bool = false
+    // TODO persist the 
     
     var body: some View {
         HStack {
@@ -23,14 +25,13 @@ struct ServiceCell: View {
             
             Spacer()
             
-            Image(systemName: (service.isSelected ? "checkmark.square" : "square")).onTapGesture {
-                self.service.isSelected = !self.service.isSelected
-                if self.service.isSelected {
-                    print("calling connect")
+            Image(systemName: (self.isSelected ? "checkmark.square" : "square")).onTapGesture {
+                self.isSelected = !self.isSelected
+                print(self.isSelected)
+                if self.isSelected {
                     self.service.connect()
                 }
             }
-            
         }
         .padding()
     }

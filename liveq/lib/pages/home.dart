@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'package:liveq/widgets/next_button.dart';
 import 'package:liveq/widgets/room_dialog.dart';
-import 'package:liveq/utils/services.dart';
 import 'package:liveq/models/catalog.dart';
 
 class Home extends StatelessWidget {

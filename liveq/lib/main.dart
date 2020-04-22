@@ -8,7 +8,6 @@ import 'package:liveq/pages/room.dart';
 import 'package:liveq/pages/search.dart';
 // import 'package:liveq/pages/connect_services.dart';
 import 'package:liveq/pages/connect_services_new.dart';
-import 'package:liveq/utils/services.dart';
 import 'package:liveq/models/catalog.dart';
 
 void main() {
@@ -38,7 +37,7 @@ void main() {
         initialRoute: '/home',
         routes: {
           '/home': (context) => Home(),
-          '/room': (context) => Room(),
+          '/room': (context) => RoomProvider(),
           '/search': (context) => Search(),
           '/connect_services': (context) => ConnectServices(),
           // '/sound': (context) => SoundCloud(),

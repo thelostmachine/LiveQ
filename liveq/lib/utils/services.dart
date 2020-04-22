@@ -1,15 +1,17 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import 'package:flutter/material.dart' as material;
+import 'package:liveq/utils/player.dart' as Player;
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 
-import 'package:liveq/utils/song.dart';
 import 'package:url_audio_stream/url_audio_stream.dart';
+
+import 'package:liveq/utils/song.dart';
 
 abstract class Service {
   static const String SOUNDCLOUD = 'SoundCloud';
@@ -21,9 +23,10 @@ abstract class Service {
   // Future<bool> get isConnected;
 
   static final List<Service> potentialServices = [Spotify(), SoundCloud()];
-  static Set<Service> connectedServices = {};
 
   String iconImagePath;
+
+  // void Function(void) callback;
 
   Future<bool> connect();
   // Future<bool> connect() async {
@@ -33,46 +36,19 @@ abstract class Service {
   //   return Future.value(true);
   // }
 
-  Future<void> play(String uri);
+  Future<void> play(String uri, VoidCallback callback);
   Future<void> resume();
   Future<void> pause();
 
-  material.Widget getImageIcon() {
+  Widget getImageIcon() {
     if (iconImagePath != null) {
-      return material.ImageIcon(material.AssetImage(iconImagePath));
+      return ImageIcon(AssetImage(iconImagePath));
     } else {
-      return material.Icon(material.Icons.music_note);
+      return Icon(Icons.music_note);
     }
   }
 
   Future<List<Song>> search(String query);
-
-  static Future<void> saveServices() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    List<String> serviceStrings = List();
-    connectedServices.forEach((s) {
-      serviceStrings.add(s.name);
-    });
-
-    prefs.setStringList('serviceList', serviceStrings);
-  }
-
-  // WIP
-  static Future<void> loadServices() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> serviceStrings = prefs.getStringList('serviceList') ?? null;
-
-    if (serviceStrings != null && serviceStrings.isNotEmpty) {
-      for (String s in serviceStrings) {
-        Service service = fromString(s);
-        connectedServices.add(service);
-      }
-    }
-    // return (connectedServices.length > 0)
-    //     ? connectedServices.toList()[0]
-    //     : null;
-  }
 
   static Service fromString(String s) {
     Service service;
@@ -90,23 +66,20 @@ abstract class Service {
 
     return service;
   }
-
-  static bool canCreateRoom() {
-    return connectedServices.isNotEmpty ? true : false;
-  }
 }
 
 class SoundCloud extends Service {
   final String name = Service.SOUNDCLOUD;
 
-  final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
-  final String playId = 'e38841b15b2059a39f261df195dfb430';
+  // final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
+  final String clientId = 'e38841b15b2059a39f261df195dfb430';
   final String userId = '857371-474509-874152-946359';
   final String iconImagePath = 'assets/images/soundcloud.png';
 
   static final Service _soundcloud = SoundCloud._internal();
 
-  AudioStream stream;
+  // AudioStream stream;
+  AudioPlayer player = AudioPlayer();
 
   SoundCloud._internal();
 
@@ -125,62 +98,68 @@ class SoundCloud extends Service {
   @override
   Future<void> pause() {
     // TODO: implement pause
-    stream.pause();
+    // stream.pause();
+    print("pausing");
+    player.pause();
   }
 
   @override
-  Future<void> play(String id) {
-    String uri = 'https://api.soundcloud.com/tracks/$id/stream?client_id=$playId';
+  Future<void> play(String id, VoidCallback callback) async {
+    String uri =
+        'https://api.soundcloud.com/tracks/$id/stream?client_id=$clientId';
     print('wanting to play $uri');
-    stream = AudioStream(uri);
-    stream.start();
+    // stream = AudioStream(uri);
+    // stream.start();
+    // player = AudioPlayer();
+    AudioPlayer.logEnabled = true;
+    int result = await player.play(uri);
+    if (result == 1) {
+      print("SUCCESS");
+      // player.setReleaseMode(ReleaseMode.STOP);
+      player.onPlayerCompletion.listen((event) {
+        print("DONE");
+        // Player.Player().next();
+        print("called next");
+
+      });
+    } else {
+      print("FAIL");
+    }
+
+    
   }
 
   @override
   Future<void> resume() {
     // TODO: implement resume
-    stream.resume();
+    // stream.resume();
+    player.resume();
   }
 
   @override
   Future<List<Song>> search(String query) async {
     List<Song> searchResults = List();
-    print('here');
-    String search = 'https://api-v2.soundcloud.com/search?q=';
-    search += formatSearch(query);
-    search += '&variant_ids=';
-    search += '&facet=model';
-    search += '&user_id=$userId';
-    search += '&client_id=$clientId';
-    search += '&limit=10';
-    search += '&offset=0';
-    search += '&linked_partitioning=1';
-    search += '&app_version=1586177347';
-    search += '&app_locale=en';
-    search += '&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en';
-
+    String search = 'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
+    
     var response = await http.get(search);
 
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
 
-      for (var item in jsonResponse['collection']) {
+      for (var item in jsonResponse) {
+
         if (item['kind'] == 'track' && item['artwork_url'] != null) {
           var track = item;
           String id = track['id'].toString();
           String uri = track['uri'];
           String trackName = track['title'];
-          String artist = track['user']['full_name'];
+          String artist = track['user']['username'];
           String imageUri = track['artwork_url'];
-          int duration = track['full_duration'];
+          int duration = track['duration'];
           Service service = this;
 
-          // Check if track is streamable. If not, don't include it in search results
-          var test = await http.get('https://api.soundcloud.com/tracks/$id?client_id=$playId');
-          if (test.statusCode == 200)
-          {
-            searchResults.add(Song(id, uri, trackName, artist, imageUri, duration, service));
-          }
+          Song song = Song(id, uri, trackName, artist, imageUri, duration, service);
+          searchResults.add(song);
         }
       }
     } else {
@@ -240,7 +219,7 @@ class Spotify extends Service {
 
   /// Play a [Song] given a [uri]
   @override
-  Future<void> play(String uri) async {
+  Future<void> play(String uri, VoidCallback callback) async {
     await SpotifySdk.play(spotifyUri: uri);
   }
 
@@ -258,7 +237,9 @@ class Spotify extends Service {
     var search = await spotifyWebApi.search
         .get(query)
         .first()
-        .catchError((err) => print((err as SpotifyException).message));
+        .catchError((err) {
+          print('SPOTIFY ERROR: ${(err as SpotifyException).message}');
+        });
 
     if (search != null) {
       search.forEach((pages) {
@@ -285,46 +266,46 @@ class Spotify extends Service {
   }
 }
 
-class Apple extends Service {
-  final String name = Service.APPLE;
-  final String iconImagePath = 'assets/images/Apple_Music_Icon.psd';
+// class Apple extends Service {
+//   final String name = Service.APPLE;
+//   final String iconImagePath = 'assets/images/Apple_Music_Icon.psd';
 
-  static final Service _apple = Apple._internal();
+//   static final Service _apple = Apple._internal();
 
-  Apple._internal();
+//   Apple._internal();
 
-  factory Apple() {
-    return _apple;
-  }
+//   factory Apple() {
+//     return _apple;
+//   }
 
-  @override
-  Future<bool> connect() {
-    // super.connect();
-    // TODO: implement connect
-    throw UnimplementedError();
-  }
+//   @override
+//   Future<bool> connect() {
+//     // super.connect();
+//     // TODO: implement connect
+//     throw UnimplementedError();
+//   }
 
-  @override
-  Future<void> pause() {
-    // TODO: implement pause
-    throw UnimplementedError();
-  }
+//   @override
+//   Future<void> pause() {
+//     // TODO: implement pause
+//     throw UnimplementedError();
+//   }
 
-  @override
-  Future<void> play(String uri) {
-    // TODO: implement play
-    throw UnimplementedError();
-  }
+//   @override
+//   Future<void> play(String uri) {
+//     // TODO: implement play
+//     throw UnimplementedError();
+//   }
 
-  @override
-  Future<void> resume() {
-    // TODO: implement resume
-    throw UnimplementedError();
-  }
+//   @override
+//   Future<void> resume() {
+//     // TODO: implement resume
+//     throw UnimplementedError();
+//   }
 
-  @override
-  Future<List<Song>> search(String uri) {
-    // TODO: implement search
-    throw UnimplementedError();
-  }
-}
+//   @override
+//   Future<List<Song>> search(String uri) {
+//     // TODO: implement search
+//     throw UnimplementedError();
+//   }
+// }

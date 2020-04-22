@@ -14,7 +14,7 @@ class PlayerPanel extends StatelessWidget {
       width: double.infinity,
       alignment: Alignment.center,
       child: StreamBuilder<MapEntry<PlayerState, Song>>(
-        // stream: , // suscribe to playerstate stream
+        // stream: , // subscribe to playerstate stream
         builder: (BuildContext context,
             AsyncSnapshot<MapEntry<PlayerState, Song>> snapshot) {
           if (!snapshot.hasData) {

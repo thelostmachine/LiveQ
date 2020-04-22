@@ -39,7 +39,14 @@ struct SearchResult: Decodable {
         var songs = [Song]()
         
         for item in tracks.items {
-            let song = Song(id: item.id, uri: item.uri, item.name, item.artists, imageUri: item.album.images[1].url, duration: item.duration / 1000, Spotify.instance)
+            let song = Song(
+                id: item.id,
+                uri: item.uri,
+                name: item.name,
+                artists: item.artists,
+                imageUri: item.album.images[1].url,
+                duration: item.duration,
+                service: Spotify.instance)
             songs.append(song)
         }
         

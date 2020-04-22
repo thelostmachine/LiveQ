@@ -44,10 +44,10 @@ class SoundCloud: Service {
     var isConnected: Bool = true
     
     var name: String = "SoundCloud"
-    var isSelected: Bool = false
+    var isSelected: Bool = true
     var image: UIImage = UIImage(named: "soundcloud.png")!
     
-    final var clientId: String = "YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM";
+    final var clientId: String = "e38841b15b2059a39f261df195dfb430";
     final var playId: String = "e38841b15b2059a39f261df195dfb430";
     final var userId: String = "857371-474509-874152-946359";
     
@@ -55,10 +55,11 @@ class SoundCloud: Service {
     
     func connect() {
         // do nothing
+        self.isConnected = true
     }
     
     func play(_ id: String) {
-        let playUri: String = "https://api.soundcloud.com/tracks/\(id)/stream?client_id=\(playId)"
+        let playUri: String = "https://api.soundcloud.com/tracks/\(id)/stream?client_id=\(clientId)"
         print("wanting to play \(playUri)")
         player = AVPlayer(url: URL(string: playUri)!)
         player?.play()
@@ -81,18 +82,7 @@ class SoundCloud: Service {
     
     func search(query: String, finished: @escaping (_ songs: [Song]) -> Void) {
         
-        var search = "https://api-v2.soundcloud.com/search?q="
-        search += formatSearch(query: query)
-        search += "&variant_ids=";
-        search += "&facet=model";
-        search += "&user_id=\(userId)";
-        search += "&client_id=\(clientId)";
-        search += "&limit=10";
-        search += "&offset=0";
-        search += "&linked_partitioning=1";
-        search += "&app_version=1586177347";
-        search += "&app_locale=en";
-        search += "&limit=10&offset=0&linked_partitioning=1&app_version=1586177347&app_locale=en";
+        let search = "https://api.soundcloud.com/tracks?q=\(formatSearch(query: query))&limit=100&format=json&client_id=\(clientId)"
         
         var request: URLRequest = URLRequest(url: URL(string: search)!)
         request.httpMethod = "GET"
@@ -102,52 +92,43 @@ class SoundCloud: Service {
             
             var searchResults = [Song]()
             
-            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions()) as? [AnyObject] else {
+                print("ERROR: conversion from JSON failed")
+                return
+            }
             
-            let collection = json?["collection"] as? [[String: Any]] ?? []
-            DispatchQueue.global(qos: .userInitiated).async {
-                let group = DispatchGroup()
-                
-                for track in collection {
-                    let artworkUrl: String = track["artwork_url"] as? String ?? ""
-                    let kind: String = track["kind"] as? String ?? ""
+            for item in json {
+                guard let track = item as? [String: Any] else { return }
+                let artworkUrl: String = track["artwork_url"] as? String ?? ""
+                let kind: String = track["kind"] as? String ?? ""
+
+                if !kind.isEmpty && !artworkUrl.isEmpty {
+                    let artistJson = track["user"]
+                    let artistConvert = artistJson as! [String: Any]
+                    let artistObject = Artist.init(name: artistConvert["username"] as! String)
                     
-                    if !kind.isEmpty && !artworkUrl.isEmpty {
-                        let artistJson = track["user"]
-                        let artistConvert = artistJson as! [String: Any]
-                        let artistObject = Artist.init(name: artistConvert["username"] as! String)
-                        
-                        let id = "\(track["id"] ?? 0)"
-                        let uri = "\(track["uri"] ?? "")"
-                        let trackName = "\(track["title"] ?? "")"
-                        let artist = artistObject
-                        let imageUri = artworkUrl
-                        let durationString: String = "\(track["duration"] ?? 0)"
-                        let duration = Int(durationString)!
-                        let service = self
-                        
-                        group.enter()
-                        self.testTrack(id: id) { isSuccess in
-                            if isSuccess {
-                                let song = Song(id: id, uri: uri, trackName, [artist], imageUri: imageUri, duration: duration, service)
-                                searchResults.append(song)
-                            }
-                            
-                            group.leave()
-                        }
-                    }
-                }
-                
-                group.wait()
-                
-                DispatchQueue.main.async {
-                    print("RESULTS \(searchResults.count)")
-                    for song in searchResults {
-                        print(song)
-                    }
-                    finished(searchResults)
+                    let id = "\(track["id"] ?? 0)"
+                    let uri = track["uri"] as! String
+                    let trackName = track["title"] as! String
+                    let artist = artistObject
+                    let imageUri = artworkUrl
+                    let duration = track["duration"] as! Int
+                    let service = self
+                    
+                    let song = Song(
+                        id: id,
+                        uri: uri,
+                        name: trackName,
+                        artists: [artist],
+                        imageUri: imageUri,
+                        duration: duration,
+                        service: service
+                    )
+                    
+                    searchResults.append(song)
                 }
             }
+            finished(searchResults)
         }
         task.resume()
     }
@@ -218,11 +199,11 @@ class Spotify: NSObject, Service, SPTAppRemoteDelegate {
         if let _ = self.appRemote.connectionParameters.accessToken {
             print("reconnecting")
             self.appRemote.connect()
-            self.isConnected = true
+            self.isConnected = self.accessToken != nil
         } else {
             print("authorize and play")
             self.appRemote.authorizeAndPlayURI(trackIdentifier)
-            self.isConnected = true
+            self.isConnected = self.accessToken != nil
         }
     }
     

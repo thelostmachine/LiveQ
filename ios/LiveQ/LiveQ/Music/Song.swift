@@ -9,7 +9,6 @@
 import Foundation
 
 struct Song: Identifiable, Equatable {
-//    var ID = UUID()
     var id: String
     var uri: String
     
@@ -21,7 +20,7 @@ struct Song: Identifiable, Equatable {
     var imageUri: String
     var duration: Int
     
-    init(id: String, uri: String, _ name: String, _ artists: [Artist], imageUri: String = "", duration: Int = 0, _ service: Service) {
+    init(id: String, uri: String, name: String, artists: [Artist], imageUri: String = "", duration: Int = 0, service: Service) {
         self.id = id
         self.uri = uri
         self.name = name
@@ -53,12 +52,26 @@ struct Song: Identifiable, Equatable {
             return "0\(n)"
         }
         
-        let (m, s) = secondsToMinutesSeconds()
-        return "\(m):\(twoDigits(s))"
-    }
-    
-    func secondsToMinutesSeconds() -> (Int, Int) {
-        return ((duration % 3600) / 60, (duration % 3600) % 60)
+        let date = Date(timeIntervalSince1970: Double(duration) / 1000)
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        var format = ""
+        if duration >= (3600000 * 10) {
+            format = "HH:mm:ss"
+        }
+        else if duration > 3600000 {
+            format = "H:mm:ss"
+        }
+        else if duration >= 600000 {
+            format = "mm:ss"
+        }
+        else {
+            format = "m:ss"
+        }
+        
+        formatter.dateFormat = format
+        return formatter.string(from: date)
     }
     
     public var description: String {
@@ -84,13 +97,3 @@ struct Song: Identifiable, Equatable {
         
     }
 }
-
-//func getId(_ name: String, _ artist: String, _ service: Service) -> Int {
-//    for (index, song) in songs.enumerated() {
-//        if song.name == name && song.artist == artist && song.service == service {
-//            return index
-//        }
-//    }
-//
-//    return 0
-//}

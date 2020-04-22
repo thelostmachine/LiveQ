@@ -54,14 +54,16 @@ Future<void> joinRoomDialog(
                 //         roomName: roomName, roomID: roomId, host: false),
                 //   );
                 // }
+                client.key = 'test_roomId';
                 Navigator.pop(context);
                 Navigator.pushNamed(
                   context,
                   '/room',
                   arguments: RoomArguments(
-                      roomName: 'test_roomName',
-                      roomID: myController.text,
-                      host: false),
+                    roomName: 'test_roomName',
+                    roomID: myController.text,
+                    host: false,
+                  ),
                 );
               })
         ],
@@ -98,24 +100,26 @@ Future<void> createRoomDialog(
                 print('creating $roomName');
                 String roomId = await client.CreateRoom(roomName);
 
-                // print('create room with id $roomId');
+                print('create room with id $roomId');
 
-                // Navigator.pop(context);
-                // Navigator.pushNamed(
-                //   context,
-                //   '/room',
-                //   arguments: RoomArguments(
-                //       roomName: roomName, roomID: roomId, host: true),
-                // );
                 Navigator.pop(context);
                 Navigator.pushNamed(
                   context,
                   '/room',
                   arguments: RoomArguments(
-                      roomName: myController.text,
-                      roomID: roomId,
-                      host: true),
+                      roomName: roomName, roomID: roomId, host: true),
                 );
+                // client.key = 'test_roomId';
+                // Navigator.pop(context);
+                // Navigator.pushNamed(
+                //   context,
+                //   '/room',
+                //   arguments: RoomArguments(
+                //     roomName: myController.text,
+                //     roomID: 'test_roomId',
+                //     host: true,
+                //   ),
+                // );
               })
         ],
       );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'package:liveq/utils/services.dart';
 
 class Song {
@@ -20,24 +22,26 @@ class Song {
   }
 
   static String parseDuration(Song song) {
-    final double _temp = song.duration / 1000;
-    final int _minutes = (_temp / 60).floor();
-    final int _seconds = (((_temp / 60) - _minutes) * 60).round();
-    String _duration;
-    if (_seconds.toString().length > 1) {
-      _duration = _minutes.toString() + ":" + _seconds.toString();
-    } else {
-      _duration = _minutes.toString() + ":0" + _seconds.toString();
+    String format = '';
+    if (song.duration >= (3600000 * 10)) {
+      format = 'HH:mm:ss';
     }
-    return _duration;
-  }
+    else if (song.duration > 3600000) {
+      format = 'H:mm:ss';
+    }
+    else if (song.duration >= 600000) {
+      format = 'mm:ss';
+    }
+    else {
+      format = 'm:ss';
+    }
 
-  // static String getDurationString(Song song) {
-  //   return '${song.duration.inMinutes.remainder(60)}:${song.duration.inSeconds.remainder(60)}';
-  // }
+    final formatter = DateFormat(format);
+    return formatter.format(DateTime.fromMillisecondsSinceEpoch(song.duration).toUtc());
+  }
 
   @override
   String toString() {
-    return '$trackName - $artists';
+    return '$trackName\n$id\n$uri\n$artists\n$duration\n$imageUri\n\n';
   }
 }

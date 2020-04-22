@@ -12,12 +12,11 @@ class WebClient implements grpcClient.Client {
   GrpcWebClientChannel channel;
   
   WebClient() {
-    channel = GrpcWebClientChannel.xhr(Uri.parse('http://34.71.85.54:80'));
+    channel = GrpcWebClientChannel.xhr(Uri.parse('http://34.71.85.54:8080'));
     stub = LiveQClient(channel, options: CallOptions(timeout: Duration(seconds: 30)));
   }
 
   Future<String> CreateRoom(String room_name) async {
-    print('CREATING FROM WEB');
     final msg = CreateRequest()
       ..roomName = room_name;
     print('calling stub');

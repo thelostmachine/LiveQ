@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:liveq/utils/client_interface.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
@@ -19,16 +20,6 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   // Set of services allowed in the room
   Set<Service> allowedServices =
       {}; // passed in through server data for guest/host?
-
-  /// List of services we can connect to
-  get potentialServices {
-    return Service.potentialServices;
-  }
-
-  /// Set of services we are connected to
-  Set<Service> get connectedServices {
-    return Service.connectedServices;
-  }
 
   List<Song> queue = List();
 
@@ -75,7 +66,7 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       }
       state = PlayerState.playing;
 
-      return _currentSong.service.play(uri);
+      return _currentSong.service.play(uri, next);
     } else {
       resume();
     }
@@ -103,11 +94,14 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
   }
 
   void next() async {
+    print("hello");
+    print(queue.length);
     if (queue != null && queue.isNotEmpty) {
       Song nextSong = getNextSong();
+      print(nextSong.trackName);
 
       // Stop playing the current song on the current service if we're switching Services
-      if (_currentService != nextSong.service) {
+      if (_currentService != nextSong.service || _currentService is SoundCloud) {
         pause();
       }
 
@@ -153,5 +147,9 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
           .toList()[0]; // may need to set searchService in room for host/guest
       callback();
     }
+  }
+
+  void checkState() async {
+
   }
 }

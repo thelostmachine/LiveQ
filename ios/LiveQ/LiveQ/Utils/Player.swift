@@ -23,6 +23,7 @@ class Player: NSObject, ObservableObject, SPTAppRemotePlayerStateDelegate {
     var currentSong: Song?
     var currentService: Service?
     @Published var searchService: Service?
+    @Published var allowedServices = [Service]()
     @Published var queue = [Song]()
     var currentState: PlayerState = .Stopped
     
@@ -108,5 +109,9 @@ class Player: NSObject, ObservableObject, SPTAppRemotePlayerStateDelegate {
         }
 //        print("spotify state changed bb")
 //        print(playerState.track.name)
+    }
+    
+    func setAllowedServices(services: [Service]) {
+        self.allowedServices = services
     }
 }

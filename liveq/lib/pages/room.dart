@@ -4,14 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:liveq/pages/search.dart';
-import 'package:liveq/utils/player.dart';
+// import 'package:liveq/utils/player.dart';
 import 'package:liveq/utils/services.dart';
 import 'package:liveq/utils/utils.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:liveq/widgets/music_icons.dart';
-import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:liveq/models/catalog.dart';
+import 'package:liveq/models/player_new.dart';
+
+class RoomProvider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<PlayerModel>(
+      create: (context) => PlayerModel(),
+      child: Room(),
+    );
+  }
+}
 
 class Room extends StatefulWidget {
   @override
@@ -20,11 +29,13 @@ class Room extends StatefulWidget {
 
 class _RoomState extends State<Room> {
   RoomArguments args;
-  List<String> _availableServices;
-  Player player = Player();
   // Flag that shows whether we are connected to the server and server's room
   bool _connectedToServer; // = false
   bool _connectedToServices = false;
+  Future<bool> _connectedToAllServices;
+  Service _searchService;
+  Set<Service> _allowedServices = {};
+  // List<Song> _queue = List();
   Timer timer;
 
   @override
@@ -37,36 +48,55 @@ class _RoomState extends State<Room> {
       });
 
       if (args != null) {
-        // if host send createRoom; else send joinRoom
-        // If received response from server, set connectedToServer=true - FutureBuilder success
-        // On response failure, show 'failed to connect to server room' error message - FutureBuilder failure
-        // Set args.roomName and args.roomID received from server
-
-        // initialize and subscribe to server stream of songs in queue
+        // Set args.roomName and args.roomID received from server - set in dialog
 
         // if host then connect to services
-        // set player.allowedServices.addAll(Service.connectedServices); // for guest, need to receive services from server
-        player.allowedServices.addAll(
-            Provider.of<CatalogModel>(context, listen: false)
-                .connectedServices);
-        // player.connectToServices(() {
-        //   setState(() {
-        //     _connectedToServices = true;
-        //   });
-        // });
+        if (args.host) {
+          setState(() {
+            _allowedServices.addAll(
+                Provider.of<CatalogModel>(context, listen: false)
+                    .connectedServices);
+          });
+          _connectedToAllServices = connectToServices();
+          // send updateServices to server with allowedServices as param
+        } else {
+          // else if guest, wait for services from server to set available services and to set search service
+          client.GetServices().then((_guestServices) {
+            setState(() {
+              for (String s in _guestServices) {
+                _allowedServices.add(
+                    Provider.of<CatalogModel>(context, listen: false)
+                        .fromString(s));
+              }
+              if (_guestServices.isNotEmpty) {
+                _searchService =
+                    Provider.of<CatalogModel>(context, listen: false)
+                        .fromString(_guestServices[0]);
+              }
+              _connectedToServices = true;
+            });
+          });
+        }
       }
     });
 
     // set soundcloud
     // player.connect(SoundCloud());
 
-    timer = Timer.periodic(Duration(milliseconds: 100), (_) => player.loadQueue());
+    // initialize and subscribe to server stream of songs in queue
+    // timer = Timer.periodic(Duration(milliseconds: 100), (_) => loadQueue());
+    timer = Timer.periodic(Duration(milliseconds: 100),
+        (_) => Provider.of<PlayerModel>(context, listen: false).loadQueue());
   }
 
   @override
   void dispose() {
     // Disconnect from services
     timer.cancel();
+    if (args != null && args.host) {
+      client.DeleteRoom();
+    }
+
     super.dispose();
   }
 
@@ -85,21 +115,20 @@ class _RoomState extends State<Room> {
             IconButton(
               icon: Icon(Icons.search),
               // connectedToServer == true
-              onPressed: () => _searchSong(context),
+              onPressed: () => _searchSong(),
             ),
             // connectedToServer == true
-            (player.searchService != null &&
-                    player.searchService.isConnected ==
-                        true) // player.allowedServices.contains(player.searchService)
+            _searchService != null
                 ? IconButton(
-                    icon: player.searchService.getImageIcon(),
-                    onPressed: player.allowedServices.length > 1
+                    icon: _searchService.getImageIcon(),
+                    onPressed: _allowedServices.length > 1
                         ? () => _selectSearchService()
                         : null,
                   )
                 : IconButton(
                     icon: Icon(Icons.music_note),
-                    onPressed: player.allowedServices.isNotEmpty
+                    onPressed: (_allowedServices.isNotEmpty &&
+                            _connectedToServices == true)
                         ? () => _selectSearchService()
                         : null,
                   ),
@@ -121,44 +150,55 @@ class _RoomState extends State<Room> {
     final double _radius = 25.0;
     return args != null
         // TODO: Add FutureBuilder to display status of connecting to server
-        ? PropertyChangeProvider(
-            value: player,
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: _queueListView(context),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(_radius),
-                        topRight: Radius.circular(_radius),
+        ? Column(
+            children: <Widget>[
+              Expanded(
+                child: _queueListView(),
+              ),
+              args.host == true
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(_radius),
+                            topRight: Radius.circular(_radius),
+                          ),
+                          color: Theme.of(context).primaryColor,
+                          // gradient: LinearGradient(
+                          //   begin: Alignment.topLeft,
+                          //   end: Alignment.bottomRight,
+                          //   stops: [
+                          //     0.0,
+                          //     0.7,
+                          //   ],
+                          //   colors: [
+                          //     Color(0xFF47ACE1),
+                          //     Color(0xFFDF5F9D),
+                          //   ],
+                          // ),
+                        ),
+                        child: FutureBuilder<bool>(
+                          future: _connectedToAllServices,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<bool> snapshot) {
+                            if (snapshot.hasData) {
+                              return (_connectedToServices)
+                                  ? _musicPanel()
+                                  : _errorMessages(true); // PlayerPanel(),
+                            } else if (snapshot.hasError) {
+                              return _errorMessages(false);
+                            } else {
+                              return _connectionStatus();
+                            }
+                          },
+                        ),
                       ),
-                      color: Theme.of(context).primaryColor,
-                      // gradient: LinearGradient(
-                      //   begin: Alignment.topLeft,
-                      //   end: Alignment.bottomRight,
-                      //   stops: [
-                      //     0.0,
-                      //     0.7,
-                      //   ],
-                      //   colors: [
-                      //     Color(0xFF47ACE1),
-                      //     Color(0xFFDF5F9D),
-                      //   ],
-                      // ),
-                    ),
-                    child: (_connectedToServices)
-                        ? _musicPlayer(context)
-                        : _connectionStatus(), // PlayerPanel(),
-                  ),
-                ),
-              ],
-            ),
+                    )
+                  : Container(),
+            ],
           )
         : Container();
   }
@@ -184,15 +224,6 @@ class _RoomState extends State<Room> {
         false;
   }
 
-  void _searchSong(BuildContext context) async {
-    final result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Search()));
-
-    if (result != null) {
-      player.addSong(result);
-    }
-  }
-
   // TODO: DIALOG NOT LOADING
   Future<void> _selectSearchService() async {
     // switch (
@@ -202,22 +233,19 @@ class _RoomState extends State<Room> {
         return SimpleDialog(
           title: const Text('Select Search Service'),
           children: <Widget>[
-            (player.searchService != null &&
-                    player.searchService
-                        .isConnected) // player.allowedServices.contains(player.searchService)
+            _searchService != null
                 ? Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+                    padding: EdgeInsets.symmetric(horizontal: 24.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        player.searchService.getImageIcon(),
+                        _searchService.getImageIcon(),
                         SizedBox(width: 16.0),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(player.searchService.name,
+                            Text(_searchService.name,
                                 style: Theme.of(context).textTheme.subtitle1),
                             Text('Selected',
                                 style: Theme.of(context).textTheme.caption),
@@ -233,44 +261,37 @@ class _RoomState extends State<Room> {
             Container(
               width: 200,
               child: ListView.builder(
-                physics: BouncingScrollPhysics(),
+                // physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
-                // itemCount: player.allowedServices.length,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return (player.allowedServices.toList()[index].name !=
-                              player.searchService.name &&
-                          player.allowedServices.toList()[index].isConnected ==
-                              true)
+                itemCount: _allowedServices.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return (_allowedServices.toList()[index].name !=
+                              _searchService.name &&
+                          _allowedServices.toList()[index].isConnected == true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
-                              player.searchService =
-                                  player.allowedServices.toList()[index];
+                              _searchService = _allowedServices.toList()[index];
                             });
-                            Navigator.pop(context,
-                                player.allowedServices.toList()[index].name);
+                            Navigator.pop(
+                                context, _allowedServices.toList()[index].name);
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 24.0),
+                            padding: EdgeInsets.symmetric(vertical: 4.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                player.allowedServices
-                                    .toList()[index]
-                                    .getImageIcon(),
+                                _allowedServices.toList()[index].getImageIcon(),
                                 SizedBox(width: 16.0),
-                                Text(
-                                    player.allowedServices.toList()[index].name,
+                                Text(_allowedServices.toList()[index].name,
                                     style:
                                         Theme.of(context).textTheme.subtitle1),
                               ],
                             ),
                           ),
                         )
-                      : null;
+                      : Container();
                 },
               ),
             ),
@@ -298,7 +319,7 @@ class _RoomState extends State<Room> {
             child: GestureDetector(
               onTap: () {
                 Clipboard.setData(
-                    ClipboardData(text: 'testing')); // args.roomID
+                    ClipboardData(text: args.roomID)); // args.roomID
                 Scaffold.of(context).showSnackBar(SnackBar(
                     content: const Text(
                         'Copied to Clipboard'))); // NOTE: snackbar not working on web
@@ -308,7 +329,7 @@ class _RoomState extends State<Room> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'abcd1234', // args.roomID
+                    args.roomID, // args.roomID
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   SizedBox(width: 5),
@@ -330,132 +351,227 @@ class _RoomState extends State<Room> {
     );
   }
 
-  Widget _queueListView(BuildContext context) {
-    return PropertyChangeConsumer<Player>(
-      properties: [ModelProperties.queue],
-      builder: (context, model, properties) {
-        var queue = model.queue;
-        return ListView.builder(
-            physics: BouncingScrollPhysics(),
-            itemCount: queue.length,
-            itemBuilder: (context, index) {
-              return SongTile(song: queue[index]);
-            });
+  Widget _queueListView() {
+    return Consumer<PlayerModel>(builder: (context, player, child) {
+      return ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: player.queue.length,
+        itemBuilder: (context, index) {
+          return args.host == true
+              ? Dismissible(
+                  key: ObjectKey(player.queue[index]),
+                  onDismissed: (direction) {
+                    setState(() {
+                      client.DeleteSong(player.queue[index]);
+                      // player.queue.removeAt(index);
+                    });
+                    Scaffold.of(context)
+                        .showSnackBar(SnackBar(content: Text("Song removed")));
+                  },
+                  background: Container(color: Theme.of(context).primaryColor),
+                  child: SongTile(song: player.queue[index]),
+                )
+              : SongTile(song: player.queue[index]);
+        },
+      );
+    });
+  }
+  // Widget _queueListView() {
+  //   return ListView.builder(
+  //     physics: BouncingScrollPhysics(),
+  //     itemCount: _queue.length,
+  //     itemBuilder: (context, index) {
+  //       return SongTile(song: _queue[index]);
+  //     },
+  //   );
+  // }
+
+  Widget _musicPanel() {
+    return Consumer<PlayerModel>(
+      builder: (context, player, child) {
+        return Container(
+          height: double.infinity,
+          width: double.infinity,
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListTile(
+              leading: GestureDetector(
+                onTap: () {
+                  if (player.state == PlayerState.stopped) {
+                    print("was stopped");
+                    player.next();
+                  }
+                  else if (player.state == PlayerState.playing) {
+                    player.pause();
+                  }
+                  else {
+                    player.resume();
+                  }
+                  // if (player.currentSong == null ||
+                  //     player.currentSong.uri == null) {
+                  //   return;
+                  // }
+                  // if (PlayerState.paused == player.state ||
+                  //     PlayerState.stopped == player.state) {
+                  //   player.play(player.currentSong);
+                  // } else {
+                  //   player.pause();
+                  // }
+                },
+                child: Container(
+                  child: (player.state == PlayerState.playing)
+                      ? PauseIcon(
+                          color: Colors.white,
+                        )
+                      : PlayIcon(
+                          color: Colors.white,
+                        ),
+                ),
+              ),
+              title: Text(
+                player.currentSong != null ? player.currentSong.trackName : '',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                player.currentSong != null ? player.currentSong.artists : '',
+                style: TextStyle(
+                  color: Colors.white,
+                  // letterSpacing: 1,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: GestureDetector(
+                onTap: () {
+                  // if (player.currentSong == null ||
+                  //     player.currentSong.uri == null) {
+                  //   return;
+                  // }
+                  player.next();
+                },
+                child: Container(
+                  child: SkipIcon(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
       },
     );
   }
 
-  Widget _musicPanel() {
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: ListTile(
-          leading: GestureDetector(
-            onTap: () {
-              // if (_currentSong.uri == null) {
-              //   return;
-              // }
-              // if (PlayerState.paused == state) {
-              //   // stream.playMusic(_currentSong);
-              // } else {
-              //   // stream.pauseMusic(_currentSong);
-              // }
-            },
-            // child: Container(
-            //   child: state == PlayerState.playing
-            //       ? PauseIcon(
-            //           color: Colors.white,
-            //         )
-            //       : PlayIcon(
-            //           color: Colors.white,
-            //         ),
-            // ),
-            child: PlayIcon(
-              color: Colors.white,
-            ),
-          ),
-          title: Text(
-            // _currentSong.trackName,
-            'Song',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text(
-            // _currentSong.artists,
-            'Artist',
-            style: TextStyle(
-              color: Colors.white,
-              // letterSpacing: 1,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: GestureDetector(
-            onTap: () {
-              // if (player._currentSong.uri == null) {
-              //   return;
-              // }
-              // stream.skipMusic(_currentSong);
-            },
-            child: Container(
-              child: SkipIcon(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
+  /// The Music Player
+  Widget _musicPlayer() {
+    return Consumer<PlayerModel>(
+      builder: (context, player, child) {
+        return Container(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                    onPressed: () => player.resume(), child: Text('Play')),
+                RaisedButton(
+                    onPressed: () => player.pause(), child: Text('Pause')),
+                RaisedButton(
+                    onPressed: () => player.next(), child: Text('Next')),
+              ],
+            ));
+      },
     );
   }
 
-  /// The Music Player
-  Widget _musicPlayer(BuildContext context) {
-    return Container(
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(onPressed: () => player.resume(), child: Text('Play')),
-            RaisedButton(onPressed: () => player.pause(), child: Text('Pause')),
-            RaisedButton(onPressed: () => player.next(), child: Text('Next')),
-          ],
-        ));
+  void _searchSong() async {
+    final result = await Navigator.pushNamed(context, '/search',
+        arguments: SearchArguments(
+            searchService:
+                _searchService != null ? _searchService.name : null));
+
+    if (result != null) {
+      client.AddSong(result);
+    }
   }
 
   Widget _connectionStatus() {
-    // return Container(
-    //   height: 80,
-    //   child: Center(
-    //     child: Text(
-    //       (_availableServices != null)
-    //           ? 'Connecting to ${listServices()}'
-    //           : 'Connect a Streaming Service to enable the Music Player',
-    //       style: TextStyle(
-    //         color: Colors.white,
-    //       ),
-    //     ),
-    //   ),
-    // );
-
     return Container(
       height: 80,
       child: Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: Text(
-            (player.allowedServices.isNotEmpty)
-                ? 'Connecting to ${listServices()}' //TODO: Add circular progress indicator in connecting display
-                : 'Connect a Streaming Service to Enable the Music Player', //Failed to Connect to Streaming Services
-            style: TextStyle(
-              color: Colors.white,
-            ),
+          //TODO: Add circular progress indicator in connecting display and extra condition to check if connecting failed
+          child: (_allowedServices.isNotEmpty)
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 16.0,
+                      width: 16.0,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          strokeWidth: 2.5,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.0),
+                    Text(
+                      'Connecting to ${listServices()}',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                )
+              : const Text(
+                  'Connect to a Streaming Service to Enable the Music Player',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _errorMessages(bool _connected) {
+    return Container(
+      height: 80,
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.error_outline,
+                color: Colors.white,
+              ),
+              SizedBox(width: 8.0),
+              _connected == true
+                  ? const Text(
+                      'Failed to connect to any streaming service',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text(
+                      'Failed with unknown error',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+            ],
           ),
         ),
       ),
@@ -464,12 +580,8 @@ class _RoomState extends State<Room> {
 
   String listServices() {
     String services = '';
-    // for (int i = 0; i < _availableServices.length; i++) {
-    //   services += _availableServices[i] +
-    //       ((i < _availableServices.length - 1) ? ', ' : '');
-    // }
 
-    for (var s in player.allowedServices.toList()) {
+    for (var s in _allowedServices.toList()) {
       if (!s.isConnected) {
         services += '${s.name}, ';
       }
@@ -480,4 +592,45 @@ class _RoomState extends State<Room> {
     }
     return services;
   }
+
+  Future<bool> connectToServices() async {
+    bool connectedtoAll = true;
+    for (Service s in _allowedServices) {
+      bool serviceConnected = await s.connect();
+      if (serviceConnected) {
+        setState(() {
+          s.isConnected = true;
+
+          // client.AddService(s.name);
+        });
+      } else {
+        // if service cannot connect - remove from allowedServices
+        setState(() {
+          _allowedServices.remove(s);
+        });
+        connectedtoAll = false;
+      }
+    }
+    if (_allowedServices.isNotEmpty) {
+      setState(() {
+        Provider.of<PlayerModel>(context, listen: false)
+            .setCurrentService(_allowedServices.toList()[0]);
+        // may need to set searchService in room for host/guest
+        _searchService = _allowedServices.toList()[0];
+        _connectedToServices = true;
+      });
+    }
+    print('DONE CONNECTING');
+    return connectedtoAll;
+  }
+
+  // loadQueue() async {
+  //   client.GetQueue().then((q) {
+  //     if (q != null) {
+  //       setState(() {
+  //         _queue = q;
+  //       });
+  //     }
+  //   });
+  // }
 }

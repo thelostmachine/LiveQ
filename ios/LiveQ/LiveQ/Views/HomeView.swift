@@ -86,7 +86,7 @@ struct HomeView: View {
                 textField.placeholder = placeholder
             }
         }
-        
+        // TODO: add loading screen when communicating with server
         alert.addAction(UIAlertAction(title: "Confirm", style: .default) { _ in
             if creating {
                 self.viewRouter.roomName = alert.textFields?.first?.text ?? "party"
@@ -98,7 +98,11 @@ struct HomeView: View {
                 self.viewRouter.roomName = client.joinRoom(key: self.viewRouter.roomID)
             }
             
-            self.viewRouter.currentPage = .Room
+            if !self.viewRouter.roomName.isEmpty && !self.viewRouter.roomID.isEmpty {
+                self.viewRouter.currentPage = .Room
+            } else {
+                print("something is empty")
+            }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in })
         
