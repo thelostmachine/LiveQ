@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/utils/player.dart';
 import 'package:provider/provider.dart';
 
 import 'package:liveq/widgets/next_button.dart';

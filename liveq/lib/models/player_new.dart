@@ -13,7 +13,7 @@ class PlayerModel with ChangeNotifier {
 
   List<Song> queue = List();
 
-  PlayerState state = PlayerState.stopped;
+  ThisPlayerState state = ThisPlayerState.stopped;
 
   Song getNextSong() {
     Song next = queue[0];
@@ -31,8 +31,8 @@ class PlayerModel with ChangeNotifier {
         if (currentService is SoundCloud) {
           uri = song.id;
         }
-        currentService.play(uri, onComplete);
-        state = PlayerState.playing;
+        currentService.play(uri, this);
+        state = ThisPlayerState.playing;
       } else {
         resume();
       }
@@ -42,13 +42,13 @@ class PlayerModel with ChangeNotifier {
 
   void resume() {
     currentService.resume();
-    state = PlayerState.playing;
+    state = ThisPlayerState.playing;
     notifyListeners();
   }
 
   void pause() {
     currentService.pause();
-    state = PlayerState.paused;
+    state = ThisPlayerState.paused;
     notifyListeners();
   }
 
@@ -63,15 +63,15 @@ class PlayerModel with ChangeNotifier {
     if (queue != null && queue.isNotEmpty) {
       Song nextSong = getNextSong();
 
-      // Stop playing the current song on the current service if we're switching Services
-      if (currentService != nextSong.service) {
-        pause();
-      }
+      // // Stop playing the current song on the current service if we're switching Services
+      // if (currentService != nextSong.service) {
+      pause();
+      // }
 
       currentSong = nextSong;
       currentService = currentSong.service;
       play(currentSong);
-      state = PlayerState.playing;
+      state = ThisPlayerState.playing;
       // return play(_currentSong);
     }
     notifyListeners();

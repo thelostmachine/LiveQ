@@ -168,6 +168,7 @@ class Client: NSObject {
         
         do {
             let _ = try reply.response.wait()
+            print("added \(service.name)")
         } catch {
             print("failed to add service \(service.name): \(error)")
         }
@@ -179,8 +180,16 @@ class Client: NSObject {
             $0.roomKey = self.key
         }
         
-        _ = stub.getServices(request) { service in
+        let reply = stub.getServices(request) { service in
             services.append(fromString(service.name))
+            print("found \(service.name)")
+        }
+        
+        do {
+            let _ = try reply.status.recover { _ in .processingError }.wait()
+            print("done") //G9Fwf4qo
+        } catch {
+            print("Failed to get queue")
         }
         
         return services
@@ -197,6 +206,19 @@ class Client: NSObject {
             _ = try reply.response.wait()
         } catch {
             print("failed to leave room: \(error)")
+        }
+    }
+    
+    func deleteRoom() {
+        let msg = Liveq_KeyRequest.with {
+            $0.roomKey = self.key
+        }
+        let reply = stub.deleteRoom(msg)
+        
+        do {
+            _ = try reply.response.wait()
+        } catch {
+            print("failed to delete room: \(error)")
         }
     }
 }

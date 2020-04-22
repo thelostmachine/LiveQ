@@ -11,6 +11,8 @@ import 'package:liveq/widgets/songtile.dart';
 import 'package:liveq/widgets/music_icons.dart';
 import 'package:liveq/models/catalog.dart';
 import 'package:liveq/models/player_new.dart';
+import 'package:spotify_sdk/models/player_state.dart';
+import 'package:spotify_sdk/spotify_sdk.dart';
 
 class RoomProvider extends StatelessWidget {
   @override
@@ -48,6 +50,7 @@ class _RoomState extends State<Room> {
       });
 
       if (args != null) {
+        isHost = true;
         // Set args.roomName and args.roomID received from server - set in dialog
 
         // if host then connect to services
@@ -60,6 +63,7 @@ class _RoomState extends State<Room> {
           _connectedToAllServices = connectToServices();
           // send updateServices to server with allowedServices as param
         } else {
+          isHost = false;
           // else if guest, wait for services from server to set available services and to set search service
           client.GetServices().then((_guestServices) {
             setState(() {
@@ -73,6 +77,9 @@ class _RoomState extends State<Room> {
                 _searchService =
                     Provider.of<CatalogModel>(context, listen: false)
                         .fromString(_guestServices[0]);
+              }
+              for (Service s in _allowedServices) {
+                s.connect();
               }
               _connectedToServices = true;
             });
@@ -430,27 +437,20 @@ class _RoomState extends State<Room> {
             child: ListTile(
               leading: GestureDetector(
                 onTap: () {
-                  // if (player.state == PlayerState.stopped) {
-                  //   print("was stopped");
-                  //   player.next();
-                  // } else if (player.state == PlayerState.playing) {
-                  //   player.pause();
-                  // } else {
-                  //   player.resume();
-                  // }
                   if (player.currentSong == null ||
                       player.currentSong.uri == null) {
                     return;
                   }
-                  if (PlayerState.paused == player.state ||
-                      PlayerState.stopped == player.state) {
+                  if (ThisPlayerState.paused == player.state) {
                     player.play(player.currentSong);
+                  } else if (ThisPlayerState.stopped == player.state) {
+                    player.next();
                   } else {
                     player.pause();
                   }
                 },
                 child: Container(
-                  child: (player.state == PlayerState.playing)
+                  child: (player.state == ThisPlayerState.playing)
                       ? PauseIcon(
                           color: Colors.white,
                         )
@@ -494,27 +494,6 @@ class _RoomState extends State<Room> {
             ),
           ),
         );
-      },
-    );
-  }
-
-  /// The Music Player
-  Widget _musicPlayer() {
-    return Consumer<PlayerModel>(
-      builder: (context, player, child) {
-        return Container(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                    onPressed: () => player.resume(), child: Text('Play')),
-                RaisedButton(
-                    onPressed: () => player.pause(), child: Text('Pause')),
-                RaisedButton(
-                    onPressed: () => player.next(), child: Text('Next')),
-              ],
-            ));
       },
     );
   }
@@ -636,7 +615,7 @@ class _RoomState extends State<Room> {
       if (serviceConnected) {
         setState(() {
           s.isConnected = true;
-          // client.AddService(s.name);
+          client.AddService(s.name);
         });
       } else {
         // if service cannot connect - remove from allowedServices

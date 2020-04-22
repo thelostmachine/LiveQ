@@ -10,7 +10,7 @@
 		5309D7B5244DA2FD00785CC2 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5309D7B4244DA2FD00785CC2 /* Player.swift */; };
 		5309D7B7244DACCC00785CC2 /* ServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5309D7B6244DACCC00785CC2 /* ServiceCell.swift */; };
 		5309D7B9244DBB6B00785CC2 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5309D7B8244DBB6B00785CC2 /* LoadingView.swift */; };
-		5335512D2445B718006821DA /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 5335512C2445B718006821DA /* GRPC */; };
+		5335512D2445B718006821DA /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 5335512C2445B718006821DA /* SwiftPackageProductDependency */; };
 		533FE57B244D0D150037F090 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533FE57A244D0D150037F090 /* Services.swift */; };
 		53BB07752445F64F00AF47B5 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BB07742445F64F00AF47B5 /* ImageLoader.swift */; };
 		53BB07772445F70000AF47B5 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BB07762445F70000AF47B5 /* ImageView.swift */; };
@@ -81,7 +81,7 @@
 			files = (
 				53D8CDD32426BA510078928F /* SpotifyiOS.framework in Frameworks */,
 				D212F0E03DDEBDAFEC404A4E /* Pods_LiveQ.framework in Frameworks */,
-				5335512D2445B718006821DA /* GRPC in Frameworks */,
+				5335512D2445B718006821DA /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,6 +218,7 @@
 				53D8CDA124268BEF0078928F /* Sources */,
 				53D8CDA224268BEF0078928F /* Frameworks */,
 				53D8CDA324268BEF0078928F /* Resources */,
+				264D4B4D17852022F24F37C8 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -225,7 +226,7 @@
 			);
 			name = LiveQ;
 			packageProductDependencies = (
-				5335512C2445B718006821DA /* GRPC */,
+				5335512C2445B718006821DA /* SwiftPackageProductDependency */,
 			);
 			productName = LiveQ;
 			productReference = 53D8CDA524268BEF0078928F /* LiveQ.app */;
@@ -256,7 +257,7 @@
 			);
 			mainGroup = 53D8CD9C24268BEF0078928F;
 			packageReferences = (
-				5335512B2445B718006821DA /* XCRemoteSwiftPackageReference "grpc-swift" */,
+				5335512B2445B718006821DA /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = 53D8CDA624268BEF0078928F /* Products */;
 			projectDirPath = "";
@@ -282,6 +283,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		264D4B4D17852022F24F37C8 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LiveQ/Pods-LiveQ-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LiveQ/Pods-LiveQ-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LiveQ/Pods-LiveQ-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		2AE2B08B44F149211C880FA1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -544,7 +562,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		5335512B2445B718006821DA /* XCRemoteSwiftPackageReference "grpc-swift" */ = {
+		5335512B2445B718006821DA /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/grpc/grpc-swift.git";
 			requirement = {
@@ -555,9 +573,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5335512C2445B718006821DA /* GRPC */ = {
+		5335512C2445B718006821DA /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5335512B2445B718006821DA /* XCRemoteSwiftPackageReference "grpc-swift" */;
+			package = 5335512B2445B718006821DA /* RemoteSwiftPackageReference */;
 			productName = GRPC;
 		};
 /* End XCSwiftPackageProductDependency section */

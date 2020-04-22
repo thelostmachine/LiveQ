@@ -17,6 +17,8 @@ struct RoomView: View {
     @ObservedObject var player: Player = Player.instance
     
     @State private var authorized = false
+    @State private var showingAlert = false
+    @State private var exiting = false
     
 //    let player: Player = Player()
     
@@ -45,67 +47,107 @@ struct RoomView: View {
                     }
                 }
                 
-                HStack {
-                    Button("Play") {
-                        print("play")
-                        if self.player.currentState == .Stopped {
-                            self.player.next()
-//                            self.player.play(song: self.getNextSong())
-                        } else {
-                            self.player.resume()
+                if self.viewRouter.isHost {
+                    HStack {
+                        Button("Play") {
+                            print("play")
+                            if self.player.currentState == .Stopped {
+                                self.player.next()
+    //                            self.player.play(song: self.getNextSong())
+                            } else {
+                                self.player.resume()
+                            }
+    //                        self.appRemote?.playerAPI?.resume(nil)
                         }
-//                        self.appRemote?.playerAPI?.resume(nil)
-                    }
-                    Button("Pause") {
-                        print("pause")
-                        self.player.pause()
-//                        self.appRemote?.playerAPI?.pause(nil)
-                    }
-                    Button("Next") {
-                        print("next")
-//                        self.nextManual(song: self.getNextSong())
-//                        self.player.play(song: self.getNextSong())
-                        self.player.next()
-//                        self.appRemote?.playerAPI?.play(self.queue.songs(at: 0).uri, callback: nil)
+                        Button("Pause") {
+                            print("pause")
+                            self.player.pause()
+    //                        self.appRemote?.playerAPI?.pause(nil)
+                        }
+                        Button("Next") {
+                            print("next")
+    //                        self.nextManual(song: self.getNextSong())
+    //                        self.player.play(song: self.getNextSong())
+                            self.player.next()
+    //                        self.appRemote?.playerAPI?.play(self.queue.songs(at: 0).uri, callback: nil)
+                        }
                     }
                 }
+                
             }
-            .navigationBarTitle("\(self.viewRouter.roomName) - Room ID: \(self.viewRouter.roomID)")
+            .navigationBarTitle("\(self.viewRouter.roomName)")
             .navigationBarItems(
                 leading:
-                    Button("Exit") {
-                        self.viewRouter.currentPage = .Home
-                },
+                    Button(action: {
+                        self.exiting = true
+                    }) {
+                        Text("Exit")
+                    }
+                    .alert(isPresented: $exiting) {
+                        Alert(title: Text("Are you sure?"), message: Text(self.viewRouter.isHost ? "The room will be deleted if you leave" : "Do you want to exit"), primaryButton: .default(Text("No")), secondaryButton: .default(Text("Yes"), action: {
+                            client.leaveRoom()
+                            if self.viewRouter.isHost {
+                                client.deleteRoom()
+                            }
+                            
+                            self.viewRouter.roomName = ""
+                            self.viewRouter.roomID = ""
+                            self.viewRouter.currentPage = .Home
+                        }))
+                    },
+//                    Button("Exit") {
+//                        self.viewRouter.currentPage = .Home
+//                    },
                 trailing:
                 HStack {
-                    NavigationLink(destination: ServicesView()) {
-                        Text("Connect")
+                    if self.viewRouter.isHost {
+                        NavigationLink(destination: ServicesView()) {
+                            Text("Connect")
+                        }
+                        Spacer(minLength: 30)
                     }
-                    Spacer(minLength: 30)
                     NavigationLink(destination: SearchView()) {
                         Image(systemName: "magnifyingglass")
                     }
-//                        Text("Search")}
-                }
-                
                     
-//                    Button("Search") {
-//                        NavigationLink(destination: SearchView()) {
-//                            print("search")
-//                        }
-//                        self.viewRouter.currentPage = .Search
-                )
+                    Spacer(minLength: 30)
+                    
+                    Button(action: {
+                        self.showingAlert = true
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .alert(isPresented: $showingAlert) {
+                        Alert(title: Text("Room Code"), message: Text(self.viewRouter.roomID), primaryButton: .default(Text("Copy"), action: {
+                            UIPasteboard.general.string = self.viewRouter.roomID
+                        }), secondaryButton: .default(Text("OK")))
+                    }
+                }
+            )
             .resignKeyboardOnDragGesture()
         }
-//        .onReceive(queue.didChange) { songs in
-//            self.songs = songs
-//        }
+        .foregroundColor(Color(hex: 0xffed6c6c))
         .onAppear {
 //            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.playerStateDelegate = self
             print("howdy")
             if !self.authorized {
 //                spotifyManager.authorize()
                 self.authorized = true
+            }
+            
+            if !self.viewRouter.isHost {
+                self.player.allowedServices = client.getServices()
+                self.player.isHost = false
+                print("got services")
+            } else {
+                self.player.allowedServices = self.player.connectedServices
+                self.player.isHost = true
+                print("set services")
+            }
+            
+            for service in self.player.allowedServices {
+                print("\(service.name)")
+                service.connect()
             }
             
             DispatchQueue.global(qos: .background).async {
@@ -150,61 +192,6 @@ struct RoomView: View {
             
         }
     }
-    
-//    func downloadFile(url: URL) {
-//        var downloadTask: URLSessionDownloadTask
-//        downloadTask = URLSession.shared.downloadTask(with: url, completionHandler: { (URL, response, error) in
-//            self.play(url: url)
-//        })
-//
-//        downloadTask.resume()
-//    }
-//
-//    func play(url: URL) {
-//        print("playing \(url)")
-//
-//        do {
-//            let player = try AVAudioPlayer(contentsOf: url)
-//            player.prepareToPlay()
-//            player.volume = 1.0
-//            player.play()
-//        } catch let error as NSError {
-//            //self.player = nil
-//            print(error.localizedDescription)
-//        } catch {
-//            print("AVAudioPlayer init failed")
-//        }
-//
-//    }
-    
-//    func next(state: SPTAppRemotePlayerState) {
-//        print("DELEGATION")
-//        print(queue.songs.count)
-//        if queue.songs.count > 0 {
-//            print(state.isPaused)
-//            print(state.playbackPosition)
-//            if state.isPaused && state.playbackPosition == 0 {
-//                let song = queue.songs.remove(at: 0)
-//                appRemote?.playerAPI?.play(song.uri, callback: nil)
-//            }
-//        }
-//    }
-    
-//    func nextManual(song: Song?) {
-//        guard let song = song else { return }
-//
-//        appRemote?.playerAPI?.play(song.uri, callback: nil)
-//    }
-    
-//    func getNextSong() -> Song? {
-//        if queue.songs.count > 0 {
-//            let nextSong = queue.songs[0]
-//            client.deleteSong(song: nextSong)
-//            return nextSong
-//        }
-//
-//        return nil
-//    }
 }
 
 struct RoomView_Previews: PreviewProvider {

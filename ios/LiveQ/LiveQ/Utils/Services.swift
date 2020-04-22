@@ -8,6 +8,7 @@
 
 import Foundation
 import AVKit
+import Alamofire
 
 enum ServiceType: String {
     case Spotify, SoundCloud, Apple
@@ -171,7 +172,10 @@ class Spotify: NSObject, Service, SPTAppRemoteDelegate {
     static private let kAccessTokenKey = "access-token-key"
     private let redirectUri = URL(string: "spotify-ios-quick-start://spotify-login-callback")!
     private let clientIdentifier = "03237b2409b24752a3f0c33262ad2d02"
+    private let clientSecret = "52560cee72394fc5a049731f2d8f001e"
     private var trackIdentifier = "spotify:track:7p5bQJB4XsZJEEn6Tb7EaL"
+    
+    private var webToken: String?
     
     lazy var configuration: SPTConfiguration = {
         let configuration = SPTConfiguration(clientID: clientIdentifier, redirectURL: redirectUri)
@@ -196,14 +200,31 @@ class Spotify: NSObject, Service, SPTAppRemoteDelegate {
     }
     
     func connect() {
-        if let _ = self.appRemote.connectionParameters.accessToken {
-            print("reconnecting")
-            self.appRemote.connect()
-            self.isConnected = self.accessToken != nil
-        } else {
-            print("authorize and play")
-            self.appRemote.authorizeAndPlayURI(trackIdentifier)
-            self.isConnected = self.accessToken != nil
+        
+        let parameters = ["client_id": self.clientIdentifier,
+                          "client_secret": self.clientSecret,
+                          "grant_type": "client_credentials"]
+        
+        AF.request("https://accounts.spotify.com/api/token", method: .post, parameters: parameters).responseJSON(completionHandler: { response in
+            
+            print(response)
+            print(response.result)
+            let jsonData = response.value as! NSDictionary
+            let token = jsonData.value(forKey: "access_token") as? String
+            self.accessToken = token!
+        })
+        
+        if Player.instance.isHost {
+            if let _ = self.appRemote.connectionParameters.accessToken {
+                print("reconnecting")
+                self.appRemote.connect()
+                self.isConnected = self.accessToken != nil
+            } else {
+                print("authorize and play")
+                self.appRemote.authorizeAndPlayURI(trackIdentifier)
+                self.isConnected = self.accessToken != nil
+            }
+            self.appRemote.playerAPI?.pause()
         }
     }
     
@@ -216,6 +237,9 @@ class Spotify: NSObject, Service, SPTAppRemoteDelegate {
         } else {
             self.appRemote.playerAPI?.play(uri)
         }
+        
+        SceneDelegate.shared?.alreadyConnected = true
+        
         
     }
     

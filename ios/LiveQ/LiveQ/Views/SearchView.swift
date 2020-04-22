@@ -41,22 +41,7 @@ struct SearchView: View {
                             
                             guard self.player.searchService != nil else { return }
                             
-                            self.searching = true
-                            self.player.search(query: self.searchText) { songs in
-                                print("setting \(songs.count) tracks")
-                                for song in self.tracks {
-                                    print(song)
-                                }
-                                DispatchQueue.main.async {
-                                    self.tracks = songs
-                                }
-    //                            self.tracks = songs
-                                self.searching = false
-                                print("after")
-                                for song in self.tracks {
-                                    print(song)
-                                }
-                            }
+                            self.search()
                         }).foregroundColor(.primary)
                         
                         Button(action: {
@@ -70,21 +55,31 @@ struct SearchView: View {
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(10.0)
                     
-                    Image(uiImage: Spotify.instance.image)
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                        .saturation(self.player.searchService is Spotify ? 1 : 0)
-                        .onTapGesture {
-                            self.player.searchService = Spotify.instance
-                        }
+                    if self.player.allowedServices.contains(where: { $0.name == "Spotify" }) {
+                        Image(uiImage: Spotify.instance.image)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .saturation(self.player.searchService is Spotify ? 1 : 0)
+                            .onTapGesture {
+                                self.player.searchService = Spotify.instance
+                                if !self.searchText.isEmpty {
+                                    self.search()
+                                }
+                            }
+                    }
                     
-                    Image(uiImage: SoundCloud.instance.image)
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                        .saturation(self.player.searchService is SoundCloud ? 1 : 0)
-                        .onTapGesture {
-                            self.player.searchService = SoundCloud.instance
-                        }
+                    if self.player.allowedServices.contains(where: { $0.name == "SoundCloud" }) {
+                        Image(uiImage: SoundCloud.instance.image)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .saturation(self.player.searchService is SoundCloud ? 1 : 0)
+                            .onTapGesture {
+                                self.player.searchService = SoundCloud.instance
+                                if !self.searchText.isEmpty {
+                                    self.search()
+                                }
+                            }
+                    }
                     
                     if self.showCancelButton {
                         Button("Cancel") {
@@ -112,6 +107,30 @@ struct SearchView: View {
                 }
                 .navigationBarTitle(Text("Search"))
                 .resignKeyboardOnDragGesture()
+            }
+        }
+        .onAppear {
+            if self.player.allowedServices.count > 0 {
+                self.player.searchService = self.player.allowedServices[0]
+            }
+        }
+    }
+    
+    func search() {
+        self.searching = true
+        self.player.search(query: self.searchText) { songs in
+            print("setting \(songs.count) tracks")
+            for song in self.tracks {
+                print(song)
+            }
+            DispatchQueue.main.async {
+                self.tracks = songs
+            }
+//                            self.tracks = songs
+            self.searching = false
+            print("after")
+            for song in self.tracks {
+                print(song)
             }
         }
     }
