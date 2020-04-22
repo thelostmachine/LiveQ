@@ -7,7 +7,8 @@ import 'package:liveq/widgets/room_dialog.dart';
 import 'package:liveq/models/catalog.dart';
 
 class Home extends StatelessWidget {
-  final myController = TextEditingController();
+  final myController1 = TextEditingController();
+  final myController2 = TextEditingController();
 
   final Player player = Player();
 
@@ -39,13 +40,13 @@ class Home extends StatelessWidget {
                       return NextButton(
                         'CREATE NEW ROOM',
                         catalog.connectedServices.isNotEmpty == true
-                            ? () => createRoomDialog(context, myController)
+                            ? () => createRoomDialog(context, myController1)
                             : () => Navigator.pushNamed(
                                 context, '/connect_services'),
                       );
                     }),
                     NextButton('JOIN A ROOM',
-                        () => joinRoomDialog(context, myController)),
+                        () => joinRoomDialog(context, myController2)),
                   ],
                 ),
               ),

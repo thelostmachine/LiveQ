@@ -19,8 +19,9 @@ class RoomArguments {
 class SearchArguments {
   String searchService = '';
   // Service searchService = '';
+  List<String> allowedServices;
 
-  SearchArguments({this.searchService});
+  SearchArguments({this.searchService, this.allowedServices});
 }
 
 Client client = Client();

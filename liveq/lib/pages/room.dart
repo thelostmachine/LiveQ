@@ -67,6 +67,7 @@ class _RoomState extends State<Room> {
                 _allowedServices.add(
                     Provider.of<CatalogModel>(context, listen: false)
                         .fromString(s));
+                print('found $s');
               }
               if (_guestServices.isNotEmpty) {
                 _searchService =
@@ -149,7 +150,6 @@ class _RoomState extends State<Room> {
   Widget _roomBody() {
     final double _radius = 25.0;
     return args != null
-        // TODO: Add FutureBuilder to display status of connecting to server
         ? Column(
             children: <Widget>[
               Expanded(
@@ -186,8 +186,8 @@ class _RoomState extends State<Room> {
                               AsyncSnapshot<bool> snapshot) {
                             if (snapshot.hasData) {
                               return (_connectedToServices)
-                                  ? _musicPanel()
-                                  : _errorMessages(true); // PlayerPanel(),
+                                  ? _musicPanel() // PlayerPanel()
+                                  : _errorMessages(true);
                             } else if (snapshot.hasError) {
                               return _errorMessages(false);
                             } else {
@@ -224,8 +224,11 @@ class _RoomState extends State<Room> {
         false;
   }
 
-  // TODO: DIALOG NOT LOADING
   Future<void> _selectSearchService() async {
+    print('searching');
+    for (Service s in _allowedServices) {
+      print(s.name);
+    }
     // switch (
     await showDialog<void>(
       context: context,
@@ -326,14 +329,17 @@ class _RoomState extends State<Room> {
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Text(
                     args.roomID, // args.roomID
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
-                  SizedBox(width: 5),
-                  Icon(Icons.content_copy),
+                  SizedBox(width: 4),
+                  Icon(
+                    Icons.content_copy,
+                    // size: 24.0,
+                  ),
                 ],
               ),
             ),
@@ -376,14 +382,29 @@ class _RoomState extends State<Room> {
       );
     });
   }
+
   // Widget _queueListView() {
   //   return ListView.builder(
-  //     physics: BouncingScrollPhysics(),
-  //     itemCount: _queue.length,
-  //     itemBuilder: (context, index) {
-  //       return SongTile(song: _queue[index]);
-  //     },
-  //   );
+  //       physics: BouncingScrollPhysics(),
+  //       itemCount: _queue.length,
+  //       itemBuilder: (context, index) {
+  //         return args.host == true
+  //             ? Dismissible(
+  //                 key: ObjectKey(_queue[index]),
+  //                 onDismissed: (direction) {
+  //                   setState(() {
+  //                     client.DeleteSong(_queue[index]);
+  //                     // _queue.removeAt(index);
+  //                   });
+  //                   Scaffold.of(context)
+  //                       .showSnackBar(SnackBar(content: Text("Song removed")));
+  //                 },
+  //                 background: Container(color: Theme.of(context).primaryColor),
+  //                 child: SongTile(song: _queue[index]),
+  //               )
+  //             : SongTile(song: _queue[index]);
+  //       },
+  //     );
   // }
 
   Widget _musicPanel() {
@@ -490,10 +511,14 @@ class _RoomState extends State<Room> {
   }
 
   void _searchSong() async {
+    List<String> _availableServices = List();
+    if (_connectedToServices) {
+      _availableServices.addAll(_allowedServices.map((s) => s.name).toList());
+    }
     final result = await Navigator.pushNamed(context, '/search',
         arguments: SearchArguments(
-            searchService:
-                _searchService != null ? _searchService.name : null));
+            searchService: _searchService != null ? _searchService.name : null,
+            allowedServices: _availableServices));
 
     if (result != null) {
       client.AddSong(result);
@@ -506,7 +531,6 @@ class _RoomState extends State<Room> {
       child: Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          //TODO: Add circular progress indicator in connecting display and extra condition to check if connecting failed
           child: (_allowedServices.isNotEmpty)
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -533,7 +557,7 @@ class _RoomState extends State<Room> {
                   ],
                 )
               : const Text(
-                  'Connect to a Streaming Service to Enable the Music Player',
+                  'Connect to a streaming service to enable the music player',
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -556,6 +580,7 @@ class _RoomState extends State<Room> {
               Icon(
                 Icons.error_outline,
                 color: Colors.white,
+                size: 20.0,
               ),
               SizedBox(width: 8.0),
               _connected == true
@@ -595,12 +620,13 @@ class _RoomState extends State<Room> {
 
   Future<bool> connectToServices() async {
     bool connectedtoAll = true;
-    for (Service s in _allowedServices) {
+    List<Service> _connectingServices = List();
+    _connectingServices.addAll(_allowedServices);
+    for (Service s in _connectingServices) {
       bool serviceConnected = await s.connect();
       if (serviceConnected) {
         setState(() {
           s.isConnected = true;
-
           // client.AddService(s.name);
         });
       } else {
@@ -611,6 +637,11 @@ class _RoomState extends State<Room> {
         connectedtoAll = false;
       }
     }
+
+    // setState(() {
+    //   _allowedServices.removeAll(_removeableServices);
+    // });
+
     if (_allowedServices.isNotEmpty) {
       setState(() {
         Provider.of<PlayerModel>(context, listen: false)
@@ -620,7 +651,6 @@ class _RoomState extends State<Room> {
         _connectedToServices = true;
       });
     }
-    print('DONE CONNECTING');
     return connectedtoAll;
   }
 

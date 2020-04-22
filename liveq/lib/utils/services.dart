@@ -88,7 +88,7 @@ class SoundCloud extends Service {
   }
 
   @override
-  Future<bool> connect() {
+  Future<bool> connect() async {
     // super.connect();
     // TODO: implement connect
     // throw UnimplementedError();
@@ -96,7 +96,7 @@ class SoundCloud extends Service {
   }
 
   @override
-  Future<void> pause() {
+  Future<void> pause() async {
     // TODO: implement pause
     // stream.pause();
     print("pausing");
@@ -138,6 +138,7 @@ class SoundCloud extends Service {
 
   @override
   Future<List<Song>> search(String query) async {
+    print("START SEARCHING SOUNDCLOUD");
     List<Song> searchResults = List();
     String search = 'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
     
@@ -157,6 +158,7 @@ class SoundCloud extends Service {
           String imageUri = track['artwork_url'];
           int duration = track['duration'];
           Service service = this;
+          print("SOUNDCLOUD TRACKNAME: $trackName");
 
           Song song = Song(id, uri, trackName, artist, imageUri, duration, service);
           searchResults.add(song);
@@ -166,7 +168,7 @@ class SoundCloud extends Service {
       print('ERROR');
       print(response.statusCode);
     }
-
+    print("DONE SEARCHING SOUNDCLOUD");
     return searchResults;
   }
 
