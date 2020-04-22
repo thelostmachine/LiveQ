@@ -228,6 +228,7 @@ class _RoomState extends State<Room> {
     print('searching');
     for (Service s in _allowedServices) {
       print(s.name);
+      print(s.isConnected);
     }
     // switch (
     await showDialog<void>(
@@ -269,8 +270,8 @@ class _RoomState extends State<Room> {
                 itemCount: _allowedServices.length,
                 itemBuilder: (BuildContext context, int index) {
                   return (_allowedServices.toList()[index].name !=
-                              _searchService.name &&
-                          _allowedServices.toList()[index].isConnected == true)
+                              _searchService.name) // &&
+                          // _allowedServices.toList()[index].isConnected == true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
