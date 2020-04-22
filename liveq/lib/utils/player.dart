@@ -101,7 +101,8 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
       print(nextSong.trackName);
 
       // Stop playing the current song on the current service if we're switching Services
-      if (_currentService != nextSong.service || _currentService is SoundCloud) {
+      if (_currentService != nextSong.service ||
+          _currentService is SoundCloud) {
         pause();
       }
 
@@ -149,7 +150,5 @@ class Player extends PropertyChangeNotifier<ModelProperties> {
     }
   }
 
-  void checkState() async {
-
-  }
+  void checkState() async {}
 }

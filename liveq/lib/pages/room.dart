@@ -270,8 +270,8 @@ class _RoomState extends State<Room> {
                 itemCount: _allowedServices.length,
                 itemBuilder: (BuildContext context, int index) {
                   return (_allowedServices.toList()[index].name !=
-                              _searchService.name) // &&
-                          // _allowedServices.toList()[index].isConnected == true)
+                          _searchService.name) // &&
+                      // _allowedServices.toList()[index].isConnected == true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
@@ -420,26 +420,24 @@ class _RoomState extends State<Room> {
             child: ListTile(
               leading: GestureDetector(
                 onTap: () {
-                  if (player.state == PlayerState.stopped) {
-                    print("was stopped");
-                    player.next();
+                  // if (player.state == PlayerState.stopped) {
+                  //   print("was stopped");
+                  //   player.next();
+                  // } else if (player.state == PlayerState.playing) {
+                  //   player.pause();
+                  // } else {
+                  //   player.resume();
+                  // }
+                  if (player.currentSong == null ||
+                      player.currentSong.uri == null) {
+                    return;
                   }
-                  else if (player.state == PlayerState.playing) {
+                  if (PlayerState.paused == player.state ||
+                      PlayerState.stopped == player.state) {
+                    player.play(player.currentSong);
+                  } else {
                     player.pause();
                   }
-                  else {
-                    player.resume();
-                  }
-                  // if (player.currentSong == null ||
-                  //     player.currentSong.uri == null) {
-                  //   return;
-                  // }
-                  // if (PlayerState.paused == player.state ||
-                  //     PlayerState.stopped == player.state) {
-                  //   player.play(player.currentSong);
-                  // } else {
-                  //   player.pause();
-                  // }
                 },
                 child: Container(
                   child: (player.state == PlayerState.playing)
@@ -471,10 +469,10 @@ class _RoomState extends State<Room> {
               ),
               trailing: GestureDetector(
                 onTap: () {
-                  // if (player.currentSong == null ||
-                  //     player.currentSong.uri == null) {
-                  //   return;
-                  // }
+                  if (player.currentSong == null ||
+                      player.currentSong.uri == null) {
+                    return;
+                  }
                   player.next();
                 },
                 child: Container(

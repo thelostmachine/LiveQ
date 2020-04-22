@@ -22,17 +22,19 @@ class PlayerModel with ChangeNotifier {
 
   void play(Song song) async {
     if (song != null) {
-      currentSong = song;
-      currentService = song.service;
+      if (song != currentSong) {
+        currentSong = song;
+        currentService = song.service;
 
-      String uri = currentSong.uri;
-      if (currentService is SoundCloud) {
-        uri = song.id;
+        String uri = currentSong.uri;
+        if (currentService is SoundCloud) {
+          uri = song.id;
+        }
+        currentService.play(uri, next);
+        state = PlayerState.playing;
+      } else {
+        resume();
       }
-      currentSong.service.play(uri, Player().next);
-      state = PlayerState.playing;
-    } else {
-      resume();
     }
     notifyListeners();
   }

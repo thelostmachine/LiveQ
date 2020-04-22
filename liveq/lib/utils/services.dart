@@ -118,15 +118,12 @@ class SoundCloud extends Service {
       // player.setReleaseMode(ReleaseMode.STOP);
       player.onPlayerCompletion.listen((event) {
         print("DONE");
-        // Player.Player().next();
+        callback();
         print("called next");
-
       });
     } else {
       print("FAIL");
     }
-
-    
   }
 
   @override
@@ -140,15 +137,15 @@ class SoundCloud extends Service {
   Future<List<Song>> search(String query) async {
     print("START SEARCHING SOUNDCLOUD");
     List<Song> searchResults = List();
-    String search = 'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
-    
+    String search =
+        'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
+
     var response = await http.get(search);
 
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
 
       for (var item in jsonResponse) {
-
         if (item['kind'] == 'track' && item['artwork_url'] != null) {
           var track = item;
           String id = track['id'].toString();
@@ -160,7 +157,8 @@ class SoundCloud extends Service {
           Service service = this;
           print("SOUNDCLOUD TRACKNAME: $trackName");
 
-          Song song = Song(id, uri, trackName, artist, imageUri, duration, service);
+          Song song =
+              Song(id, uri, trackName, artist, imageUri, duration, service);
           searchResults.add(song);
         }
       }
@@ -236,12 +234,10 @@ class Spotify extends Service {
   Future<List<Song>> search(String query) async {
     List<Song> searchResults = List();
 
-    var search = await spotifyWebApi.search
-        .get(query)
-        .first()
-        .catchError((err) {
-          print('SPOTIFY ERROR: ${(err as SpotifyException).message}');
-        });
+    var search =
+        await spotifyWebApi.search.get(query).first().catchError((err) {
+      print('SPOTIFY ERROR: ${(err as SpotifyException).message}');
+    });
 
     if (search != null) {
       search.forEach((pages) {
