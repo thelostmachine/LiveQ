@@ -44,7 +44,20 @@ Future<void> joinRoomDialog(
                     // barrierDismissible: false,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Unable to join Room. Incorrect Key'),
+                        title: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.error_outline,
+                            ),
+                            SizedBox(width: 4.0),
+                            const Text('Error'),
+                          ],
+                        ),
+                        content: Center(
+                          child:
+                              const Text('Unable to join room: Incorrect key'),
+                        ),
                         actions: <Widget>[
                           FlatButton(
                             child: Text('Ok'),
@@ -122,6 +135,7 @@ Future<void> createRoomDialog(
                 arguments: RoomArguments(
                     roomName: roomName, roomID: roomId, host: true),
               );
+
               // client.key = 'test_roomId';
               // Navigator.pop(context);
               // Navigator.pushNamed(

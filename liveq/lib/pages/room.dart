@@ -78,6 +78,7 @@ class _RoomState extends State<Room> {
                     Provider.of<CatalogModel>(context, listen: false)
                         .fromString(_guestServices[0]);
               }
+              // necessary?
               for (Service s in _allowedServices) {
                 s.connect();
               }
@@ -359,9 +360,7 @@ class _RoomState extends State<Room> {
           actions: <Widget>[
             FlatButton(
               child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         );
@@ -593,6 +592,39 @@ class _RoomState extends State<Room> {
       ),
     );
   }
+
+  // Future<void> _errorQueueDialog() async {
+  //   return showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Row(
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: <Widget>[
+  //             Icon(
+  //               Icons.error_outline,
+  //             ),
+  //             SizedBox(width: 4.0),
+  //             const Text('Error'),
+  //           ],
+  //         ),
+  //         content: SingleChildScrollView(
+  //           child: Center(
+  //             child: Text('Unable to load queue'),
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           FlatButton(
+  //             child: const Text('OK'),
+  //             onPressed: () =>
+  //                 Navigator.popUntil(context, ModalRoute.withName('/home')),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   String listServices() {
     String services = '';

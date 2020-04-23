@@ -66,20 +66,21 @@ abstract class Client {
 
   Future<List<String>> GetServices() async {
     final request = KeyRequest()..roomKey = key;
-    List<String> services;
+    List<String> services = List();
     try {
       await for (var service in stub.getServices(request)) {
         services.add(service.name);
       }
     } catch (e) {
       print('Error: $e');
+      return null;
     }
     return services;
   }
 
   Future<List<Song>> GetQueue() async {
     final request = KeyRequest()..roomKey = key;
-    List<Song> queue;
+    List<Song> queue = List();
     try {
       await for (var song in stub.getQueue(request)) {
         services.Service serviceObj = services.Service.fromString(song.service);
@@ -89,6 +90,7 @@ abstract class Client {
       }
     } catch (e) {
       print('Error: $e');
+      return null;
     }
     return queue;
   }
