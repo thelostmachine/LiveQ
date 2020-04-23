@@ -437,14 +437,17 @@ class _RoomState extends State<Room> {
             child: ListTile(
               leading: GestureDetector(
                 onTap: () {
-                  if (player.currentSong == null ||
-                      player.currentSong.uri == null) {
-                    return;
-                  }
-                  if (RoomPlayerState.paused == player.state) {
-                    player.play(player.currentSong);
-                  } else if (RoomPlayerState.stopped == player.state) {
-                    player.next();
+                  // if (player.currentSong == null ||
+                  //     player.currentSong.uri == null) {
+                  //   return;
+                  // }
+                  if (RoomPlayerState.paused == player.state ||
+                      RoomPlayerState.stopped == player.state) {
+                    if (player.currentSong != null) {
+                      player.play(player.currentSong);
+                    } else {
+                      player.next();
+                    }
                   } else {
                     player.pause();
                   }
@@ -479,10 +482,10 @@ class _RoomState extends State<Room> {
               ),
               trailing: GestureDetector(
                 onTap: () {
-                  if (player.currentSong == null ||
-                      player.currentSong.uri == null) {
-                    return;
-                  }
+                  // if (player.currentSong == null ||
+                  //     player.currentSong.uri == null) {
+                  //   return;
+                  // }
                   player.next();
                 },
                 child: Container(

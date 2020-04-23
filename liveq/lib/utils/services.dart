@@ -111,7 +111,7 @@ class SoundCloud extends Service {
     int result = await player.play(uri);
     if (result == 1) {
       player.onPlayerCompletion.listen((event) {
-        playerApi.next();
+        playerApi.onComplete();
       });
     } else {
       print("FAIL");
