@@ -215,7 +215,7 @@ class Spotify extends Service {
     await SpotifySdk.play(spotifyUri: uri);
     SpotifySdk.subscribePlayerContext().listen((playerContext) {
       if (playerContext.uri.contains('station')) {
-        player.next();
+        player.onComplete();
       }
     });
   }
