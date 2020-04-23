@@ -55,9 +55,8 @@ Future<void> joinRoomDialog(
                           ],
                         ),
                         content: Center(
-                          child:
-                              const Text('Unable to join room: Incorrect key'),
-                        ),
+                            child: const Text(
+                                'Unable to join room: Incorrect key')),
                         actions: <Widget>[
                           FlatButton(
                             child: Text('Ok'),

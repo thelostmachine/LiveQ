@@ -394,30 +394,6 @@ class _RoomState extends State<Room> {
     });
   }
 
-  // Widget _queueListView() {
-  //   return ListView.builder(
-  //       physics: BouncingScrollPhysics(),
-  //       itemCount: _queue.length,
-  //       itemBuilder: (context, index) {
-  //         return args.host == true
-  //             ? Dismissible(
-  //                 key: ObjectKey(_queue[index]),
-  //                 onDismissed: (direction) {
-  //                   setState(() {
-  //                     client.DeleteSong(_queue[index]);
-  //                     // _queue.removeAt(index);
-  //                   });
-  //                   Scaffold.of(context)
-  //                       .showSnackBar(SnackBar(content: Text("Song removed")));
-  //                 },
-  //                 background: Container(color: Theme.of(context).primaryColor),
-  //                 child: SongTile(song: _queue[index]),
-  //               )
-  //             : SongTile(song: _queue[index]);
-  //       },
-  //     );
-  // }
-
   Widget _musicPanel() {
     return Consumer<PlayerModel>(
       builder: (context, player, child) {
@@ -593,39 +569,6 @@ class _RoomState extends State<Room> {
     );
   }
 
-  // Future<void> _errorQueueDialog() async {
-  //   return showDialog<void>(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Row(
-  //           crossAxisAlignment: CrossAxisAlignment.center,
-  //           children: <Widget>[
-  //             Icon(
-  //               Icons.error_outline,
-  //             ),
-  //             SizedBox(width: 4.0),
-  //             const Text('Error'),
-  //           ],
-  //         ),
-  //         content: SingleChildScrollView(
-  //           child: Center(
-  //             child: Text('Unable to load queue'),
-  //           ),
-  //         ),
-  //         actions: <Widget>[
-  //           FlatButton(
-  //             child: const Text('OK'),
-  //             onPressed: () =>
-  //                 Navigator.popUntil(context, ModalRoute.withName('/home')),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   String listServices() {
     String services = '';
 
@@ -661,10 +604,6 @@ class _RoomState extends State<Room> {
       }
     }
 
-    // setState(() {
-    //   _allowedServices.removeAll(_removeableServices);
-    // });
-
     if (_allowedServices.isNotEmpty) {
       setState(() {
         Provider.of<PlayerModel>(context, listen: false)
@@ -677,6 +616,30 @@ class _RoomState extends State<Room> {
     return connectedtoAll;
   }
 
+  // Widget _queueListView() {
+  //   return ListView.builder(
+  //       physics: BouncingScrollPhysics(),
+  //       itemCount: _queue.length,
+  //       itemBuilder: (context, index) {
+  //         return args.host == true
+  //             ? Dismissible(
+  //                 key: ObjectKey(_queue[index]),
+  //                 onDismissed: (direction) {
+  //                   setState(() {
+  //                     client.DeleteSong(_queue[index]);
+  //                     // _queue.removeAt(index);
+  //                   });
+  //                   Scaffold.of(context)
+  //                       .showSnackBar(SnackBar(content: Text("Song removed")));
+  //                 },
+  //                 background: Container(color: Theme.of(context).primaryColor),
+  //                 child: SongTile(song: _queue[index]),
+  //               )
+  //             : SongTile(song: _queue[index]);
+  //       },
+  //     );
+  // }
+
   // loadQueue() async {
   //   client.GetQueue().then((q) {
   //     if (q != null) {
@@ -685,5 +648,38 @@ class _RoomState extends State<Room> {
   //       });
   //     }
   //   });
+  // }
+
+  // Future<void> _errorQueueDialog() async {
+  //   return showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Row(
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: <Widget>[
+  //             Icon(
+  //               Icons.error_outline,
+  //             ),
+  //             SizedBox(width: 4.0),
+  //             const Text('Error'),
+  //           ],
+  //         ),
+  //         content: SingleChildScrollView(
+  //           child: Center(
+  //             child: Text('Unable to load queue'),
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           FlatButton(
+  //             child: const Text('OK'),
+  //             onPressed: () =>
+  //                 Navigator.popUntil(context, ModalRoute.withName('/home')),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
   // }
 }
