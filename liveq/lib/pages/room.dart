@@ -94,7 +94,7 @@ class _RoomState extends State<Room> {
 
     // initialize and subscribe to server stream of songs in queue
     // timer = Timer.periodic(Duration(milliseconds: 100), (_) => loadQueue());
-    timer = Timer.periodic(Duration(milliseconds: 100),
+    timer = Timer.periodic(Duration(milliseconds: 200),
         (_) => Provider.of<PlayerModel>(context, listen: false).loadQueue());
   }
 

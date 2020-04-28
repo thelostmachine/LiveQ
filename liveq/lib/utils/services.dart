@@ -111,7 +111,7 @@ class SoundCloud extends Service {
     int result = await player.play(uri);
     if (result == 1) {
       player.onPlayerCompletion.listen((event) {
-        playerApi.onComplete();
+        playerApi.next();
       });
     } else {
       print("FAIL");
@@ -215,7 +215,7 @@ class Spotify extends Service {
     await SpotifySdk.play(spotifyUri: uri);
     SpotifySdk.subscribePlayerContext().listen((playerContext) {
       if (playerContext.uri.contains('station')) {
-        player.onComplete();
+        player.next();
       }
     });
   }
