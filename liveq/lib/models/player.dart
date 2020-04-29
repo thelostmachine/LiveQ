@@ -14,6 +14,13 @@ class PlayerModel with ChangeNotifier {
 
   RoomPlayerState state = RoomPlayerState.stopped;
 
+  void dispose() {
+    if (currentService != null) {
+      pause();
+    }
+    super.dispose();
+  }
+
   Song getNextSong() {
     Song next = queue[0];
     client.DeleteSong(next);
