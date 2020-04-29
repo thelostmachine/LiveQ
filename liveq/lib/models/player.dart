@@ -59,12 +59,15 @@ class PlayerModel with ChangeNotifier {
   }
 
   void next() async {
+    if (currentService != null) {
+      pause();
+    }
     if (queue.isNotEmpty) {
       Song nextSong = getNextSong();
 
       // // Stop playing the current song on the current service if we're switching Services
       // if (currentService != nextSong.service) {
-      pause();
+      // pause();
       // }
 
       currentSong = nextSong;
@@ -73,9 +76,6 @@ class PlayerModel with ChangeNotifier {
       state = RoomPlayerState.playing;
       // return play(_currentSong);
     } else {
-      if (currentService != null) {
-        pause();
-      }
       currentSong = null;
       state = RoomPlayerState.stopped;
     }
