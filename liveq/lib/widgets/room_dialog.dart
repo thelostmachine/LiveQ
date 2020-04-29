@@ -9,22 +9,22 @@ Future<void> joinRoomDialog(
     builder: (BuildContext context) {
       return AlertDialog(
         // title: Text('Enter Room Code'),
-        content: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: TextFormField(
-            autofocus: true,
-            controller: myController,
-            decoration: InputDecoration(
-              labelText: 'Room Code',
-              hintText: "eg. abcd1234",
-              icon: Icon(Icons.vpn_key),
-              // errorText: (myController.text.length != 8 &&
-              //         myController.text.isNotEmpty)
-              //     ? 'Room code should have exactly 8 characters'
-              //     : null,
-            ),
+        // content: SingleChildScrollView(
+        //   scrollDirection: Axis.vertical,
+        content: TextFormField(
+          autofocus: true,
+          controller: myController,
+          decoration: InputDecoration(
+            labelText: 'Room Code',
+            hintText: "eg. abcd1234",
+            icon: Icon(Icons.vpn_key),
+            // errorText: (myController.text.length != 8 &&
+            //         myController.text.isNotEmpty)
+            //     ? 'Room code should have exactly 8 characters'
+            //     : null,
           ),
         ),
+        // ),
         actions: <Widget>[
           FlatButton(
               child: const Text('CANCEL'),
@@ -92,18 +92,18 @@ Future<void> createRoomDialog(
     builder: (BuildContext context) {
       return AlertDialog(
         // title: Text('Enter Room Name'),
-        content: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: TextFormField(
-            autofocus: true,
-            controller: myController,
-            decoration: InputDecoration(
-              labelText: 'Room Name',
-              hintText: "eg. John's Room",
-              icon: Icon(Icons.person),
-            ),
+        // content: SingleChildScrollView(
+        //   scrollDirection: Axis.vertical,
+        content: TextFormField(
+          autofocus: true,
+          controller: myController,
+          decoration: InputDecoration(
+            labelText: 'Room Name',
+            hintText: "eg. John's Room",
+            icon: Icon(Icons.person),
           ),
         ),
+        // ),
         actions: <Widget>[
           FlatButton(
               child: const Text('CANCEL'),
