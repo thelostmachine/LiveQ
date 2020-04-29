@@ -74,17 +74,6 @@ Future<void> joinRoomDialog(
                       roomName: roomName, roomID: roomId, host: false),
                 );
               }
-              // client.key = 'test_roomId';
-              // Navigator.pop(context);
-              // Navigator.pushNamed(
-              //   context,
-              //   '/room',
-              //   arguments: RoomArguments(
-              //     roomName: 'test_roomName',
-              //     roomID: myController.text,
-              //     host: false,
-              //   ),
-              // );
             },
           ),
         ],
@@ -121,31 +110,31 @@ Future<void> createRoomDialog(
           FlatButton(
             child: const Text('SUBMIT'),
             onPressed: () async {
-              String roomName = myController.text;
-              print('creating $roomName');
-              String roomId = await client.CreateRoom(roomName);
+              // String roomName = myController.text;
+              // print('creating $roomName');
+              // String roomId = await client.CreateRoom(roomName);
 
-              print('create room with id $roomId');
+              // print('create room with id $roomId');
 
-              Navigator.pop(context);
-              Navigator.pushNamed(
-                context,
-                '/room',
-                arguments: RoomArguments(
-                    roomName: roomName, roomID: roomId, host: true),
-              );
-
-              // client.key = 'test_roomId';
               // Navigator.pop(context);
               // Navigator.pushNamed(
               //   context,
               //   '/room',
               //   arguments: RoomArguments(
-              //     roomName: myController.text,
-              //     roomID: 'test_roomId',
-              //     host: true,
-              //   ),
+              //       roomName: roomName, roomID: roomId, host: true),
               // );
+
+              client.key = 'test_roomId';
+              Navigator.pop(context);
+              Navigator.pushNamed(
+                context,
+                '/room',
+                arguments: RoomArguments(
+                  roomName: myController.text,
+                  roomID: 'test_roomId',
+                  host: true,
+                ),
+              );
             },
           ),
         ],

@@ -481,6 +481,7 @@ class _RoomState extends State<Room> {
     if (_connectedToServices) {
       _availableServices.addAll(_allowedServices.map((s) => s.name).toList());
     }
+
     final result = await Navigator.pushNamed(context, '/search',
         arguments: SearchArguments(
             searchService: _searchService != null ? _searchService.name : null,
