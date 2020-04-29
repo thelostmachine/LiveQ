@@ -146,18 +146,15 @@ class Api {
     func getRequest(endpoint: Endpoint, query: String, _ finished: @escaping (_ json: JSON) -> Void) {
         let urlString = baseUri + endpoint.rawValue + "?search=\(query)"
         guard let url = URL(string: urlString) else { return }
-//        print(urlString)
-//        print(url)
+        
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "GET"
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             
             guard let data = data, error == nil else { return }
-//            print("GET RETURNED")
             do {
                 let json = try JSON(data: data)
-//                print(json)
                 finished(json)
             } catch {
                 print(error)
@@ -179,10 +176,8 @@ class Api {
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             
             guard let data = data, error == nil else { return }
-//            print("POST RETURNED")
             do {
                 let json = try JSON(data: data)
-//                print(json)
                 finished(json)
             } catch {
                 print(error)

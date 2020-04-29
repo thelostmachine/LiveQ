@@ -136,25 +136,6 @@ class SoundCloud: Service {
         }
         task.resume()
     }
-    
-    func testTrack(id: String, finished: @escaping ((_ isSuccess: Bool) -> Void)) {
-        let testUrl = "https://api.soundcloud.com/tracks/\(id)?client_id=\(playId)"
-        var request: URLRequest = URLRequest(url: URL(string: testUrl)!)
-        request.httpMethod = "GET"
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let response = response {
-                let httpResponse = response as! HTTPURLResponse
-                
-                if httpResponse.statusCode == 200 {
-                    finished(true)
-                } else {
-                    finished(false)
-                }
-            }
-        }
-        task.resume()
-    }
 }
 
 class Spotify: NSObject, Service, SPTAppRemoteDelegate {

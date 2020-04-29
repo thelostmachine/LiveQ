@@ -105,13 +105,6 @@ class _RoomState extends State<Room> {
     timer.cancel();
     if (args != null) {
       if (args.host) {
-<<<<<<< HEAD
-        // if (Provider.of<PlayerModel>(context, listen: false).currentService !=
-        //     null) {
-        //   Provider.of<PlayerModel>(context, listen: false).pause();
-        // }
-        client.DeleteRoom();
-=======
         // print('host');
         // print(Provider.of<PlayerModel>(context, listen: false).currentService == null);
         // if (Provider.of<PlayerModel>(context, listen: false).currentService !=
@@ -120,7 +113,6 @@ class _RoomState extends State<Room> {
           // Provider.of<PlayerModel>(context, listen: false).pause();
         // }
         Api.deleteRoom();
->>>>>>> shaheer
       } else {
         Api.leaveRoom();
       }
