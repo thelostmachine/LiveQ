@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -66,19 +67,25 @@ class _ConnectServicesState extends State<ConnectServices> {
                     value: catalog.connectedServices.contains(
                         Provider.of<CatalogModel>(context, listen: false)
                             .potentialServices[index]),
-                    onChanged: (bool value) {
-                      setState(() {
-                        value
-                            ? catalog.addToConnectedServices(
-                                Provider.of<CatalogModel>(context,
-                                        listen: false)
-                                    .potentialServices[index])
-                            : catalog.removeFromConnectedServices(
-                                Provider.of<CatalogModel>(context,
-                                        listen: false)
-                                    .potentialServices[index]);
-                      });
-                    },
+                    onChanged: (kIsWeb == true &&
+                            Provider.of<CatalogModel>(context, listen: false)
+                                    .potentialServices[index]
+                                    .name ==
+                                CatalogModel.SPOTIFY)
+                        ? null
+                        : (bool value) {
+                            setState(() {
+                              value
+                                  ? catalog.addToConnectedServices(
+                                      Provider.of<CatalogModel>(context,
+                                              listen: false)
+                                          .potentialServices[index])
+                                  : catalog.removeFromConnectedServices(
+                                      Provider.of<CatalogModel>(context,
+                                              listen: false)
+                                          .potentialServices[index]);
+                            });
+                          },
                     secondary: catalog.potentialServices[index].getImageIcon(),
                   );
                 },

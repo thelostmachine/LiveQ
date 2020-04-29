@@ -71,7 +71,7 @@ class _RoomState extends State<Room> {
                 _allowedServices.add(
                     Provider.of<CatalogModel>(context, listen: false)
                         .fromString(s));
-                print('found $s');
+                // print('found $s');
               }
               if (_guestServices.isNotEmpty) {
                 _searchService =
@@ -100,11 +100,14 @@ class _RoomState extends State<Room> {
 
   @override
   void dispose() {
-    // Disconnect from services
-
+    // TODO: Disconnect from music services
     timer.cancel();
     if (args != null) {
       if (args.host) {
+        if (Provider.of<PlayerModel>(context, listen: false).currentService !=
+            null) {
+          Provider.of<PlayerModel>(context, listen: false).pause();
+        }
         client.DeleteRoom();
       } else {
         client.LeaveRoom();

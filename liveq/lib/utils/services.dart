@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:liveq/models/player.dart';
+import 'package:liveq/models/catalog.dart';
 import 'dart:convert' as convert;
 import 'package:liveq/utils/utils.dart';
 
@@ -69,7 +70,7 @@ abstract class Service {
 }
 
 class SoundCloud extends Service {
-  final String name = Service.SOUNDCLOUD;
+  final String name = CatalogModel.SOUNDCLOUD;
 
   // final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
   final String clientId = 'e38841b15b2059a39f261df195dfb430';
@@ -168,7 +169,7 @@ class SoundCloud extends Service {
 }
 
 class Spotify extends Service {
-  final String name = Service.SPOTIFY;
+  final String name = CatalogModel.SPOTIFY;
   final String iconImagePath = 'assets/images/Spotify_Icon_RGB_Green.png';
 
   // Developer tokens. DO NOT CHANGE
