@@ -70,9 +70,7 @@ class PlayerModel with ChangeNotifier {
       // pause();
       // }
 
-      currentSong = nextSong;
-      currentService = currentSong.service;
-      play(currentSong);
+      play(nextSong);
       state = RoomPlayerState.playing;
       // return play(_currentSong);
     } else {
