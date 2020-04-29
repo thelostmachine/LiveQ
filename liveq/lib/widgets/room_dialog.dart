@@ -121,7 +121,10 @@ Future<void> createRoomDialog(
                 context,
                 '/room',
                 arguments: RoomArguments(
-                    roomName: roomName, roomID: roomId, host: true),
+                  roomName: roomName,
+                  roomID: roomId,
+                  host: true,
+                ),
               );
 
               // client.key = 'test_roomId';
