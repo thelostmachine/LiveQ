@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:liveq/utils/player.dart';
+import 'package:liveq/utils/api.dart';
 
 // import 'package:liveq/utils/client_interface.dart';
 import 'package:liveq/utils/services.dart';
@@ -9,43 +9,46 @@ import 'package:liveq/utils/song.dart';
 class PlayerModel with ChangeNotifier {
   Song currentSong;
   Service currentService;
+  bool songComplete = false;
 
   List<Song> queue = List();
 
-  ThisPlayerState state = ThisPlayerState.stopped;
+  RoomPlayerState state = RoomPlayerState.stopped;
 
   Song getNextSong() {
     Song next = queue[0];
-    client.DeleteSong(next);
+    Api.deleteSong(next);
     return next;
   }
 
   void play(Song song) async {
     if (song != null) {
-      currentSong = song;
-      currentService = song.service;
+      if (song != currentSong) {
+        currentSong = song;
+        currentService = song.service;
 
-      String uri = currentSong.uri;
-      if (currentService is SoundCloud) {
-        uri = song.id;
+        String uri = currentSong.uri;
+        if (currentService is SoundCloud) {
+          uri = song.trackId;
+        }
+        currentService.play(uri, this);
+        state = RoomPlayerState.playing;
+      } else {
+        resume();
       }
-      currentSong.service.play(uri, this);
-      state = ThisPlayerState.playing;
-    } else {
-      resume();
     }
     notifyListeners();
   }
 
   void resume() {
     currentService.resume();
-    state = ThisPlayerState.playing;
+    state = RoomPlayerState.playing;
     notifyListeners();
   }
 
   void pause() {
     currentService.pause();
-    state = ThisPlayerState.paused;
+    state = RoomPlayerState.paused;
     notifyListeners();
   }
 
@@ -57,19 +60,25 @@ class PlayerModel with ChangeNotifier {
   }
 
   void next() async {
-    if (queue != null && queue.isNotEmpty) {
+    if (queue.isNotEmpty) {
       Song nextSong = getNextSong();
 
-      // Stop playing the current song on the current service if we're switching Services
-      if (currentService != nextSong.service) {
-        pause();
-      }
+      // // Stop playing the current song on the current service if we're switching Services
+      // if (currentService != nextSong.service) {
+      pause();
+      // }
 
       currentSong = nextSong;
       currentService = currentSong.service;
       play(currentSong);
-      state = ThisPlayerState.playing;
+      state = RoomPlayerState.playing;
       // return play(_currentSong);
+    } else {
+      if (currentService != null) {
+        pause();
+      }
+      currentSong = null;
+      state = RoomPlayerState.stopped;
     }
     notifyListeners();
     // return null;
@@ -77,12 +86,18 @@ class PlayerModel with ChangeNotifier {
 
   // Calls when song is finished playing
   void onComplete() {
-    next();
+    // songComplete = true;
+    if (queue.isNotEmpty) {
+      next();
+    } else {
+      currentSong = null;
+      state = RoomPlayerState.stopped;
+    }
     notifyListeners();
   }
 
   void loadQueue() async {
-    client.GetQueue().then((q) {
+    Api.getQueue().then((q) {
       if (q != null) {
         queue = q;
       }

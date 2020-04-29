@@ -6,11 +6,7 @@ target 'LiveQ' do
   use_frameworks!
 
   # Pods for LiveQ
-  #pod 'Spartan'
-  #pod "SpotifyKit"
   pod 'Alamofire', '~> 5.1'
-#  pod 'SwiftGRPC'
-#  pod 'SwiftProtobuf'
-  #pod 'gRPC-Swift', '~> 1.0.0-alpha.11'
+  pod 'SwiftyJSON', '~> 4.0'
 
 end

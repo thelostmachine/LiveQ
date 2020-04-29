@@ -4,7 +4,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
-import 'package:liveq/models/player_new.dart';
+import 'package:liveq/models/player.dart';
+import 'package:liveq/models/catalog.dart';
 import 'dart:convert' as convert;
 import 'package:liveq/utils/utils.dart';
 
@@ -69,7 +70,7 @@ abstract class Service {
 }
 
 class SoundCloud extends Service {
-  final String name = Service.SOUNDCLOUD;
+  final String name = CatalogModel.SOUNDCLOUD;
 
   // final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
   final String clientId = 'e38841b15b2059a39f261df195dfb430';
@@ -127,29 +128,28 @@ class SoundCloud extends Service {
 
   @override
   Future<List<Song>> search(String query) async {
-    print("START SEARCHING SOUNDCLOUD");
-    List<Song> searchResults = List();
-    String search = 'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
     
+    List<Song> searchResults = List();
+    String search =
+        'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
+
     var response = await http.get(search);
 
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
 
       for (var item in jsonResponse) {
-
         if (item['kind'] == 'track' && item['artwork_url'] != null) {
           var track = item;
-          String id = track['id'].toString();
+          String trackId = track['id'].toString();
           String uri = track['uri'];
           String trackName = track['title'];
           String artist = track['user']['username'];
           String imageUri = track['artwork_url'];
           int duration = track['duration'];
           Service service = this;
-          print("SOUNDCLOUD TRACKNAME: $trackName");
 
-          Song song = Song(id, uri, trackName, artist, imageUri, duration, service);
+          Song song = Song(0, trackId, uri, trackName, artist, imageUri, duration, service);
           searchResults.add(song);
         }
       }
@@ -157,17 +157,20 @@ class SoundCloud extends Service {
       print('ERROR');
       print(response.statusCode);
     }
-    print("DONE SEARCHING SOUNDCLOUD");
+
     return searchResults;
   }
 
   String formatSearch(String query) {
-    return query.replaceAll(' ', '%20');
+    String s = query.replaceAll(' ', '%20');
+    s = s.replaceAll('(', '%28');
+    s = s.replaceAll(')', '%29');
+    return s;
   }
 }
 
 class Spotify extends Service {
-  final String name = Service.SPOTIFY;
+  final String name = CatalogModel.SPOTIFY;
   final String iconImagePath = 'assets/images/Spotify_Icon_RGB_Green.png';
 
   // Developer tokens. DO NOT CHANGE
@@ -215,7 +218,7 @@ class Spotify extends Service {
     SpotifySdk.subscribePlayerContext().listen((playerContext) {
       if (playerContext.uri.contains('station')) {
         player.next();
-      } 
+      }
     });
   }
 
@@ -230,18 +233,16 @@ class Spotify extends Service {
   Future<List<Song>> search(String query) async {
     List<Song> searchResults = List();
 
-    var search = await spotifyWebApi.search
-        .get(query)
-        .first()
-        .catchError((err) {
-          print('SPOTIFY ERROR: ${(err as SpotifyException).message}');
-        });
+    var search =
+        await spotifyWebApi.search.get(query).first().catchError((err) {
+      print('SPOTIFY ERROR: ${(err as SpotifyException).message}');
+    });
 
     if (search != null) {
       search.forEach((pages) {
         pages.items.forEach((track) async {
           if (track is Track) {
-            String id = track.id;
+            String trackId = track.id;
             String uri = track.uri;
             String trackName = track.name;
             List<String> _artistNames =
@@ -252,7 +253,7 @@ class Spotify extends Service {
             Service service = this;
 
             searchResults.add(
-                Song(id, uri, trackName, artists, imageUri, duration, service));
+                Song(0, trackId, uri, trackName, artists, imageUri, duration, service));
           }
         });
       });

@@ -41,9 +41,20 @@ class Home extends StatelessWidget {
                             : () => Navigator.pushNamed(
                                 context, '/connect_services'),
                       );
+                      // return KeyboardAvoiding(
+                      //     child: NextButton(
+                      //   'CREATE NEW ROOM',
+                      //   catalog.connectedServices.isNotEmpty == true
+                      //       ? () => createRoomDialog(context, myController1)
+                      //       : () => Navigator.pushNamed(
+                      //           context, '/connect_services'),
+                      // ));
                     }),
                     NextButton('JOIN A ROOM',
-                        () => joinRoomDialog(context, myController2)),
+                        () => joinRoomDialog(context, myController2))
+                    // KeyboardAvoiding(
+                    //     child: NextButton('JOIN A ROOM',
+                    //         () => joinRoomDialog(context, myController2))),
                   ],
                 ),
               ),

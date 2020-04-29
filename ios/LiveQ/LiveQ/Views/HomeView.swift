@@ -12,8 +12,18 @@ struct HomeView: View {
     
     @EnvironmentObject var viewRouter: ViewRouter
     
+    let api = Api.instance
+    
     var body: some View {
         VStack {
+            
+            NavigationLink(destination: ServicesView()) {
+                Image(systemName: "gear")
+            }
+//            Button(action: {
+//
+//            })
+             
             Spacer()
             
             Text("LiveQ")
@@ -68,31 +78,27 @@ struct HomeView: View {
         
         alert.addTextField() { textField in
             if !creating {
-                textField.text = self.viewRouter.roomID
+                textField.text = self.viewRouter.roomKey
             } else {
                 textField.placeholder = placeholder
             }
         }
         // TODO: add loading screen when communicating with server
         alert.addAction(UIAlertAction(title: "Confirm", style: .default) { _ in
+                
             if creating {
-                self.viewRouter.roomName = alert.textFields?.first?.text ?? "party"
                 
-                self.viewRouter.roomID = client.createRoom(name: self.viewRouter.roomName)
-                self.viewRouter.isHost = true
-            } else {
-                self.viewRouter.roomID = alert.textFields?.first?.text ?? ""
+                let roomName = alert.textFields?.first?.text ?? "Party"
+                self.api.createRoom(roomName: roomName, self.incorrectAlert)
                 
-                self.viewRouter.roomName = client.joinRoom(key: self.viewRouter.roomID)
-                self.viewRouter.isHost = false
-            }
-            
-            if self.viewRouter.roomName.isEmpty || self.viewRouter.roomName == "-1" || self.viewRouter.roomID.isEmpty {
-                self.incorrectAlert(wrongName: self.viewRouter.roomName.isEmpty)
-                self.viewRouter.roomName = ""
-                self.viewRouter.roomID = ""
             } else {
-                self.viewRouter.currentPage = .Room
+                
+                let roomKey = alert.textFields?.first?.text ?? ""
+                if roomKey.isEmpty {
+                    self.incorrectAlert(wrongName: false)
+                } else {
+                    self.api.joinRoom(roomKey: roomKey, self.incorrectAlert)
+                }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in })

@@ -29,6 +29,8 @@ class Player: NSObject, ObservableObject, SPTAppRemotePlayerStateDelegate {
     @Published var isHost: Bool = false
     var currentState: PlayerState = .Stopped
     
+    let api = Api.instance
+    
     func play(song: Song?) {
         if let song = song {
             print("playing")
@@ -38,7 +40,7 @@ class Player: NSObject, ObservableObject, SPTAppRemotePlayerStateDelegate {
             var uri: String = song.uri
             if (currentService is SoundCloud) {
                 print("soundcloud")
-                uri = String(song.id)
+                uri = String(song.trackId)
             }
             
             currentService?.play(uri)
@@ -65,7 +67,8 @@ class Player: NSObject, ObservableObject, SPTAppRemotePlayerStateDelegate {
     func getNextSong() -> Song? {
         if queue.count > 0 {
             let nextSong = queue[0]
-            client.deleteSong(song: nextSong)
+            api.deleteSong(song: nextSong)
+//            client.deleteSong(song: nextSong) // TODO
             return nextSong
         }
         
@@ -73,16 +76,18 @@ class Player: NSObject, ObservableObject, SPTAppRemotePlayerStateDelegate {
     }
     
     func loadQueue() {
-        let songs = client.getQueue()
-        if songs != self.queue {
-            DispatchQueue.main.async {
-                self.queue = songs
+        api.getQueue() { songs in
+            if songs != self.queue {
+                DispatchQueue.main.async {
+                    self.queue = songs
+                }
             }
         }
     }
     
     func queueSong(_ song: Song) {
-        client.addSong(song: song)
+        api.addSong(song: song)
+//        client.addSong(song: song) // TODO
     }
     
     

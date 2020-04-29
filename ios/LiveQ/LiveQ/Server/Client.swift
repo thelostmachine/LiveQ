@@ -125,35 +125,35 @@ class Client: NSObject {
         }
     }
     
-    func getQueue() -> [Song] {
-        var queue = [Song]()
-        let request = Liveq_KeyRequest.with {
-            $0.roomKey = self.key
-        }
-        
-        let reply = stub.getQueue(request) { song in
-//            print("received \(song.name)")
-            let qSong: Song = Song(
-                id: song.songID,
-                uri: song.uri,
-                name: song.name,
-                artists: [Artist.init(name: song.artist)],
-                imageUri: song.imageUri,
-                duration: Int(song.duration),
-                service: fromString(song.service))
-//                                   Service.fromString(song.service.name))
-                //Service.init(rawValue: song.service)!)
-            queue.append(qSong)
-        }
-        
-        do {
-            _ = try reply.status.recover { _ in .processingError }.wait()
-        } catch {
-            print("failed to get queue")
-        }
-        
-        return queue
-    }
+//    func getQueue() -> [Song] {
+//        var queue = [Song]()
+//        let request = Liveq_KeyRequest.with {
+//            $0.roomKey = self.key
+//        }
+//        
+//        let reply = stub.getQueue(request) { song in
+////            print("received \(song.name)")
+//            let qSong: Song = Song(
+//                id: song.songID,
+//                uri: song.uri,
+//                name: song.name,
+//                artists: [Artist.init(name: song.artist)],
+//                imageUri: song.imageUri,
+//                duration: Int(song.duration),
+//                service: fromString(song.service))
+////                                   Service.fromString(song.service.name))
+//                //Service.init(rawValue: song.service)!)
+//            queue.append(qSong)
+//        }
+//        
+//        do {
+//            _ = try reply.status.recover { _ in .processingError }.wait()
+//        } catch {
+//            print("failed to get queue")
+//        }
+//        
+//        return queue
+//    }
     
     func addService(_ service: Service) {
         let serviceMsg = Liveq_ServiceMsg.with {

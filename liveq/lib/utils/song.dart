@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:liveq/utils/services.dart';
 
 class Song {
-  String id;
+  int pk;
+  String trackId;
   String uri;
   String trackName;
   String artists;
@@ -14,7 +15,7 @@ class Song {
   Service service;
   Image cachedImage;
 
-  Song(this.id, this.uri, this.trackName, this.artists, this.imageUri,
+  Song(this.pk, this.trackId, this.uri, this.trackName, this.artists, this.imageUri,
       this.duration, this.service);
 
   void cacheImage(Image image) {
@@ -42,6 +43,6 @@ class Song {
 
   @override
   String toString() {
-    return '$trackName\n$id\n$uri\n$artists\n$duration\n$imageUri\n\n';
+    return '$trackName\n$trackId\n$uri\n$artists\n$duration\n$imageUri\n${service.name}\n\n';
   }
 }

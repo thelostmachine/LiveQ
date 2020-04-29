@@ -14,7 +14,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   List<Song> items = List();
-  TextEditingController _editingController = TextEditingController();
+  final TextEditingController _editingController = TextEditingController();
   SearchArguments args;
   Service _searchService;
   Set<Service> _allowedServices = {};
@@ -38,9 +38,14 @@ class _SearchState extends State<Search> {
             .toList());
       }
     });
-    // _player.setService(SoundCloud());
-    // _player.searchService = SoundCloud();
-    // _isConnected = true;
+
+    // _editingController.addListener(_searchLatestValue());
+  }
+
+  @override
+  void dispose() {
+    _editingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,7 +70,7 @@ class _SearchState extends State<Search> {
               onPressed: () => Navigator.pop(context),
             ),
             title: TextField(
-              onChanged: (query) {
+              onChanged: (String query) {
                 search(query);
               },
               autofocus: true,
@@ -164,8 +169,8 @@ class _SearchState extends State<Search> {
                 itemCount: _allowedServices.length,
                 itemBuilder: (BuildContext context, int index) {
                   return (_allowedServices.toList()[index].name !=
-                              _searchService.name) // &&
-                          // _allowedServices.toList()[index].isConnected == true)
+                          _searchService.name) // &&
+                      // _allowedServices.toList()[index].isConnected == true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
@@ -237,4 +242,8 @@ class _SearchState extends State<Search> {
       });
     }
   }
+
+  // _searchLatestValue() {
+  //   search(_editingController.text);
+  // }
 }

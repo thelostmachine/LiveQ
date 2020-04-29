@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:liveq/utils/client_interface.dart';
 
-enum ThisPlayerState {
+enum RoomPlayerState {
   playing,
   paused,
   stopped,
@@ -24,6 +24,6 @@ class SearchArguments {
   SearchArguments({this.searchService, this.allowedServices});
 }
 
-Client client = Client();
+// Client client = Client();
 
 bool isHost = false;
