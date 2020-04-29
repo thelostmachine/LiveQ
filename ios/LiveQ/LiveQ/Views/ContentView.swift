@@ -27,6 +27,9 @@ struct ContentView: View {
 //                SearchView().transition(.move(edge: .trailing))
 //            }
         }
+        .onAppear {
+            Api.instance.viewRouter = self.viewRouter
+        }
     }
 }
 

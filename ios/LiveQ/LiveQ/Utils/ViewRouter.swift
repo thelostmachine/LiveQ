@@ -23,6 +23,6 @@ class ViewRouter: ObservableObject {
     }
     
     var roomName: String = ""
-    var roomID: String = ""
+    var roomKey: String = ""
     var isHost: Bool = false
 }

@@ -16,7 +16,7 @@ import SwiftUI
 //    Song(id: 3, "FEFE", "6ix9ine", .SoundCloud),
 //]
 
-let client = Client()
+//let client = Client()
 
 //var authorizationToken: String?
 
@@ -40,7 +40,8 @@ struct SearchResult: Decodable {
         
         for item in tracks.items {
             let song = Song(
-                id: item.id,
+                id: Int.random(in: 1..<1500),
+                trackId: item.id,
                 uri: item.uri,
                 name: item.name,
                 artists: item.artists,

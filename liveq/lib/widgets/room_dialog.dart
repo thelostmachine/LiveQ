@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/api.dart';
 
 import 'package:liveq/utils/utils.dart';
 
@@ -32,13 +33,31 @@ Future<void> joinRoomDialog(
                 Navigator.pop(context);
               }),
           FlatButton(
+              // child: const Text('SUBMIT'),
+              // onPressed: () async {
+              //   String roomId = myController.text;
+              //   String roomName = await Api.joinRoom(roomId);
+              //   print('joining room $roomName');
+
+              //   if (roomId.isEmpty || roomName == null || roomName.isEmpty) {
+              //     showDialog(
+              //         context: context,
+              //         // barrierDismissible: false,
+              //         builder: (BuildContext context) {
+              //           return AlertDialog(
+              //             title: Text('Unable to join Room. Incorrect Key'),
+              //             actions: <Widget>[
+              //               FlatButton(
+              //                 child: Text('Ok'),
+              //                 onPressed: () => Navigator.of(context).pop(),
+              //               )
             child: const Text('SUBMIT'),
             onPressed: () async {
               String roomId = myController.text;
-              String roomName = await client.JoinRoom(roomId);
+              String roomName = await Api.joinRoom(roomId);
               print('joining room $roomName');
 
-              if (roomName.startsWith('Error')) {
+              if (roomId.isEmpty || roomName == null || roomName.isEmpty) {
                 showDialog(
                     context: context,
                     // barrierDismissible: false,
@@ -106,29 +125,29 @@ Future<void> createRoomDialog(
         // ),
         actions: <Widget>[
           FlatButton(
-              child: const Text('CANCEL'),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
+            child: const Text('CANCEL'),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
           FlatButton(
             child: const Text('SUBMIT'),
             onPressed: () async {
               String roomName = myController.text;
               print('creating $roomName');
-              String roomId = await client.CreateRoom(roomName);
+              String roomId = await Api.createRoom(roomName);
 
-              print('create room with id $roomId');
+            print('create room with id $roomId');
 
-              Navigator.pop(context);
-              Navigator.pushNamed(
-                context,
-                '/room',
-                arguments: RoomArguments(
-                  roomName: roomName,
-                  roomID: roomId,
-                  host: true,
-                ),
-              );
+            Navigator.pop(context);
+            Navigator.pushNamed(
+              context,
+              '/room',
+              arguments: RoomArguments(
+                roomName: roomName,
+                roomID: roomId,
+                host: true,
+              ),
+            );
 
               // client.key = 'test_roomId';
               // Navigator.pop(context);

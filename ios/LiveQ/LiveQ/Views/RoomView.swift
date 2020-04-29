@@ -19,20 +19,9 @@ struct RoomView: View {
     @State private var authorized = false
     @State private var showingAlert = false
     @State private var exiting = false
+    @State var playerPaused = true
     
-//    let player: Player = Player()
-    
-//    private var appRemote: SPTAppRemote? {
-//        get {
-//            return (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.appRemote
-//        }
-//    }
-//
-//    private var playerState: SPTAppRemotePlayerState {
-//        get {
-//            return (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)!.playerState
-//        }
-//    }
+    let api = Api.instance
     
     init() {
         UINavigationBar.appearance().largeTitleTextAttributes = [.font : UIFont(name: "Georgia", size: 20)!]
@@ -49,29 +38,51 @@ struct RoomView: View {
                 
                 if self.viewRouter.isHost {
                     HStack {
-                        Button("Play") {
+                        Button(action: {
                             print("play")
-                            if self.player.currentState == .Stopped {
-                                self.player.next()
-    //                            self.player.play(song: self.getNextSong())
+                            if self.playerPaused {
+                                if self.player.currentState == .Stopped {
+                                    self.player.next()
+                                } else {
+                                    self.player.resume()
+                                }
                             } else {
-                                self.player.resume()
+                                self.player.pause()
                             }
-    //                        self.appRemote?.playerAPI?.resume(nil)
+                            self.playerPaused.toggle()
+                        }) {
+                            Image(systemName: self.playerPaused ? "play.circle" : "pause.circle")
+                            .resizable()
+                            .frame(width: 40, height: 40)
                         }
-                        Button("Pause") {
-                            print("pause")
-                            self.player.pause()
-    //                        self.appRemote?.playerAPI?.pause(nil)
+                        
+                        
+                        if self.player.currentSong != nil{
+                            Spacer()
+                            
+//                            ImageView(withURL: self.player.currentSong!.imageUri)
+//                            Spacer()
+//                                .frame(width: 10)
+                            VStack {
+                                Text(self.player.currentSong!.name)
+                                Text(self.player.currentSong!.getArtistString())
+                            }
+                            Spacer()
+                        } else {
+                            Spacer()
                         }
-                        Button("Next") {
+                        
+                        
+                        Button(action: {
                             print("next")
-    //                        self.nextManual(song: self.getNextSong())
-    //                        self.player.play(song: self.getNextSong())
                             self.player.next()
-    //                        self.appRemote?.playerAPI?.play(self.queue.songs(at: 0).uri, callback: nil)
+                        }) {
+                            Image(systemName: "forward.end")
+                            .resizable()
+                            .frame(width: 40, height: 40)
                         }
                     }
+                    .padding()
                 }
                 
             }
@@ -85,27 +96,17 @@ struct RoomView: View {
                     }
                     .alert(isPresented: $exiting) {
                         Alert(title: Text("Are you sure?"), message: Text(self.viewRouter.isHost ? "The room will be deleted if you leave" : "Do you want to exit"), primaryButton: .default(Text("No")), secondaryButton: .default(Text("Yes"), action: {
-                            client.leaveRoom()
-                            if self.viewRouter.isHost {
-                                client.deleteRoom()
-                            }
                             
-                            self.viewRouter.roomName = ""
-                            self.viewRouter.roomID = ""
-                            self.viewRouter.currentPage = .Home
+                            if self.viewRouter.isHost {
+                                self.api.deleteRoom()
+                            } else {
+                                self.api.leaveRoom()
+                            }
                         }))
                     },
-//                    Button("Exit") {
-//                        self.viewRouter.currentPage = .Home
-//                    },
                 trailing:
                 HStack {
-                    if self.viewRouter.isHost {
-                        NavigationLink(destination: ServicesView()) {
-                            Text("Connect")
-                        }
-                        Spacer(minLength: 30)
-                    }
+                    
                     NavigationLink(destination: SearchView()) {
                         Image(systemName: "magnifyingglass")
                     }
@@ -118,8 +119,8 @@ struct RoomView: View {
                         Image(systemName: "square.and.arrow.up")
                     }
                     .alert(isPresented: $showingAlert) {
-                        Alert(title: Text("Room Code"), message: Text(self.viewRouter.roomID), primaryButton: .default(Text("Copy"), action: {
-                            UIPasteboard.general.string = self.viewRouter.roomID
+                        Alert(title: Text("Room Code"), message: Text(self.viewRouter.roomKey), primaryButton: .default(Text("Copy"), action: {
+                            UIPasteboard.general.string = self.viewRouter.roomKey
                         }), secondaryButton: .default(Text("OK")))
                     }
                 }
@@ -128,7 +129,6 @@ struct RoomView: View {
         }
         .foregroundColor(Color(hex: 0xffed6c6c))
         .onAppear {
-//            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.playerStateDelegate = self
             print("howdy")
             if !self.authorized {
 //                spotifyManager.authorize()
@@ -136,11 +136,14 @@ struct RoomView: View {
             }
             
             if !self.viewRouter.isHost {
-                self.player.allowedServices = client.getServices()
+//                self.player.allowedServices = client.getServices() // TODO
+                self.api.getServices() { services in
+                    self.player.allowedServices = services
+                }
                 self.player.isHost = false
                 print("got services")
             } else {
-                self.player.allowedServices = self.player.connectedServices
+                self.player.allowedServices = self.player.allowedServices
                 self.player.isHost = true
                 print("set services")
             }
@@ -148,6 +151,7 @@ struct RoomView: View {
             for service in self.player.allowedServices {
                 print("\(service.name)")
                 service.connect()
+                self.api.addService(service: service.name)
             }
             
             DispatchQueue.global(qos: .background).async {

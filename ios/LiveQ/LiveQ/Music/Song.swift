@@ -9,7 +9,8 @@
 import Foundation
 
 struct Song: Identifiable, Equatable {
-    var id: String
+    var id: Int
+    var trackId: String
     var uri: String
     
     var service: Service
@@ -20,8 +21,9 @@ struct Song: Identifiable, Equatable {
     var imageUri: String
     var duration: Int
     
-    init(id: String, uri: String, name: String, artists: [Artist], imageUri: String = "", duration: Int = 0, service: Service) {
+    init(id: Int, trackId: String, uri: String, name: String, artists: [Artist], imageUri: String = "", duration: Int = 0, service: Service) {
         self.id = id
+        self.trackId = trackId
         self.uri = uri
         self.name = name
         self.artists = artists
@@ -32,6 +34,7 @@ struct Song: Identifiable, Equatable {
     
     init(song: Song) {
         self.id = song.id
+        self.trackId = song.trackId
         self.uri = song.uri
         self.name = song.name
         self.artists = song.artists
@@ -40,8 +43,8 @@ struct Song: Identifiable, Equatable {
         self.service = song.service
     }
     
-    static func getArtistString(song: Song) -> String {
-        return song.artists.map { $0.name }.joined(separator: ", ")
+    func getArtistString() -> String {
+        return self.artists.map { $0.name }.joined(separator: ", ")
     }
     
     func getDurationString() -> String {
@@ -76,7 +79,7 @@ struct Song: Identifiable, Equatable {
     
     public var description: String {
         return """
-        id: \(id)
+        id: \(trackId)
         uri: \(uri)
         name: \(name)
         artists: \(artists[0].name)
@@ -94,6 +97,5 @@ struct Song: Identifiable, Equatable {
             lhs.imageUri == rhs.imageUri &&
             lhs.duration == rhs.duration &&
             lhs.service.name == rhs.service.name
-        
     }
 }

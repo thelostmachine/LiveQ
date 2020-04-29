@@ -24,6 +24,6 @@ class SearchArguments {
   SearchArguments({this.searchService, this.allowedServices});
 }
 
-Client client = Client();
+// Client client = Client();
 
 bool isHost = false;

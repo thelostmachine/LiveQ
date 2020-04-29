@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:liveq/utils/api.dart';
 import 'package:provider/provider.dart';
 
 // import 'package:liveq/utils/player.dart';
@@ -65,7 +66,7 @@ class _RoomState extends State<Room> {
         } else {
           isHost = false;
           // else if guest, wait for services from server to set available services and to set search service
-          client.GetServices().then((_guestServices) {
+          Api.getServices().then((_guestServices) { // TODO
             setState(() {
               for (String s in _guestServices) {
                 _allowedServices.add(
@@ -94,7 +95,7 @@ class _RoomState extends State<Room> {
 
     // initialize and subscribe to server stream of songs in queue
     // timer = Timer.periodic(Duration(milliseconds: 100), (_) => loadQueue());
-    timer = Timer.periodic(Duration(milliseconds: 200),
+    timer = Timer.periodic(Duration(milliseconds: 500),
         (_) => Provider.of<PlayerModel>(context, listen: false).loadQueue());
   }
 
@@ -104,13 +105,24 @@ class _RoomState extends State<Room> {
     timer.cancel();
     if (args != null) {
       if (args.host) {
+<<<<<<< HEAD
         // if (Provider.of<PlayerModel>(context, listen: false).currentService !=
         //     null) {
         //   Provider.of<PlayerModel>(context, listen: false).pause();
         // }
         client.DeleteRoom();
+=======
+        // print('host');
+        // print(Provider.of<PlayerModel>(context, listen: false).currentService == null);
+        // if (Provider.of<PlayerModel>(context, listen: false).currentService !=
+        //     null) {
+              // print('pausing');
+          // Provider.of<PlayerModel>(context, listen: false).pause();
+        // }
+        Api.deleteRoom();
+>>>>>>> shaheer
       } else {
-        client.LeaveRoom();
+        Api.leaveRoom();
       }
     }
     super.dispose();
@@ -220,23 +232,23 @@ class _RoomState extends State<Room> {
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Are you sure'),
-            content: const Text('Do you want to exit?'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('NO'),
-              ),
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('YES'),
-              ),
-            ],
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Are you sure'),
+        content: const Text('Do you want to exit?'),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('NO'),
           ),
-        )) ??
-        false;
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('YES'),
+          ),
+        ],
+      ),
+    )) ??
+    false;
   }
 
   Future<void> _selectSearchService() async {
@@ -382,7 +394,7 @@ class _RoomState extends State<Room> {
                   key: ObjectKey(player.queue[index]),
                   onDismissed: (direction) {
                     setState(() {
-                      client.DeleteSong(player.queue[index]);
+                      Api.deleteSong(player.queue[index]);
                       // player.queue.removeAt(index);
                     });
                     Scaffold.of(context)
@@ -491,7 +503,7 @@ class _RoomState extends State<Room> {
             allowedServices: _availableServices));
 
     if (result != null) {
-      client.AddSong(result);
+      Api.addSong(result);
     }
   }
 
@@ -597,7 +609,7 @@ class _RoomState extends State<Room> {
       if (serviceConnected) {
         setState(() {
           s.isConnected = true;
-          client.AddService(s.name);
+          Api.addService(s.name);
         });
       } else {
         // if service cannot connect - remove from allowedServices
