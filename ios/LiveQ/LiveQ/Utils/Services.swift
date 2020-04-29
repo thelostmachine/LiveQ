@@ -20,6 +20,7 @@ protocol Service {
     var name: String { get }
     var isSelected: Bool { get set }
     var isConnected: Bool { get set }
+    var isAllowed: Bool { get set }
     var image: UIImage { get }
     
     func connect()
@@ -43,6 +44,7 @@ class SoundCloud: Service {
     private init() {}
     
     var isConnected: Bool = true
+    var isAllowed: Bool = true
     
     var name: String = "SoundCloud"
     var isSelected: Bool = true
@@ -117,7 +119,8 @@ class SoundCloud: Service {
                     let service = self
                     
                     let song = Song(
-                        id: id,
+                        id: Int(id) ?? Int.random(in: 1..<1500),
+                        trackId: id,
                         uri: uri,
                         name: trackName,
                         artists: [artist],
@@ -158,6 +161,8 @@ class Spotify: NSObject, Service, SPTAppRemoteDelegate {
     
     var isSelected: Bool = false
     var isConnected: Bool = false
+    var isAllowed: Bool = false
+    
     var image: UIImage = UIImage(named: "spotify")!
     
     static let instance: Service = Spotify()
@@ -201,29 +206,45 @@ class Spotify: NSObject, Service, SPTAppRemoteDelegate {
     
     func connect() {
         
-        let parameters = ["client_id": self.clientIdentifier,
-                          "client_secret": self.clientSecret,
-                          "grant_type": "client_credentials"]
-        
-        AF.request("https://accounts.spotify.com/api/token", method: .post, parameters: parameters).responseJSON(completionHandler: { response in
-            
-            print(response)
-            print(response.result)
-            let jsonData = response.value as! NSDictionary
-            let token = jsonData.value(forKey: "access_token") as? String
-            self.accessToken = token!
-        })
+//        let parameters = ["client_id": self.clientIdentifier,
+//                          "client_secret": self.clientSecret,
+//                          "grant_type": "client_credentials"]
+//
+//        AF.request("https://accounts.spotify.com/api/token", method: .post, parameters: parameters).responseJSON(completionHandler: { response in
+//
+//            print(response)
+//            print(response.result)
+//            let jsonData = response.value as! NSDictionary
+//            let token = jsonData.value(forKey: "access_token") as? String
+//            self.accessToken = token!
+//        })
         
         if Player.instance.isHost {
-            if let _ = self.appRemote.connectionParameters.accessToken {
-                print("reconnecting")
-                self.appRemote.connect()
-                self.isConnected = self.accessToken != nil
-            } else {
-                print("authorize and play")
-                self.appRemote.authorizeAndPlayURI(trackIdentifier)
-                self.isConnected = self.accessToken != nil
-            }
+            print("authorize and play")
+//            self.appRemote.authorizeAndPlayURI(trackIdentifier)
+//            self.isConnected = self.accessToken != nil
+            print("here")
+//            DispatchQueue.main.async {
+            self.appRemote.authorizeAndPlayURI(self.trackIdentifier)
+            print("connecting on \(Thread.current)")
+            print(self.appRemote.connectionParameters.accessToken)
+            self.appRemote.connect()
+//            }
+//            DispatchQueue.main.schedule(after: ) {
+//                self.appRemote.connect()
+//            }
+//            if let _ = self.appRemote.connectionParameters.accessToken {
+//                print("reconnecting")
+//                self.appRemote.connect()
+//                self.isConnected = self.accessToken != nil
+//            } else {
+//                print("authorize and play")
+//                self.appRemote.authorizeAndPlayURI(trackIdentifier)
+//                self.isConnected = self.accessToken != nil
+//            }
+            
+            print("pausing")
+            print(self.appRemote.playerAPI == nil)
             self.appRemote.playerAPI?.pause()
         }
     }
@@ -303,16 +324,19 @@ class Spotify: NSObject, Service, SPTAppRemoteDelegate {
             }
         })
         self.appRemote.playerAPI?.setRepeatMode(.off)
+        print("established connection \(Thread.current)")
         
     }
     
     func appRemote(_ appRemote: SPTAppRemote, didFailConnectionAttemptWithError error: Error?) {
         self.appRemote.authorizeAndPlayURI(trackIdentifier)
+        self.appRemote.connect()
+        print("failed connected \(error)")
     }
     
     func appRemote(_ appRemote: SPTAppRemote, didDisconnectWithError error: Error?) {
         
-//        print("disconnected: \(error)")
+        print("disconnectedWithError: \(error)")
     }
     
     func disconnect() {

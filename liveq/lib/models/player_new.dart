@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/api.dart';
 import 'package:liveq/utils/player.dart';
 
 // import 'package:liveq/utils/client_interface.dart';
@@ -16,7 +17,7 @@ class PlayerModel with ChangeNotifier {
 
   Song getNextSong() {
     Song next = queue[0];
-    client.DeleteSong(next);
+    Api.deleteSong(next);
     return next;
   }
 
@@ -27,7 +28,7 @@ class PlayerModel with ChangeNotifier {
 
       String uri = currentSong.uri;
       if (currentService is SoundCloud) {
-        uri = song.id;
+        uri = song.trackId;
       }
       currentSong.service.play(uri, this);
       state = ThisPlayerState.playing;
@@ -82,7 +83,7 @@ class PlayerModel with ChangeNotifier {
   }
 
   void loadQueue() async {
-    client.GetQueue().then((q) {
+    Api.getQueue().then((q) {
       if (q != null) {
         queue = q;
       }

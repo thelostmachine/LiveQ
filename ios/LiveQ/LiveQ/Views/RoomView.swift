@@ -20,6 +20,8 @@ struct RoomView: View {
     @State private var showingAlert = false
     @State private var exiting = false
     
+    let api = Api.instance
+    
 //    let player: Player = Player()
     
 //    private var appRemote: SPTAppRemote? {
@@ -85,27 +87,17 @@ struct RoomView: View {
                     }
                     .alert(isPresented: $exiting) {
                         Alert(title: Text("Are you sure?"), message: Text(self.viewRouter.isHost ? "The room will be deleted if you leave" : "Do you want to exit"), primaryButton: .default(Text("No")), secondaryButton: .default(Text("Yes"), action: {
-                            client.leaveRoom()
-                            if self.viewRouter.isHost {
-                                client.deleteRoom()
-                            }
                             
-                            self.viewRouter.roomName = ""
-                            self.viewRouter.roomID = ""
-                            self.viewRouter.currentPage = .Home
+                            if self.viewRouter.isHost {
+                                self.api.deleteRoom()
+                            } else {
+                                self.api.leaveRoom()
+                            }
                         }))
                     },
-//                    Button("Exit") {
-//                        self.viewRouter.currentPage = .Home
-//                    },
                 trailing:
                 HStack {
-                    if self.viewRouter.isHost {
-                        NavigationLink(destination: ServicesView()) {
-                            Text("Connect")
-                        }
-                        Spacer(minLength: 30)
-                    }
+                    
                     NavigationLink(destination: SearchView()) {
                         Image(systemName: "magnifyingglass")
                     }
@@ -118,8 +110,8 @@ struct RoomView: View {
                         Image(systemName: "square.and.arrow.up")
                     }
                     .alert(isPresented: $showingAlert) {
-                        Alert(title: Text("Room Code"), message: Text(self.viewRouter.roomID), primaryButton: .default(Text("Copy"), action: {
-                            UIPasteboard.general.string = self.viewRouter.roomID
+                        Alert(title: Text("Room Code"), message: Text(self.viewRouter.roomKey), primaryButton: .default(Text("Copy"), action: {
+                            UIPasteboard.general.string = self.viewRouter.roomKey
                         }), secondaryButton: .default(Text("OK")))
                     }
                 }
@@ -128,7 +120,6 @@ struct RoomView: View {
         }
         .foregroundColor(Color(hex: 0xffed6c6c))
         .onAppear {
-//            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.playerStateDelegate = self
             print("howdy")
             if !self.authorized {
 //                spotifyManager.authorize()
@@ -136,7 +127,10 @@ struct RoomView: View {
             }
             
             if !self.viewRouter.isHost {
-                self.player.allowedServices = client.getServices()
+//                self.player.allowedServices = client.getServices() // TODO
+                self.api.getServices() { services in
+                    self.player.allowedServices = services
+                }
                 self.player.isHost = false
                 print("got services")
             } else {

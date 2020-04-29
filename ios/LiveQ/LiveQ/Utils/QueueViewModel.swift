@@ -25,17 +25,17 @@ class QueueViewModel: ObservableObject {
 //    }
     
     func queue(_ song: Song) {
-        client.addSong(song: song)
+//        client.addSong(song: song) // TODO
 //        songs.append(song)
     }
     
     func setQueue() {
-        let songs = client.getQueue()
-        if songs != self.songs {
-            DispatchQueue.main.async {
-                self.songs = songs
-            }
-        }
+//        let songs = client.getQueue() // TODO
+//        if songs != self.songs {
+//            DispatchQueue.main.async {
+//                self.songs = songs
+//            }
+//        }
 //        print("returning \(song.count) from model")
 //        print(self.songs.count)
     }

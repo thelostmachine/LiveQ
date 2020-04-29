@@ -18,7 +18,7 @@ struct SongRow: View {
             
             VStack(alignment: .leading) {
                 Text(song.name)
-                Text(Song.getArtistString(song: song))
+                Text(song.getArtistString())
             }
             
             Spacer()

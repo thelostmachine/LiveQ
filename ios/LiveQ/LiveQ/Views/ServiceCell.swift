@@ -9,9 +9,10 @@
 import SwiftUI
 
 struct ServiceCell: View {
-    var service: Service
+    @State var service: Service
     var player: Player = Player.instance
     @State var isSelected: Bool = false
+    let api = Api.instance
     // TODO persist the 
     
     var body: some View {
@@ -30,14 +31,20 @@ struct ServiceCell: View {
                 self.isSelected = !self.isSelected
                 print(self.isSelected)
                 if self.isSelected {
+                    self.service.isSelected = true
                     self.service.connect()
-                    client.addService(self.service)
-                    self.player.connectedServices.append(self.service)
-                    self.player.allowedServices.append(self.service)
+//                    client.addService(self.service) // TODO
+//                    self.player.connectedServices.append(self.service)
+//                    self.player.allowedServices.append(self.service)
+                } else {
+                    self.service.isSelected = false
                 }
             }
         }
         .padding()
+        .onAppear {
+            self.isSelected = self.service.isSelected
+        }
     }
 }
 

@@ -98,7 +98,7 @@ struct SearchView: View {
                         self.player.queueSong(song)
 //                        self.queue.objectWillChange.send()
 //                        self.queue.queue(song)
-                        print(song.id)
+                        print(song.trackId)
                         print(song.uri)
                         self.presentation.wrappedValue.dismiss()
                     }) {

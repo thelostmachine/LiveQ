@@ -127,7 +127,7 @@ class SoundCloud extends Service {
 
   @override
   Future<List<Song>> search(String query) async {
-    print("START SEARCHING SOUNDCLOUD");
+    
     List<Song> searchResults = List();
     String search = 'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
     
@@ -140,16 +140,15 @@ class SoundCloud extends Service {
 
         if (item['kind'] == 'track' && item['artwork_url'] != null) {
           var track = item;
-          String id = track['id'].toString();
+          String trackId = track['id'].toString();
           String uri = track['uri'];
           String trackName = track['title'];
           String artist = track['user']['username'];
           String imageUri = track['artwork_url'];
           int duration = track['duration'];
           Service service = this;
-          print("SOUNDCLOUD TRACKNAME: $trackName");
 
-          Song song = Song(id, uri, trackName, artist, imageUri, duration, service);
+          Song song = Song(0, trackId, uri, trackName, artist, imageUri, duration, service);
           searchResults.add(song);
         }
       }
@@ -157,12 +156,15 @@ class SoundCloud extends Service {
       print('ERROR');
       print(response.statusCode);
     }
-    print("DONE SEARCHING SOUNDCLOUD");
+
     return searchResults;
   }
 
   String formatSearch(String query) {
-    return query.replaceAll(' ', '%20');
+    String s = query.replaceAll(' ', '%20');
+    s = s.replaceAll('(', '%28');
+    s = s.replaceAll(')', '%29');
+    return s;
   }
 }
 
@@ -241,7 +243,7 @@ class Spotify extends Service {
       search.forEach((pages) {
         pages.items.forEach((track) async {
           if (track is Track) {
-            String id = track.id;
+            String trackId = track.id;
             String uri = track.uri;
             String trackName = track.name;
             List<String> _artistNames =
@@ -252,7 +254,7 @@ class Spotify extends Service {
             Service service = this;
 
             searchResults.add(
-                Song(id, uri, trackName, artists, imageUri, duration, service));
+                Song(0, trackId, uri, trackName, artists, imageUri, duration, service));
           }
         });
       });

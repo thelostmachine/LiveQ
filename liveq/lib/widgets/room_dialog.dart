@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveq/utils/api.dart';
 
 import 'package:liveq/utils/utils.dart';
 
@@ -34,10 +35,10 @@ Future<void> joinRoomDialog(
               child: const Text('SUBMIT'),
               onPressed: () async {
                 String roomId = myController.text;
-                String roomName = await client.JoinRoom(roomId);
+                String roomName = await Api.joinRoom(roomId);
                 print('joining room $roomName');
 
-                if (roomName.startsWith('Error')) {
+                if (roomId.isEmpty || roomName == null || roomName.isEmpty) {
                   showDialog(
                       context: context,
                       // barrierDismissible: false,
@@ -108,7 +109,7 @@ Future<void> createRoomDialog(
               onPressed: () async {
                 String roomName = myController.text;
                 print('creating $roomName');
-                String roomId = await client.CreateRoom(roomName);
+                String roomId = await Api.createRoom(roomName);
 
                 print('create room with id $roomId');
 
