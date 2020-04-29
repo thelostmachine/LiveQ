@@ -13,6 +13,7 @@ struct ServicesView: View {
     @EnvironmentObject var viewRouter: ViewRouter
     
     @State var services: [Service] = [Spotify.instance, SoundCloud.instance]
+    @ObservedObject var player: Player = Player.instance
     
     let api = Api.instance
     
@@ -21,12 +22,16 @@ struct ServicesView: View {
             ServiceCell(service: service)
         }
         .onDisappear {
+            var allowedServices: [Service] = [Service]()
             for var service in self.services {
 //                service.connect()
-                service.isAllowed = true
-                self.api.addService(service: service.name)
-                Player.instance.allowedServices.append(service)
+                if service.isSelected {
+                    service.isAllowed = true
+                    allowedServices.append(service)
+                    print("set \(service.name)")
+                }
             }
+            self.player.setAllowedServices(services: allowedServices)
         }
     }
 }

@@ -11,19 +11,29 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject var viewRouter: ViewRouter
+    @State var showingDetail = false
     
     let api = Api.instance
     
     var body: some View {
         VStack {
-            
-            NavigationLink(destination: ServicesView()) {
-                Image(systemName: "gear")
+            HStack {
+                Spacer()
+                
+                Button(action: {
+                    self.showingDetail.toggle()
+                }) {
+                    Image(systemName: "gear")
+                        .renderingMode(Image.TemplateRenderingMode?.init(Image.TemplateRenderingMode.original))
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .padding()
+                    
+                }.sheet(isPresented: $showingDetail) {
+                    ServicesView()
+                }
             }
-//            Button(action: {
-//
-//            })
-             
+            
             Spacer()
             
             Text("LiveQ")
