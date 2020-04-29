@@ -4,7 +4,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
-import 'package:liveq/models/player_new.dart';
+import 'package:liveq/models/player.dart';
+import 'package:liveq/models/catalog.dart';
 import 'dart:convert' as convert;
 import 'package:liveq/utils/utils.dart';
 
@@ -69,7 +70,7 @@ abstract class Service {
 }
 
 class SoundCloud extends Service {
-  final String name = Service.SOUNDCLOUD;
+  final String name = CatalogModel.SOUNDCLOUD;
 
   // final String clientId = 'YaH7Grw1UnbXCTTm0qDAq5TZzzeGrjXM';
   final String clientId = 'e38841b15b2059a39f261df195dfb430';
@@ -129,15 +130,15 @@ class SoundCloud extends Service {
   Future<List<Song>> search(String query) async {
     
     List<Song> searchResults = List();
-    String search = 'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
-    
+    String search =
+        'https://api.soundcloud.com/tracks?q=${formatSearch(query)}&limit=100&format=json&client_id=$clientId';
+
     var response = await http.get(search);
 
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
 
       for (var item in jsonResponse) {
-
         if (item['kind'] == 'track' && item['artwork_url'] != null) {
           var track = item;
           String trackId = track['id'].toString();
@@ -169,7 +170,7 @@ class SoundCloud extends Service {
 }
 
 class Spotify extends Service {
-  final String name = Service.SPOTIFY;
+  final String name = CatalogModel.SPOTIFY;
   final String iconImagePath = 'assets/images/Spotify_Icon_RGB_Green.png';
 
   // Developer tokens. DO NOT CHANGE
@@ -217,7 +218,7 @@ class Spotify extends Service {
     SpotifySdk.subscribePlayerContext().listen((playerContext) {
       if (playerContext.uri.contains('station')) {
         player.next();
-      } 
+      }
     });
   }
 
@@ -232,12 +233,10 @@ class Spotify extends Service {
   Future<List<Song>> search(String query) async {
     List<Song> searchResults = List();
 
-    var search = await spotifyWebApi.search
-        .get(query)
-        .first()
-        .catchError((err) {
-          print('SPOTIFY ERROR: ${(err as SpotifyException).message}');
-        });
+    var search =
+        await spotifyWebApi.search.get(query).first().catchError((err) {
+      print('SPOTIFY ERROR: ${(err as SpotifyException).message}');
+    });
 
     if (search != null) {
       search.forEach((pages) {

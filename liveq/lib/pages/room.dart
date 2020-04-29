@@ -11,7 +11,7 @@ import 'package:liveq/utils/utils.dart';
 import 'package:liveq/widgets/songtile.dart';
 import 'package:liveq/widgets/music_icons.dart';
 import 'package:liveq/models/catalog.dart';
-import 'package:liveq/models/player_new.dart';
+import 'package:liveq/models/player.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
@@ -72,13 +72,14 @@ class _RoomState extends State<Room> {
                 _allowedServices.add(
                     Provider.of<CatalogModel>(context, listen: false)
                         .fromString(s));
-                print('found $s');
+                // print('found $s');
               }
               if (_guestServices.isNotEmpty) {
                 _searchService =
                     Provider.of<CatalogModel>(context, listen: false)
                         .fromString(_guestServices[0]);
               }
+              // necessary?
               for (Service s in _allowedServices) {
                 s.connect();
               }
@@ -100,12 +101,19 @@ class _RoomState extends State<Room> {
 
   @override
   void dispose() {
-    // Disconnect from services
+    // TODO: Disconnect from music services
     timer.cancel();
-    if (args != null && args.host) {
-      Api.deleteRoom();
+    if (args != null) {
+      if (args.host) {
+        if (Provider.of<PlayerModel>(context, listen: false).currentService !=
+            null) {
+          Provider.of<PlayerModel>(context, listen: false).pause();
+        }
+        Api.deleteRoom();
+      } else {
+        Api.leaveRoom();
+      }
     }
-    // TODO: HANDLE PLAYER ON EXIT
     super.dispose();
   }
 
@@ -223,11 +231,7 @@ class _RoomState extends State<Room> {
             child: const Text('NO'),
           ),
           FlatButton(
-            onPressed: () {
-              // client.LeaveRoom(); // TODO
-              
-              Navigator.of(context).pop(true);
-            },
+            onPressed: () => Navigator.of(context).pop(true),
             child: const Text('YES'),
           ),
         ],
@@ -282,8 +286,8 @@ class _RoomState extends State<Room> {
                 itemCount: _allowedServices.length,
                 itemBuilder: (BuildContext context, int index) {
                   return (_allowedServices.toList()[index].name !=
-                              _searchService.name) // &&
-                          // _allowedServices.toList()[index].isConnected == true)
+                          _searchService.name) // &&
+                      // _allowedServices.toList()[index].isConnected == true)
                       ? SimpleDialogOption(
                           onPressed: () {
                             setState(() {
@@ -360,9 +364,7 @@ class _RoomState extends State<Room> {
           actions: <Widget>[
             FlatButton(
               child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         );
@@ -396,33 +398,15 @@ class _RoomState extends State<Room> {
     });
   }
 
-  // Widget _queueListView() {
-  //   return ListView.builder(
-  //       physics: BouncingScrollPhysics(),
-  //       itemCount: _queue.length,
-  //       itemBuilder: (context, index) {
-  //         return args.host == true
-  //             ? Dismissible(
-  //                 key: ObjectKey(_queue[index]),
-  //                 onDismissed: (direction) {
-  //                   setState(() {
-  //                     client.DeleteSong(_queue[index]);
-  //                     // _queue.removeAt(index);
-  //                   });
-  //                   Scaffold.of(context)
-  //                       .showSnackBar(SnackBar(content: Text("Song removed")));
-  //                 },
-  //                 background: Container(color: Theme.of(context).primaryColor),
-  //                 child: SongTile(song: _queue[index]),
-  //               )
-  //             : SongTile(song: _queue[index]);
-  //       },
-  //     );
-  // }
-
   Widget _musicPanel() {
     return Consumer<PlayerModel>(
       builder: (context, player, child) {
+        if (player.songComplete == true) {
+          setState(() {
+            player.songComplete = false;
+            player.next();
+          });
+        }
         return Container(
           height: double.infinity,
           width: double.infinity,
@@ -432,29 +416,23 @@ class _RoomState extends State<Room> {
             child: ListTile(
               leading: GestureDetector(
                 onTap: () {
-                  if (player.state == ThisPlayerState.stopped) {
-                    print("was stopped");
-                    player.next();
-                  }
-                  else if (player.state == ThisPlayerState.playing) {
-                    player.pause();
-                  }
-                  else {
-                    player.resume();
-                  }
                   // if (player.currentSong == null ||
                   //     player.currentSong.uri == null) {
                   //   return;
                   // }
-                  // if (PlayerState.paused == player.state ||
-                  //     PlayerState.stopped == player.state) {
-                  //   player.play(player.currentSong);
-                  // } else {
-                  //   player.pause();
-                  // }
+                  if (RoomPlayerState.paused == player.state ||
+                      RoomPlayerState.stopped == player.state) {
+                    if (player.currentSong != null) {
+                      player.play(player.currentSong);
+                    } else {
+                      player.next();
+                    }
+                  } else {
+                    player.pause();
+                  }
                 },
                 child: Container(
-                  child: (player.state == ThisPlayerState.playing)
+                  child: (player.state == RoomPlayerState.playing)
                       ? PauseIcon(
                           color: Colors.white,
                         )
@@ -502,32 +480,12 @@ class _RoomState extends State<Room> {
     );
   }
 
-  /// The Music Player
-  Widget _musicPlayer() {
-    return Consumer<PlayerModel>(
-      builder: (context, player, child) {
-        return Container(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                    onPressed: () => player.resume(), child: Text('Play')),
-                RaisedButton(
-                    onPressed: () => player.pause(), child: Text('Pause')),
-                RaisedButton(
-                    onPressed: () => player.next(), child: Text('Next')),
-              ],
-            ));
-      },
-    );
-  }
-
   void _searchSong() async {
     List<String> _availableServices = List();
     if (_connectedToServices) {
       _availableServices.addAll(_allowedServices.map((s) => s.name).toList());
     }
+
     final result = await Navigator.pushNamed(context, '/search',
         arguments: SearchArguments(
             searchService: _searchService != null ? _searchService.name : null,
@@ -651,10 +609,6 @@ class _RoomState extends State<Room> {
       }
     }
 
-    // setState(() {
-    //   _allowedServices.removeAll(_removeableServices);
-    // });
-
     if (_allowedServices.isNotEmpty) {
       setState(() {
         Provider.of<PlayerModel>(context, listen: false)
@@ -667,6 +621,30 @@ class _RoomState extends State<Room> {
     return connectedtoAll;
   }
 
+  // Widget _queueListView() {
+  //   return ListView.builder(
+  //       physics: BouncingScrollPhysics(),
+  //       itemCount: _queue.length,
+  //       itemBuilder: (context, index) {
+  //         return args.host == true
+  //             ? Dismissible(
+  //                 key: ObjectKey(_queue[index]),
+  //                 onDismissed: (direction) {
+  //                   setState(() {
+  //                     client.DeleteSong(_queue[index]);
+  //                     // _queue.removeAt(index);
+  //                   });
+  //                   Scaffold.of(context)
+  //                       .showSnackBar(SnackBar(content: Text("Song removed")));
+  //                 },
+  //                 background: Container(color: Theme.of(context).primaryColor),
+  //                 child: SongTile(song: _queue[index]),
+  //               )
+  //             : SongTile(song: _queue[index]);
+  //       },
+  //     );
+  // }
+
   // loadQueue() async {
   //   client.GetQueue().then((q) {
   //     if (q != null) {
@@ -675,5 +653,38 @@ class _RoomState extends State<Room> {
   //       });
   //     }
   //   });
+  // }
+
+  // Future<void> _errorQueueDialog() async {
+  //   return showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Row(
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: <Widget>[
+  //             Icon(
+  //               Icons.error_outline,
+  //             ),
+  //             SizedBox(width: 4.0),
+  //             const Text('Error'),
+  //           ],
+  //         ),
+  //         content: SingleChildScrollView(
+  //           child: Center(
+  //             child: Text('Unable to load queue'),
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           FlatButton(
+  //             child: const Text('OK'),
+  //             onPressed: () =>
+  //                 Navigator.popUntil(context, ModalRoute.withName('/home')),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
   // }
 }

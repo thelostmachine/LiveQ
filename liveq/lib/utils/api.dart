@@ -67,6 +67,10 @@ class Api {
     });
   }
 
+  static void leaveRoom() {
+    
+  }
+
   static void addSong(Song song) async {
     postRequest(
       Endpoint.songs,
