@@ -34,27 +34,16 @@ class Home extends StatelessWidget {
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Consumer<CatalogModel>(builder: (context, catalog, child) {
-                      // return NextButton(
-                      //   'CREATE NEW ROOM',
-                      //   catalog.connectedServices.isNotEmpty == true
-                      //       ? () => createRoomDialog(context, myController1)
-                      //       : () => Navigator.pushNamed(
-                      //           context, '/connect_services'),
-                      // );
-                      return KeyboardAvoiding(
-                          child: NextButton(
+                      return NextButton(
                         'CREATE NEW ROOM',
                         catalog.connectedServices.isNotEmpty == true
                             ? () => createRoomDialog(context, myController1)
                             : () => Navigator.pushNamed(
                                 context, '/connect_services'),
-                      ));
+                      );
                     }),
-                    // NextButton('JOIN A ROOM',
-                    //     () => joinRoomDialog(context, myController2))
-                    KeyboardAvoiding(
-                        child: NextButton('JOIN A ROOM',
-                            () => joinRoomDialog(context, myController2))),
+                    NextButton('JOIN A ROOM',
+                        () => joinRoomDialog(context, myController2))
                   ],
                 ),
               ),
