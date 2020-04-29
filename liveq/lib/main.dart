@@ -13,6 +13,7 @@ void main() {
     ChangeNotifierProvider(
       create: (context) => CatalogModel(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'LiveQ',
         theme: ThemeData(
           primarySwatch: MaterialColor(

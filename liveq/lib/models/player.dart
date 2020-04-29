@@ -32,6 +32,7 @@ class PlayerModel with ChangeNotifier {
           uri = song.trackId;
         }
         currentService.play(uri, this);
+        print('playing');
         state = RoomPlayerState.playing;
       } else {
         resume();
@@ -60,23 +61,26 @@ class PlayerModel with ChangeNotifier {
   }
 
   void next() async {
+    if (currentService != null) {
+      pause();
+    }
     if (queue.isNotEmpty) {
       Song nextSong = getNextSong();
 
       // // Stop playing the current song on the current service if we're switching Services
       // if (currentService != nextSong.service) {
-      pause();
+      // pause();
       // }
 
-      currentSong = nextSong;
-      currentService = currentSong.service;
-      play(currentSong);
+      // currentSong = nextSong;
+      // currentService = currentSong.service;
+      play(nextSong);
       state = RoomPlayerState.playing;
       // return play(_currentSong);
     } else {
-      if (currentService != null) {
-        pause();
-      }
+      // if (currentService != null) {
+      //   pause();
+      // }
       currentSong = null;
       state = RoomPlayerState.stopped;
     }

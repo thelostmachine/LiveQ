@@ -108,6 +108,7 @@ class SoundCloud extends Service {
   Future<void> play(String id, PlayerModel playerApi) async {
     String uri =
         'https://api.soundcloud.com/tracks/$id/stream?client_id=$clientId';
+    print('playing $uri');
     AudioPlayer.logEnabled = true;
     int result = await player.play(uri);
     if (result == 1) {

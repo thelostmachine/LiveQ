@@ -105,10 +105,13 @@ class _RoomState extends State<Room> {
     timer.cancel();
     if (args != null) {
       if (args.host) {
-        if (Provider.of<PlayerModel>(context, listen: false).currentService !=
-            null) {
-          Provider.of<PlayerModel>(context, listen: false).pause();
-        }
+        // print('host');
+        // print(Provider.of<PlayerModel>(context, listen: false).currentService == null);
+        // if (Provider.of<PlayerModel>(context, listen: false).currentService !=
+        //     null) {
+              // print('pausing');
+          // Provider.of<PlayerModel>(context, listen: false).pause();
+        // }
         Api.deleteRoom();
       } else {
         Api.leaveRoom();
