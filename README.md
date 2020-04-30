@@ -3,7 +3,7 @@ Collaborative Music Queue
 
 ## Directory Structure
 
-.
+.\
 ├── README.md\
 ├── api\
 ├── deliverables\
