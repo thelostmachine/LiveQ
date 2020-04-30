@@ -1,5 +1,20 @@
 # LiveQ
 Collaborative Music Queue
 
-liveq/ contains the applications for iOS, Android, and Web
-api/ contains server work
+Directory Structure
+
+.
+├── README.md
+├── api
+├── deliverables
+├── deliverables.zip
+├── ios
+├── liveq
+├── requisition_forms
+├── server
+├── spotify-app-remote-release-0.7.0.aar
+└── spotify-auth-release-1.2.3.aar
+
+api/    Server Source
+ios/    XCode Project
+liveq/  Flutter Project
