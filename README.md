@@ -15,12 +15,12 @@ Collaborative Music Queue
 ├── spotify-app-remote-release-0.7.0.aar\
 └── spotify-auth-release-1.2.3.aar\
 
-server/    Server Source\
-    - Django Rest API Server for backend
-ios/       XCode Project\
-    - This houses the iOS project. Work is shoddy because it was done about a week before the project was due!
-liveq/     Flutter Project\
-    - This is where the Flutter project is. This project will work for web and Android.
+server/    Server Source\  
+    - Django Rest API Server for backend  
+ios/       XCode Project\  
+    - This houses the iOS project. Work is shoddy because it was done about a week before the project was due!  
+liveq/     Flutter Project\  
+    - This is where the Flutter project is. This project will work for web and Android.  
 
 This application helps users add songs from their phone to a shared queue which can play songs off of one phone, such as the one connected to the Bluetooth Speaker. It's meant to work for iOS, Android, and Web. Users can add songs to the queue from Services that the Host is subscribed to, except SoundCloud where anyone can play any sound. So, if I don't have Spotify then Guests cannot add songs from Spotify to the Queue.
 
