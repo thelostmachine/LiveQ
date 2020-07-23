@@ -14,6 +14,7 @@ import 'package:liveq/models/catalog.dart';
 import 'package:liveq/models/player.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
+import 'package:web_socket_channel/io.dart';
 
 class RoomProvider extends StatelessWidget {
   @override
@@ -45,9 +46,14 @@ class _RoomState extends State<Room> {
   void initState() {
     super.initState();
     // TODO: Quick hack to set args - reference: https://stackoverflow.com/questions/56262655/flutter-get-passed-arguments-from-navigator-in-widgets-states-initstate
-    Future.delayed(Duration.zero, () {
+    Future.delayed(Duration.zero, () async {
       setState(() {
         args = ModalRoute.of(context).settings.arguments;
+      });
+
+      var channel = IOWebSocketChannel.connect('api.shaheermirza.dev/songs');
+      channel.stream.listen((message) {
+        print('RECEIVED');
       });
 
       if (args != null) {
@@ -95,8 +101,8 @@ class _RoomState extends State<Room> {
 
     // initialize and subscribe to server stream of songs in queue
     // timer = Timer.periodic(Duration(milliseconds: 100), (_) => loadQueue());
-    timer = Timer.periodic(Duration(milliseconds: 500),
-        (_) => Provider.of<PlayerModel>(context, listen: false).loadQueue());
+    // timer = Timer.periodic(Duration(milliseconds: 500),
+    //     (_) => Provider.of<PlayerModel>(context, listen: false).loadQueue());
   }
 
   @override
